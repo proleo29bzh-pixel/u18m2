@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>U18M2 CTC</title>
+  <meta name="description" content="Planning, rassemblements et scores des U18M2 du CTC St Renan-Plouarzel">
+  <meta name="theme-color" content="#0b1f4d">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="U18M2">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <img src="icons/icon-192.png" alt="" class="brand-logo">
+      <div>
+        <div class="brand-eyebrow">CTC St Renan-Plouarzel</div>
+        <div class="brand-title">U18 Masculins 2</div>
+      </div>
+    </div>
+    <button class="refresh" id="refresh" aria-label="Actualiser">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg>
+    </button>
+  </header>
+
+  <main id="app">
+    <section class="view active" id="view-accueil"></section>
+    <section class="view" id="view-planning"></section>
+    <section class="view" id="view-covoit"></section>
+    <section class="view" id="view-classement"></section>
+    <section class="view" id="view-infos"></section>
+  </main>
+
+  <nav class="tabs">
+    <button data-view="accueil" class="active">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg>
+      <span>Prochain</span>
+    </button>
+    <button data-view="planning">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>
+      <span>Planning</span>
+    </button>
+    <button data-view="covoit">
+      <svg viewBox="0 0 24 24"><path d="M5 17h14v-5l-2-5H7l-2 5z"/><circle cx="8" cy="17" r="2"/><circle cx="16" cy="17" r="2"/></svg>
+      <span>Covoit</span>
+    </button>
+    <button data-view="classement">
+      <svg viewBox="0 0 24 24"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 5h3v2a3 3 0 0 1-3 3M7 5H4v2a3 3 0 0 0 3 3"/></svg>
+      <span>Classement</span>
+    </button>
+    <button data-view="infos">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>
+      <span>Infos</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+  <script src="covoit.js"></script>
+</body>
+</html>

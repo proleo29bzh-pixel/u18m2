@@ -1,0 +1,407 @@
+{
+ "maj": "2026-09-30T18:04:22+00:00",
+ "competition": "Départementale Masculine U18 - Poule D2C",
+ "equipe": "U18M2",
+ "club": "CTC St Renan-Plouarzel",
+ "coach": {
+  "nom": "",
+  "tel": ""
+ },
+ "rassemblement": {
+  "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
+  "exterieur": "Départ groupé en covoiturage depuis le parking du Complexe sportif Bel-Air (Saint-Renan).",
+  "exterieur_lieu": {
+   "nom": "Complexe sportif Bel-Air",
+   "adresse": "Complexe sportif Bel-Air, 29290 Saint-Renan"
+  },
+  "a_prevoir": [
+   "Maillot + short",
+   "Gourde",
+   "Chaussures propres",
+   "Licence / pièce d'identité"
+  ]
+ },
+ "liens": {
+  "ffbb": "https://competitions.ffbb.com/ligues/bre/comites/0029/competitions/dmu18?phase=200000002901259&poule=200000003062600",
+  "cjr_convocations": "https://cjr-basketball.com/convocations",
+  "cjr_equipe": "https://cjr-basketball.com/u18m2-cadets"
+ },
+ "joueurs": [
+  "Gabin",
+  "Tom (Grand)",
+  "Tom (Petit)",
+  "Thomas",
+  "Nils",
+  "Evan",
+  "Malo",
+  "Bastien",
+  "Nathan"
+ ],
+ "covoiturage": {
+  "api": "",
+  "places_defaut": 4,
+  "matchs_domicile": false
+ },
+ "rencontres": [
+  {
+   "id": "cjr-2966",
+   "journee": null,
+   "type": "Plateau",
+   "date": "2026-09-19",
+   "heure": "14:00",
+   "dom": {
+    "nom": "Morlaix St Martin Basket",
+    "nous": false,
+    "logo": "logos/logo-morlaix-st-martin-basket.png"
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "SALLE POLYVALENTE ST MARTIN DES CHAMPS"
+   },
+   "nous": true,
+   "score": null,
+   "cjr": "https://cjr-basketball.com/matchs/apercu/2966/20260919-morlaix-st-martin-basket?mode=full"
+  },
+  {
+   "id": "cjr-3018",
+   "journee": null,
+   "type": "Plateau",
+   "date": "2026-09-26",
+   "heure": "14:30",
+   "dom": {
+    "nom": "Landerneau Bretagne Basket",
+    "nous": false,
+    "logo": "logos/logo-landerneau-bretagne-basket.png"
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "Lavallot"
+   },
+   "nous": true,
+   "score": null,
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3018/20260926-landerneau-bretagne-basket?mode=full",
+   "convoc": {
+    "domicile": false,
+    "rdv": null,
+    "heure": "14:30",
+    "salle": "LAVALLOT"
+   }
+  },
+  {
+   "id": "200000014843594",
+   "journee": 1,
+   "type": "Championnat",
+   "date": "2026-10-03",
+   "heure": "17:00",
+   "dom": {
+    "nom": "CTC Kornog (Guilers)",
+    "nous": false,
+    "logo": null
+   },
+   "ext": {
+    "nom": "AS Ergué-Armel",
+    "nous": false,
+    "logo": null
+   },
+   "salle": {
+    "nom": "Gymnase de Kerallan",
+    "adresse": "Place Jules Ferry, 29280 Plouzané",
+    "lat": 48.37314,
+    "lon": -4.59085
+   },
+   "nous": false,
+   "score": null
+  },
+  {
+   "id": "200000014843595",
+   "journee": 1,
+   "type": "Championnat",
+   "date": "2026-10-03",
+   "heure": null,
+   "dom": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "Salle Omnisports",
+    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
+    "lat": 48.27884,
+    "lon": -3.54778
+   },
+   "nous": true,
+   "score": null,
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3026/20261003-carhaix-basket?mode=full",
+   "convoc": {
+    "domicile": false,
+    "rdv": null,
+    "heure": null,
+    "salle": "SALLE OMNISPORTS"
+   }
+  },
+  {
+   "id": "200000014843624",
+   "journee": 2,
+   "type": "Championnat",
+   "date": "2026-10-10",
+   "heure": null,
+   "dom": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "ext": {
+    "nom": "CTC Kornog (Guilers)",
+    "nous": false,
+    "logo": null
+   },
+   "salle": {
+    "nom": "Complexe polyvalent",
+    "adresse": "Streat Lannoc, 29810 Plouarzel",
+    "lat": 48.43235,
+    "lon": -4.73447
+   },
+   "nous": true,
+   "score": null
+  },
+  {
+   "id": "200000014843625",
+   "journee": 2,
+   "type": "Championnat",
+   "date": "2026-10-10",
+   "heure": null,
+   "dom": {
+    "nom": "AS Ergué-Armel",
+    "nous": false,
+    "logo": null
+   },
+   "ext": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "salle": {
+    "nom": "Halle des sports Le Coz",
+    "adresse": "Avenue Yves Thépot, 29000 Quimper",
+    "lat": 47.98811,
+    "lon": -4.09131
+   },
+   "nous": false,
+   "score": null
+  },
+  {
+   "id": "200000014843655",
+   "journee": 3,
+   "type": "Championnat",
+   "date": "2026-11-07",
+   "heure": null,
+   "dom": {
+    "nom": "AS Ergué-Armel",
+    "nous": false,
+    "logo": null
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "Halle des sports Le Coz",
+    "adresse": "Avenue Yves Thépot, 29000 Quimper",
+    "lat": 47.98811,
+    "lon": -4.09131
+   },
+   "nous": true,
+   "score": null
+  },
+  {
+   "id": "200000014843654",
+   "journee": 3,
+   "type": "Championnat",
+   "date": "2026-11-07",
+   "heure": null,
+   "dom": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "ext": {
+    "nom": "CTC Kornog (Guilers)",
+    "nous": false,
+    "logo": null
+   },
+   "salle": {
+    "nom": "Salle Omnisports",
+    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
+    "lat": 48.27884,
+    "lon": -3.54778
+   },
+   "nous": false,
+   "score": null
+  },
+  {
+   "id": "200000014843685",
+   "journee": 4,
+   "type": "Championnat",
+   "date": "2026-11-14",
+   "heure": null,
+   "dom": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "ext": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "salle": {
+    "nom": "Complexe polyvalent",
+    "adresse": "Streat Lannoc, 29810 Plouarzel",
+    "lat": 48.43235,
+    "lon": -4.73447
+   },
+   "nous": true,
+   "score": null
+  },
+  {
+   "id": "200000014843684",
+   "journee": 4,
+   "type": "Championnat",
+   "date": "2026-11-14",
+   "heure": null,
+   "dom": {
+    "nom": "AS Ergué-Armel",
+    "nous": false,
+    "logo": null
+   },
+   "ext": {
+    "nom": "CTC Kornog (Guilers)",
+    "nous": false,
+    "logo": null
+   },
+   "salle": {
+    "nom": "Halle des sports Le Coz",
+    "adresse": "Avenue Yves Thépot, 29000 Quimper",
+    "lat": 47.98811,
+    "lon": -4.09131
+   },
+   "nous": false,
+   "score": null
+  },
+  {
+   "id": "200000014843714",
+   "journee": 5,
+   "type": "Championnat",
+   "date": "2026-11-21",
+   "heure": null,
+   "dom": {
+    "nom": "CTC Kornog (Guilers)",
+    "nous": false,
+    "logo": null
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "Gymnase Kerdrel",
+    "adresse": "Rue Charles de Gaulle, 29820 Guilers",
+    "lat": 48.42469,
+    "lon": -4.5584
+   },
+   "nous": true,
+   "score": null
+  },
+  {
+   "id": "200000014843715",
+   "journee": 5,
+   "type": "Championnat",
+   "date": "2026-11-21",
+   "heure": null,
+   "dom": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "ext": {
+    "nom": "AS Ergué-Armel",
+    "nous": false,
+    "logo": null
+   },
+   "salle": {
+    "nom": "Salle Omnisports",
+    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
+    "lat": 48.27884,
+    "lon": -3.54778
+   },
+   "nous": false,
+   "score": null
+  },
+  {
+   "id": "200000014843745",
+   "journee": 6,
+   "type": "Championnat",
+   "date": "2026-12-05",
+   "heure": null,
+   "dom": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "ext": {
+    "nom": "AS Ergué-Armel",
+    "nous": false,
+    "logo": null
+   },
+   "salle": {
+    "nom": "Complexe polyvalent",
+    "adresse": "Streat Lannoc, 29810 Plouarzel",
+    "lat": 48.43235,
+    "lon": -4.73447
+   },
+   "nous": true,
+   "score": null
+  },
+  {
+   "id": "200000014843744",
+   "journee": 6,
+   "type": "Championnat",
+   "date": "2026-12-05",
+   "heure": null,
+   "dom": {
+    "nom": "CTC Kornog (Guilers)",
+    "nous": false,
+    "logo": null
+   },
+   "ext": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "salle": {
+    "nom": "Gymnase Kerdrel",
+    "adresse": "Rue Charles de Gaulle, 29820 Guilers",
+    "lat": 48.42469,
+    "lon": -4.5584
+   },
+   "nous": false,
+   "score": null
+  }
+ ],
+ "erreurs": []
+}

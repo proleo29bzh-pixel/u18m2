@@ -1,0 +1,36 @@
+name: Mise à jour des données
+
+on:
+  schedule:
+    - cron: "17 * * * *"   # toutes les heures
+  workflow_dispatch:         # bouton "Run workflow" pour forcer
+  push:
+    paths: ["config/**", "scraper/**"]
+
+permissions:
+  contents: write
+
+jobs:
+  maj:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Récupérer CJR + fusion FFBB
+        env:
+          TZ: Europe/Paris
+        run: python scraper/update.py
+      - name: Enregistrer si changement
+        run: |
+          git config user.name "maj-auto"
+          git config user.email "maj-auto@users.noreply.github.com"
+          git add docs/
+          # on ignore les simples changements d'horodatage
+          CHANGES=$(git diff --cached -U0 | grep -E '^[+-][^+-]' | grep -v '"maj"' | grep -vc 'DTSTAMP' || true)
+          if [ "$CHANGES" = "0" ] && [ -z "$(git diff --cached --name-only --diff-filter=A)" ]; then
+            echo "Rien de nouveau"; exit 0
+          fi
+          git commit -m "Mise à jour des matchs"
+          git push

@@ -1,0 +1,42 @@
+{
+  "_aide": "Fichier à modifier par le coach. Les champs 'matchs' sont indexés par date (AAAA-MM-JJ). Ce que tu mets ici REMPLACE ce qui vient du CJR.",
+
+  "equipe": "U18M2",
+  "club": "CTC St Renan-Plouarzel",
+  "coach": {"nom": "", "tel": ""},
+
+  "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan"],
+
+  "covoiturage": {
+    "_aide": "api = URL du script Google (voir apps-script/LISEZMOI.md). Vide = mode démo (réponses gardées sur le téléphone seulement).",
+    "api": "",
+    "places_defaut": 4,
+    "matchs_domicile": false
+  },
+
+  "rassemblement_defaut": {
+    "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
+    "exterieur": "Départ groupé en covoiturage depuis le parking du Complexe sportif Bel-Air (Saint-Renan).",
+    "exterieur_lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Complexe sportif Bel-Air, 29290 Saint-Renan"},
+    "a_prevoir": ["Maillot + short", "Gourde", "Chaussures propres", "Licence / pièce d'identité"]
+  },
+
+  "matchs": {
+    "2026-10-03": {
+      "rdv_lieu": "",
+      "rdv_heure": "",
+      "note": ""
+    }
+  },
+
+  "scores_manuels": {
+    "_aide": "Pour les matchs des autres équipes de la poule (le CJR ne les connaît pas). Format : \"id FFBB\": [score domicile, score extérieur]",
+    "200000014843594": null
+  },
+
+  "liens": {
+    "ffbb": "https://competitions.ffbb.com/ligues/bre/comites/0029/competitions/dmu18?phase=200000002901259&poule=200000003062600",
+    "cjr_convocations": "https://cjr-basketball.com/convocations",
+    "cjr_equipe": "https://cjr-basketball.com/u18m2-cadets"
+  }
+}

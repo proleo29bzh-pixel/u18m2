@@ -1,0 +1,32 @@
+{
+  "_source": "https://competitions.ffbb.com/ligues/bre/comites/0029/competitions/dmu18?phase=200000002901259&poule=200000003062600",
+  "_note": "Calendrier officiel FFBB - DMU18 Poule D2C, phase 1. Heure 00:00 = horaire pas encore fixe.",
+  "competition": "Départementale Masculine U18 - Poule D2C",
+  "equipes": {
+    "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB": {"court": "CTC St Renan-Plouarzel", "nous": true},
+    "CARHAIX BASKET": {"court": "Carhaix Basket"},
+    "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS": {"court": "CTC Kornog (Guilers)"},
+    "AMICALE SPORTIVE ERGUE ARMEL": {"court": "AS Ergué-Armel"}
+  },
+  "salles": {
+    "carhaix": {"nom": "Salle Omnisports", "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer", "lat": 48.27884, "lon": -3.54778},
+    "quimper": {"nom": "Halle des sports Le Coz", "adresse": "Avenue Yves Thépot, 29000 Quimper", "lat": 47.98811, "lon": -4.09131},
+    "plouarzel": {"nom": "Complexe polyvalent", "adresse": "Streat Lannoc, 29810 Plouarzel", "lat": 48.43235, "lon": -4.73447},
+    "guilers": {"nom": "Gymnase Kerdrel", "adresse": "Rue Charles de Gaulle, 29820 Guilers", "lat": 48.42469, "lon": -4.5584},
+    "plouzane": {"nom": "Gymnase de Kerallan", "adresse": "Place Jules Ferry, 29280 Plouzané", "lat": 48.37314, "lon": -4.59085}
+  },
+  "rencontres": [
+    {"id": "200000014843595", "journee": 1, "date": "2026-10-03T00:00", "dom": "CARHAIX BASKET", "ext": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "salle": "carhaix"},
+    {"id": "200000014843594", "journee": 1, "date": "2026-10-03T17:00", "dom": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "ext": "AMICALE SPORTIVE ERGUE ARMEL", "salle": "plouzane"},
+    {"id": "200000014843624", "journee": 2, "date": "2026-10-10T00:00", "dom": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "ext": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "salle": "plouarzel"},
+    {"id": "200000014843625", "journee": 2, "date": "2026-10-10T00:00", "dom": "AMICALE SPORTIVE ERGUE ARMEL", "ext": "CARHAIX BASKET", "salle": "quimper"},
+    {"id": "200000014843655", "journee": 3, "date": "2026-11-07T00:00", "dom": "AMICALE SPORTIVE ERGUE ARMEL", "ext": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "salle": "quimper"},
+    {"id": "200000014843654", "journee": 3, "date": "2026-11-07T00:00", "dom": "CARHAIX BASKET", "ext": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "salle": "carhaix"},
+    {"id": "200000014843685", "journee": 4, "date": "2026-11-14T00:00", "dom": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "ext": "CARHAIX BASKET", "salle": "plouarzel"},
+    {"id": "200000014843684", "journee": 4, "date": "2026-11-14T00:00", "dom": "AMICALE SPORTIVE ERGUE ARMEL", "ext": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "salle": "quimper"},
+    {"id": "200000014843714", "journee": 5, "date": "2026-11-21T00:00", "dom": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "ext": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "salle": "guilers"},
+    {"id": "200000014843715", "journee": 5, "date": "2026-11-21T00:00", "dom": "CARHAIX BASKET", "ext": "AMICALE SPORTIVE ERGUE ARMEL", "salle": "carhaix"},
+    {"id": "200000014843745", "journee": 6, "date": "2026-12-05T00:00", "dom": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "ext": "AMICALE SPORTIVE ERGUE ARMEL", "salle": "plouarzel"},
+    {"id": "200000014843744", "journee": 6, "date": "2026-12-05T00:00", "dom": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "ext": "CARHAIX BASKET", "salle": "guilers"}
+  ]
+}
