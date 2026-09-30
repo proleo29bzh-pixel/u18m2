@@ -1,5 +1,5 @@
 {
- "maj": "2026-09-30T19:54:51+00:00",
+ "maj": "2026-09-30T20:05:35+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -48,7 +48,8 @@
   "Evan",
   "Malo",
   "Bastien",
-  "Nathan"
+  "Nathan",
+  "Raphaël"
  ],
  "covoiturage": {
   "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",

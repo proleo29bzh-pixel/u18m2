@@ -9,7 +9,7 @@
     {"nom": "Eline", "role": "Coach adjointe", "tel": ""}
   ],
 
-  "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan"],
+  "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
 
   "covoiturage": {
     "_aide": "api = URL du script Google (voir apps-script/LISEZMOI.md). Vide = mode démo (réponses gardées sur le téléphone seulement).",
