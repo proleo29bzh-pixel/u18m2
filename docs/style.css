@@ -233,6 +233,8 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cvq { padding: 10px 0; border-top: 1px dashed var(--line); }
 .cvq .k, .cvl .k { font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
 .segs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.segs.trois { grid-template-columns: 1fr 1fr; }
+.segs.trois .seg:last-child { grid-column: 1 / -1; }
 .seg {
   padding: 11px 8px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card);
   font-weight: 800; font-size: 14px; cursor: pointer;
