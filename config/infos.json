@@ -3,7 +3,11 @@
 
   "equipe": "U18M2",
   "club": "CTC St Renan-Plouarzel",
-  "coach": {"nom": "", "tel": ""},
+  "coachs": [
+    {"nom": "Léo", "role": "Coach principal", "tel": ""},
+    {"nom": "Angélique", "role": "Coach adjointe", "tel": ""},
+    {"nom": "Eline", "role": "Coach adjointe", "tel": ""}
+  ],
 
   "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan"],
 

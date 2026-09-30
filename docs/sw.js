@@ -1,5 +1,5 @@
 // Hors-ligne : l'appli s'ouvre même sans réseau (dernières données connues).
-const CACHE = "u18m2-v2";
+const CACHE = "u18m2-v3";
 const SHELL = ["./", "index.html", "style.css", "app.js", "covoit.js", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {

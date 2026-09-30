@@ -256,7 +256,7 @@ def construire():
     return {
         "maj": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "competition": saison["competition"],
-        "equipe": infos["equipe"], "club": infos["club"], "coach": infos.get("coach"),
+        "equipe": infos["equipe"], "club": infos["club"], "coachs": infos.get("coachs", []),
         "rassemblement": infos.get("rassemblement_defaut", {}),
         "liens": infos.get("liens", {}),
         "joueurs": infos.get("joueurs", []),

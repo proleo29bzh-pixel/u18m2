@@ -269,13 +269,14 @@ function renderInfos() {
   const base = new URL(".", location.href);
   const icsUrl = new URL("calendrier.ics", base).href;
   const webcal = icsUrl.replace(/^https?:/, "webcal:");
-  const coach = DATA.coach || {};
+  const coachs = DATA.coachs || [];
   const maj = new Date(DATA.maj);
   $("#view-infos").innerHTML = `
   <h2 class="section">Infos équipe</h2>
-  ${coach.nom || coach.tel ? `<div class="card"><h3>Coach</h3>
-    <div class="row"><div class="ico">${icon.users}</div><div><div class="v">${esc(coach.nom)}</div>${coach.tel ? `<div class="small muted">${esc(coach.tel)}</div>` : ""}</div></div>
-    ${coach.tel ? `<div class="actions"><a class="btn primary full" href="tel:${esc(coach.tel.replace(/\s/g, ""))}">${icon.phone} Appeler le coach</a></div>` : ""}</div>` : ""}
+  ${coachs.length ? `<div class="card"><h3>Staff</h3>
+    ${coachs.map((c, i) => `<div class="row"><div class="ico">${i === 0 ? icon.whistle : icon.users}</div><div style="flex:1"><div class="k">${esc(c.role)}</div><div class="v">${esc(c.nom)}</div></div>
+      ${c.tel ? `<a class="btn" href="tel:${esc(c.tel.replace(/\s/g, ""))}" aria-label="Appeler ${esc(c.nom)}">${icon.phone}</a>` : ""}</div>`).join("")}
+  </div>` : ""}
   <div class="card">
     <h3>Calendrier automatique</h3>
     <p class="small" style="margin-top:0">Abonne-toi une fois : tous les matchs arrivent dans l'agenda de ton téléphone ou de ton Mac et se mettent à jour tout seuls.</p>
