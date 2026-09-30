@@ -1,5 +1,5 @@
 {
- "maj": "2026-09-30T18:17:49+00:00",
+ "maj": "2026-09-30T18:42:10+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -38,7 +38,7 @@
   "Nathan"
  ],
  "covoiturage": {
-  "api": "",
+  "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
   "places_defaut": 4,
   "matchs_domicile": false
  },
