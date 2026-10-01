@@ -255,6 +255,7 @@ function pageBilan(m, a, trajets) {
     <div>${pl(a.joueursPresents.length, "joueur")}${a.staffPassagers ? ` + ${a.staffPassagers} staff` : ""}${a.ultrasPlace.length ? ` + ${pl(a.ultrasPlace.length, "ultra")}` : ""}${a.placeCoach ? " (place gardée pour un coach)" : ""}</div>
     <div>${ok ? "C'est bon ✅" : a.voitures ? `Il manque ${pl(a.besoin - a.places, "place")}` : "Aucun conducteur pour l'instant"}</div>
   </div>
+  ${ok && a.places > a.besoin ? `<p class="small muted" style="margin:6px 4px 0">🪑 ${a.places - a.besoin} place${a.places - a.besoin > 1 ? "s libres" : " libre"} pour un accompagnateur ou un coach en plus.</p>` : ""}
 
   <div class="card">
     <h3>Voitures</h3>
