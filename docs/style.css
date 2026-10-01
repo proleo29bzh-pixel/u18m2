@@ -216,6 +216,7 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .tabs button {
   border: 0; background: none; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 3px; font-size: 11px; font-weight: 700; color: var(--muted); cursor: pointer;
+  min-width: 0; padding: 0 2px; letter-spacing: -.01em;
 }
 .tabs svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .tabs button.active { color: var(--red); }
@@ -311,4 +312,9 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 
 @media (min-width: 900px) {
   .tabs { left: 50%; transform: translateX(-50%); max-width: 720px; bottom: 16px; border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); height: var(--tabs-h); padding: 0; }
+}
+
+/* petits téléphones : les 5 libellés tiennent sur une ligne */
+@media (max-width: 359px) {
+  .tabs button { font-size: 9.5px; letter-spacing: -.02em; }
 }
