@@ -18,6 +18,8 @@ const store = {
 
 const cvApi = () => DATA?.covoiturage?.api || "";
 const cvCode = () => store.get("covoit-code") || "";
+/** "parent" (parents, staff, ultras : tout le covoit) ou "joueur" (seulement sa présence). */
+const cvRole = () => store.get("covoit-role") === "joueur" ? "joueur" : "parent";
 const PLACES = () => DATA.covoiturage?.places_defaut || 4;
 
 // ------------------------------------------------------------ les personnes
@@ -48,8 +50,8 @@ async function cvCharger() {
   try {
     const res = await fetch(cvApi() + "?code=" + encodeURIComponent(cvCode()));
     const j = await res.json();
-    if (!j.ok) { CV.erreur = j.erreur === "code" ? "Code équipe incorrect." : j.erreur; store.set("covoit-code", ""); }
-    else { CV.reponses = j.reponses; CV.erreur = null; }
+    if (!j.ok) { CV.erreur = j.erreur === "code" ? "Code incorrect." : j.erreur; store.set("covoit-code", ""); store.set("covoit-role", ""); }
+    else { CV.reponses = j.reponses; CV.erreur = null; store.set("covoit-role", j.role || "parent"); }
   } catch {
     CV.erreur = "Impossible de joindre le serveur du covoiturage.";
   }
@@ -199,7 +201,7 @@ function pageParents(m, a, trajets) {
 }
 
 function pageJoueurs(m, a) {
-  return `<p class="small muted">Sans réponse, un joueur est compté présent.</p>
+  return `<p class="small muted">${cvRole() === "joueur" ? "Trouve ton prénom et dis si tu seras là. " : ""}Sans réponse, un joueur est compté présent.</p>
   <div class="card plist">${cvJoueurs().map((j) => ligne(j, "", [
     cvBtn(m, a, j, { present: "oui" }, "✅ Présent", "g"),
     cvBtn(m, a, j, { present: "non" }, "❌ Absent", "r"),
@@ -286,7 +288,7 @@ function renderCovoit() {
   let html = `<h2 class="section">Covoiturage</h2>`;
   if (besoinCode || CV.erreur || !cvApi()) {
     html += `<div class="card">
-      ${besoinCode ? `<h3>Code équipe</h3><div class="cvcode"><input id="cv-code" type="text" autocomplete="off" placeholder="Code donné par le coach"><button class="btn primary" id="cv-code-ok">OK</button></div>` : ""}
+      ${besoinCode ? `<h3>Code</h3><p class="small muted" style="margin-top:0">Parents et joueurs ont chacun leur code, donné par le coach.</p><div class="cvcode"><input id="cv-code" type="text" autocomplete="off" placeholder="Code"><button class="btn primary" id="cv-code-ok">OK</button></div>` : ""}
       ${!cvApi() ? `<div class="note">Mode démo : les réponses restent sur cet appareil.</div>` : ""}
       ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
     </div>`;
@@ -299,7 +301,8 @@ function renderCovoit() {
   if (!avenir.length) { el.innerHTML = html + `<div class="empty">Pas de déplacement à venir.</div>`; return; }
   if (!avenir.some((m) => m.id === CV.match)) CV.match = avenir[0].id;
   const m = avenir.find((x) => x.id === CV.match);
-  const page = PAGES.some(([k]) => k === store.get("covoit-page")) ? store.get("covoit-page") : "bilan";
+  const joueur = cvRole() === "joueur";
+  const page = joueur ? "joueurs" : PAGES.some(([k]) => k === store.get("covoit-page")) ? store.get("covoit-page") : "bilan";
   const { parMatch, trajets } = cvRepartition();
   const a = parMatch[m.id];
 
@@ -309,13 +312,14 @@ function renderCovoit() {
       <div class="opp">${isHome(m) ? "vs" : "@"} ${esc(opponent(m).nom)}</div>
       <div class="small muted">${esc(dayLong(m))}${m.heure ? " · " + m.heure.replace(":", "h") : ""} · ${esc(salleMatch(m).adresse || salleMatch(m).nom || "")}</div>
     </div>
-    <div class="subtabs">${PAGES.map(([k, l]) => `<button class="${k === page ? "on" : ""}" data-cvpage="${k}">${l}</button>`).join("")}</div>`;
+    ${joueur ? "" : `<div class="subtabs">${PAGES.map(([k, l]) => `<button class="${k === page ? "on" : ""}" data-cvpage="${k}">${l}</button>`).join("")}</div>`}`;
 
   html += page === "parents" ? pageParents(m, a, trajets)
     : page === "joueurs" ? pageJoueurs(m, a)
     : page === "staff" ? pageStaff(m, a)
     : page === "ultras" ? pageUltras(m, a)
     : pageBilan(m, a, trajets);
+  if (cvApi()) html += `<p class="foot"><a href="#" id="cv-logout">Changer de code</a> · connecté en ${joueur ? "joueur" : "parent / staff"}</p>`;
   el.innerHTML = html;
 }
 
@@ -355,6 +359,12 @@ document.addEventListener("click", async (e) => {
   if (pg) { store.set("covoit-page", pg.dataset.cvpage); return renderCovoit(); }
   const g = e.target.closest("[data-goto]");
   if (g) { e.preventDefault(); if ($(".sheet.open")) history.back(); return show(g.dataset.goto); }
+  if (e.target.id === "cv-logout") {
+    e.preventDefault();
+    store.set("covoit-code", ""); store.set("covoit-role", "");
+    CV.reponses = []; CV.erreur = null;
+    return renderCovoit();
+  }
   if (e.target.id === "cv-code-ok") {
     const v = $("#cv-code").value.trim();
     if (!v) return;

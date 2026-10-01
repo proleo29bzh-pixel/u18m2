@@ -5,7 +5,10 @@ Les réponses des familles sont enregistrées dans un Google Sheet sur ton compt
 1. Va sur https://sheets.new : un nouveau Google Sheet s'ouvre. Nomme-le « Covoit U18M2 ».
 2. Menu **Extensions > Apps Script**.
 3. Efface le contenu et colle tout le fichier `Code.gs`.
-4. Ligne `const CODE_EQUIPE = "CTC2026";` : mets le code que tu donneras aux familles.
+4. Lignes `CODE_PARENTS` et `CODE_JOUEURS` : remplace `A_CHANGER_...` par tes 2 codes.
+   - code parents : parents, staff et ultras (accès à tout le covoit)
+   - code joueurs : les joueurs peuvent seulement dire s'ils sont présents
+   ⚠️ Tape les vrais codes uniquement dans Google, jamais dans les fichiers du dépôt GitHub (il est public).
 5. Clique sur l'icône disquette pour enregistrer.
 6. En haut à droite, clique sur **Déployer > Nouveau déploiement**.
    - Roue dentée > type **Application Web**
@@ -18,7 +21,7 @@ Les réponses des familles sont enregistrées dans un Google Sheet sur ton compt
    ```json
    "covoiturage": { "api": "https://script.google.com/macros/s/XXXX/exec", ... }
    ```
-9. Donne le code équipe aux familles : l'appli le demande une seule fois.
+9. Donne le code parents aux parents et le code joueurs aux joueurs : l'appli le demande une seule fois.
 
 L'onglet « Reponses » du Sheet se remplit tout seul. Tu peux y corriger une réponse à la main.
 
