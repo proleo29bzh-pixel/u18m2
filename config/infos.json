@@ -13,16 +13,18 @@
 
   "_aide_parents": "Un parent par ligne : prénom + prénom de l'enfant. Les prénoms doivent être tous différents.",
   "parents": [
-    {"nom": "Parent de Gabin", "enfant": "Gabin"},
-    {"nom": "Parent de Tom (Grand)", "enfant": "Tom (Grand)"},
-    {"nom": "Parent de Tom (Petit)", "enfant": "Tom (Petit)"},
-    {"nom": "Parent de Thomas", "enfant": "Thomas"},
-    {"nom": "Parent de Nils", "enfant": "Nils"},
-    {"nom": "Parent de Evan", "enfant": "Evan"},
-    {"nom": "Parent de Malo", "enfant": "Malo"},
-    {"nom": "Parent de Bastien", "enfant": "Bastien"},
-    {"nom": "Parent de Nathan", "enfant": "Nathan"},
-    {"nom": "Parent de Raphaël", "enfant": "Raphaël"}
+    {"nom": "Angélique", "lien": "maman", "enfant": "Bastien"},
+    {"nom": "Ronan", "lien": "papa", "enfant": "Bastien"},
+    {"nom": "Anny", "enfant": "Gabin"},
+    {"nom": "Arno", "lien": "papa", "enfant": "Malo"},
+    {"nom": "Nathalie", "lien": "maman", "enfant": "Malo"},
+    {"nom": "Céline", "enfant": "Raphaël"},
+    {"nom": "Erwan", "enfant": "Nils"},
+    {"nom": "Hervé", "enfant": "Thomas"},
+    {"nom": "Karine", "lien": "maman", "enfant": "Tom (Grand)"},
+    {"nom": "Pascal", "lien": "papa", "enfant": "Tom (Grand)"},
+    {"nom": "Michaël", "lien": "papa", "enfant": "Nathan"},
+    {"nom": "Sandrine", "lien": "maman", "enfant": "Nathan"}
   ],
 
   "_aide_ultras": "Accompagnateurs (ultras du CJR) : un prénom par case.",

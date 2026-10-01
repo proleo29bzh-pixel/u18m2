@@ -29,7 +29,7 @@ const PLACES = () => DATA.covoiturage?.places_defaut || 4;
 
 const cvJoueurs = () => DATA.joueurs || [];
 const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role }));
-const cvParents = () => (DATA.parents || []).map((p) => ({ id: "Parent:" + p.nom, nom: p.nom, enfant: p.enfant }));
+const cvParents = () => (DATA.parents || []).map((p) => ({ id: "Parent:" + p.nom, nom: p.nom, enfant: p.enfant, lien: p.lien || "parent" }));
 const cvUltras = () => (DATA.ultras || []).map((u) => ({ id: "Ultra:" + u, nom: u }));
 
 const estStaff = (id) => id.startsWith("Coach ");
@@ -193,7 +193,7 @@ function pageParents(m, a, trajets) {
   <div class="card plist">${cvParents().map((p) => {
     const r = a.rep[p.id] || {};
     const t = trajets[p.id];
-    return ligne(p.nom, [p.enfant && "parent de " + p.enfant, pl(t.faits + t.prevus, "trajet")].filter(Boolean).join(" · "), [
+    return ligne(p.nom, [p.enfant && p.lien + " de " + p.enfant, pl(t.faits + t.prevus, "trajet")].filter(Boolean).join(" · "), [
       cvBtn(m, a, p.id, { conduit: "oui" }, "🚗 Je conduis", "g"),
       cvBtn(m, a, p.id, { conduit: "non" }, "Pas dispo", "r"),
     ], (r.conduit === "oui" ? cvStepper(m, a, p.id, "Places passagers") : "") + badgeDesig(a, p.id));
