@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-01T11:00:22+00:00",
+ "maj": "2026-10-01T11:06:52+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -51,62 +51,10 @@
   "Nathan",
   "Raphaël"
  ],
- "parents": [
+ "familles": [
   {
-   "nom": "Angélique",
-   "lien": "maman",
+   "nom": "Guillou",
    "enfant": "Bastien"
-  },
-  {
-   "nom": "Ronan",
-   "lien": "papa",
-   "enfant": "Bastien"
-  },
-  {
-   "nom": "Anny",
-   "enfant": "Gabin"
-  },
-  {
-   "nom": "Arno",
-   "lien": "papa",
-   "enfant": "Malo"
-  },
-  {
-   "nom": "Nathalie",
-   "lien": "maman",
-   "enfant": "Malo"
-  },
-  {
-   "nom": "Céline",
-   "enfant": "Raphaël"
-  },
-  {
-   "nom": "Erwan",
-   "enfant": "Nils"
-  },
-  {
-   "nom": "Hervé",
-   "enfant": "Thomas"
-  },
-  {
-   "nom": "Karine",
-   "lien": "maman",
-   "enfant": "Tom (Grand)"
-  },
-  {
-   "nom": "Pascal",
-   "lien": "papa",
-   "enfant": "Tom (Grand)"
-  },
-  {
-   "nom": "Michaël",
-   "lien": "papa",
-   "enfant": "Nathan"
-  },
-  {
-   "nom": "Sandrine",
-   "lien": "maman",
-   "enfant": "Nathan"
   }
  ],
  "ultras": [],

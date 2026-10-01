@@ -11,20 +11,9 @@
 
   "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
 
-  "_aide_parents": "Un parent par ligne : prénom + prénom de l'enfant. Les prénoms doivent être tous différents.",
-  "parents": [
-    {"nom": "Angélique", "lien": "maman", "enfant": "Bastien"},
-    {"nom": "Ronan", "lien": "papa", "enfant": "Bastien"},
-    {"nom": "Anny", "enfant": "Gabin"},
-    {"nom": "Arno", "lien": "papa", "enfant": "Malo"},
-    {"nom": "Nathalie", "lien": "maman", "enfant": "Malo"},
-    {"nom": "Céline", "enfant": "Raphaël"},
-    {"nom": "Erwan", "enfant": "Nils"},
-    {"nom": "Hervé", "enfant": "Thomas"},
-    {"nom": "Karine", "lien": "maman", "enfant": "Tom (Grand)"},
-    {"nom": "Pascal", "lien": "papa", "enfant": "Tom (Grand)"},
-    {"nom": "Michaël", "lien": "papa", "enfant": "Nathan"},
-    {"nom": "Sandrine", "lien": "maman", "enfant": "Nathan"}
+  "_aide_familles": "Une ligne par famille : nom de famille + prénom du joueur. Chaque famille a une ligne Maman et une ligne Papa dans l'appli.",
+  "familles": [
+    {"nom": "Guillou", "enfant": "Bastien"}
   ],
 
   "_aide_ultras": "Accompagnateurs (ultras du CJR) : un prénom par case.",

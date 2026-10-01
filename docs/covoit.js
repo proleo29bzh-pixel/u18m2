@@ -25,16 +25,23 @@ const PLACES = () => DATA.covoiturage?.places_defaut || 4;
 // ------------------------------------------------------------ les personnes
 // Identifiants stockés dans le Google Sheet (colonne "famille") :
 //   joueur  -> "Gabin"            staff -> "Coach Léo"
-//   parent  -> "Parent:Sophie"    ultra -> "Ultra:Jean"
+//   parent  -> "Parent:Guillou:Maman"    ultra -> "Ultra:Jean"
+// Les trajets sont comptés par famille ("Famille:Guillou") pour la rotation.
 
 const cvJoueurs = () => DATA.joueurs || [];
 const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role }));
-const cvParents = () => (DATA.parents || []).map((p) => ({ id: "Parent:" + p.nom, nom: p.nom, enfant: p.enfant, lien: p.lien || "parent" }));
+const cvFamilles = () => (DATA.familles || []).map((f) => ({ id: "Famille:" + f.nom, nom: f.nom, enfant: f.enfant }));
+const ROLES_PARENT = ["Maman", "Papa"];
+const cvParents = () => cvFamilles().flatMap((f) => ROLES_PARENT.map((r) => ({ id: `Parent:${f.nom}:${r}`, famille: f, role: r })));
 const cvUltras = () => (DATA.ultras || []).map((u) => ({ id: "Ultra:" + u, nom: u }));
 
 const estStaff = (id) => id.startsWith("Coach ");
+/** Qui compte pour la rotation : la famille pour un parent, la personne pour le staff. */
+const groupe = (id) => id.startsWith("Parent:") ? "Famille:" + id.split(":")[1] : id;
 function nomDe(id) {
-  if (id.startsWith("Parent:") || id.startsWith("Ultra:")) return id.split(":").slice(1).join(":");
+  if (id.startsWith("Parent:")) { const [, fam, role] = id.split(":"); return `${role} ${fam}`; }
+  if (id.startsWith("Famille:")) return "Famille " + id.slice(8);
+  if (id.startsWith("Ultra:")) return id.slice(6);
   return estStaff(id) ? id.slice(6) : id;
 }
 
@@ -95,7 +102,9 @@ function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) 
       jusqu'à avoir assez de places. Un membre du staff au volant n'a pas besoin de place passager. */
 function cvRepartition() {
   const conducteurs = [...cvParents().map((p) => p.id), ...cvStaff().map((s) => s.id)];
-  const trajets = Object.fromEntries(conducteurs.map((id) => [id, { faits: 0, prevus: 0, dernier: -1 }]));
+  const groupes = [...cvFamilles().map((f) => f.id), ...cvStaff().map((s) => s.id)];
+  const trajets = Object.fromEntries(groupes.map((g) => [g, { faits: 0, prevus: 0, dernier: -1 }]));
+  const T = (id) => trajets[groupe(id)];
   const res = {};
   const auj = new Date(); auj.setHours(0, 0, 0, 0);
 
@@ -117,8 +126,8 @@ function cvRepartition() {
 
     const dispo = conducteurs
       .filter((id) => R(id).conduit === "oui" && R(id).present !== "non")
-      .sort((a, b) => trajets[a].faits + trajets[a].prevus - (trajets[b].faits + trajets[b].prevus)
-        || trajets[a].dernier - trajets[b].dernier || hash(m.id + a) - hash(m.id + b));
+      .sort((a, b) => T(a).faits + T(a).prevus - (T(b).faits + T(b).prevus)
+        || T(a).dernier - T(b).dernier || hash(m.id + a) - hash(m.id + b));
 
     let places = ultrasVoiture.reduce((t, u) => t + (R(u).places || PLACES()), 0);
     const chauffeurs = [];
@@ -130,8 +139,8 @@ function cvRepartition() {
     const besoin = besoinAvec(chauffeurs);
     const passe = new Date(m.date + "T00:00") < auj;
     for (const id of chauffeurs) {
-      trajets[id][passe ? "faits" : "prevus"]++;
-      trajets[id].dernier = idx;
+      T(id)[passe ? "faits" : "prevus"]++;
+      T(id).dernier = idx;
     }
 
     res[m.id] = {
@@ -141,7 +150,7 @@ function cvRepartition() {
       joueursPresents, joueursAbsents, staffPresents, placeCoach, ultrasPlace,
       staffPassagers: staffPresents.filter((s) => !chauffeurs.includes(s)).length + placeCoach,
       sansReponse: {
-        parents: cvParents().filter((p) => !R(p.id).conduit).length,
+        parents: cvFamilles().filter((f) => ROLES_PARENT.every((r) => !R(`Parent:${f.nom}:${r}`).conduit)).length,
         joueurs: cvJoueurs().filter((j) => !R(j).present).length,
         staff: staffIds.filter((s) => !R(s).present && !R(s).conduit).length,
         ultras: cvUltras().filter((u) => !R(u.id).present).length,
@@ -188,16 +197,22 @@ function badgeDesig(a, id) {
 }
 
 function pageParents(m, a, trajets) {
-  if (!cvParents().length) return `<div class="empty">Pas encore de parents enregistrés.</div>`;
-  return `<p class="small muted">Indiquez si vous pouvez conduire. L'appli désigne à tour de rôle juste ce qu'il faut de voitures.</p>
-  <div class="card plist">${cvParents().map((p) => {
-    const r = a.rep[p.id] || {};
-    const t = trajets[p.id];
-    return ligne(p.nom, [p.enfant && p.lien + " de " + p.enfant, pl(t.faits + t.prevus, "trajet")].filter(Boolean).join(" · "), [
-      cvBtn(m, a, p.id, { conduit: "oui" }, "🚗 Je conduis", "g"),
-      cvBtn(m, a, p.id, { conduit: "non" }, "Pas dispo", "r"),
-    ], (r.conduit === "oui" ? cvStepper(m, a, p.id, "Places passagers") : "") + badgeDesig(a, p.id));
-  }).join("")}</div>`;
+  if (!cvFamilles().length) return `<div class="empty">Pas encore de familles enregistrées.</div>`;
+  return `<p class="small muted">Trouvez votre nom de famille, puis répondez sur la ligne Maman ou Papa. L'appli désigne à tour de rôle juste ce qu'il faut de voitures.</p>
+  ${cvFamilles().map((f) => {
+    const t = trajets[f.id];
+    return `<div class="card plist">
+      <div class="fhead"><b>Famille ${esc(f.nom)}</b><span>${esc(f.enfant)} · ${pl(t.faits + t.prevus, "trajet")}</span></div>
+      ${ROLES_PARENT.map((role) => {
+        const id = `Parent:${f.nom}:${role}`;
+        const r = a.rep[id] || {};
+        return ligne((role === "Maman" ? "👩 " : "👨 ") + role, "", [
+          cvBtn(m, a, id, { conduit: "oui" }, "🚗 Je conduis", "g"),
+          cvBtn(m, a, id, { conduit: "non" }, "Pas dispo", "r"),
+        ], (r.conduit === "oui" ? cvStepper(m, a, id, "Places passagers") : "") + badgeDesig(a, id));
+      }).join("")}
+    </div>`;
+  }).join("")}`;
 }
 
 function pageJoueurs(m, a) {
@@ -239,11 +254,10 @@ function pageBilan(m, a, trajets) {
   const ok = a.places >= a.besoin;
   const sr = a.sansReponse;
   const attente = [
-    sr.parents && pl(sr.parents, "parent"), sr.joueurs && pl(sr.joueurs, "joueur"),
+    sr.parents && pl(sr.parents, "famille"), sr.joueurs && pl(sr.joueurs, "joueur"),
     sr.staff && `${sr.staff} du staff`, sr.ultras && pl(sr.ultras, "ultra"),
   ].filter(Boolean);
-  const conducteurs = [...cvParents().map((p) => p.id), ...cvStaff().map((s) => s.id)];
-  const lignesT = conducteurs.map((id) => ({ id, ...trajets[id] }))
+  const lignesT = Object.keys(trajets).map((id) => ({ id, ...trajets[id] }))
     .sort((x, y) => y.faits + y.prevus - (x.faits + x.prevus) || nomDe(x.id).localeCompare(nomDe(y.id)));
   const voiture = (id, type) => `<div class="row"><div class="ico">${icon.car}</div><div><div class="v">${esc(nomDe(id))}</div><div class="small muted">${type} · ${pl((a.rep[id] || {}).places || PLACES(), "place")}</div></div></div>`;
 
