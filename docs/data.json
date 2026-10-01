@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-01T11:32:54+00:00",
+ "maj": "2026-10-01T12:03:23+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -73,7 +73,7 @@
    "enfant": "Thomas"
   },
   {
-   "nom": "",
+   "nom": "Foll-Machut",
    "enfant": "Nils"
   },
   {
@@ -153,6 +153,38 @@
    }
   },
   {
+   "id": "200000014843595",
+   "journee": 1,
+   "type": "Championnat",
+   "date": "2026-10-03",
+   "heure": "16:00",
+   "dom": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "Salle Omnisports",
+    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
+    "lat": 48.27884,
+    "lon": -3.54778
+   },
+   "nous": true,
+   "score": null,
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3026/20261003-carhaix-basket?mode=full",
+   "convoc": {
+    "domicile": false,
+    "rdv": null,
+    "heure": "16:00",
+    "salle": "SALLE OMNISPORTS"
+   }
+  },
+  {
    "id": "200000014843594",
    "journee": 1,
    "type": "Championnat",
@@ -176,38 +208,6 @@
    },
    "nous": false,
    "score": null
-  },
-  {
-   "id": "200000014843595",
-   "journee": 1,
-   "type": "Championnat",
-   "date": "2026-10-03",
-   "heure": null,
-   "dom": {
-    "nom": "Carhaix Basket",
-    "nous": false,
-    "logo": "logos/logo-carhaix-basket.jpg"
-   },
-   "ext": {
-    "nom": "CTC St Renan-Plouarzel",
-    "nous": true,
-    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
-   },
-   "salle": {
-    "nom": "Salle Omnisports",
-    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
-    "lat": 48.27884,
-    "lon": -3.54778
-   },
-   "nous": true,
-   "score": null,
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3026/20261003-carhaix-basket?mode=full",
-   "convoc": {
-    "domicile": false,
-    "rdv": null,
-    "heure": null,
-    "salle": "SALLE OMNISPORTS"
-   }
   },
   {
    "id": "200000014843624",
