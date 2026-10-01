@@ -33,6 +33,33 @@
     "matchs_domicile": false
   },
 
+  "_aide_entrainements": "jour_num : 1 = lundi ... 4 = jeudi, 5 = vendredi. Source : planning des entraînements CTC 2026-2027 (U18 M2-3).",
+  "entrainements": [
+    {"jour": "Jeudi", "jour_num": 4, "debut": "19:00", "fin": "20:30", "coach": "Léo",
+     "lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Complexe sportif Bel-Air, 29290 Saint-Renan"}},
+    {"jour": "Vendredi", "jour_num": 5, "debut": "19:00", "fin": "20:30", "coach": "",
+     "lieu": {"nom": "Salle polyvalente du Bourg", "adresse": "Salle polyvalente du Bourg, 29810 Plouarzel"}}
+  ],
+
+  "_aide_seance": "Séance du jeudi (coach Léo) : à mettre à jour chaque semaine. date = jeudi concerné (AAAA-MM-JJ). Laisser theme vide = « programme à venir ».",
+  "seance_jeudi": {
+    "date": "",
+    "theme": "",
+    "objectifs": [],
+    "pourquoi": "",
+    "deroule": []
+  },
+
+  "etat_esprit": [
+    "Être à l'heure : en tenue sur le terrain à 19h pile, pas à 19h05.",
+    "Prévenir le coach à l'avance en cas d'absence ou de retard.",
+    "Gourde, chaussures propres réservées à la salle, cheveux attachés si besoin.",
+    "Téléphone rangé dans le sac pendant toute la séance.",
+    "Quand le coach parle, ballon sous le bras et on écoute.",
+    "100 % d'engagement sur chaque exercice, jusqu'au dernier : on s'entraîne comme on joue.",
+    "Respect des coéquipiers, du coach et du matériel. On aide à sortir et ranger."
+  ],
+
   "rassemblement_defaut": {
     "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
     "exterieur": "Départ groupé en covoiturage depuis le parking du Complexe sportif Bel-Air (Saint-Renan).",

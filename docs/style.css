@@ -182,6 +182,26 @@ h2.section:first-child { margin-top: 4px; }
 .match.reporte .opp s { text-decoration-thickness: 2px; }
 .report-note { margin-top: 8px; font-weight: 800; color: #fbbf24; }
 
+/* --- entraînements --- */
+.top-btns { display: flex; gap: 8px; }
+.rappel-entr {
+  display: block; width: 100%; text-align: left; cursor: pointer; margin: 4px 0 6px;
+  padding: 12px 14px; border-radius: 16px; border: 1px solid var(--line); background: var(--card); color: var(--ink); box-shadow: var(--shadow);
+}
+.rappel-titre { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.rappel-ligne { display: flex; gap: 6px; font-size: 14px; padding: 2px 0; }
+.rappel-ligne span { margin-left: auto; font-size: 12.5px; font-weight: 800; color: var(--red); white-space: nowrap; }
+.entr-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.entr-jour { font-family: Anton, Impact, sans-serif; font-size: 22px; text-transform: uppercase; letter-spacing: .02em; }
+.entr-quand { font-size: 13px; font-weight: 800; color: var(--red); }
+.seance h3 { margin: 16px 0 6px; }
+.seance p { margin: 0; line-height: 1.5; }
+.seance-theme { font-family: Anton, Impact, sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: .02em; margin-top: 4px; color: var(--red); }
+.puces { margin: 0; padding-left: 20px; line-height: 1.55; }
+.puces li + li { margin-top: 4px; }
+.deroule { margin: 0; padding-left: 22px; line-height: 1.55; }
+.esprit { border-left: 4px solid var(--red); }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */

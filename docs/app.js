@@ -177,7 +177,7 @@ function renderAccueil() {
       <div><b>${isHome(r) ? "vs" : "@"} ${esc(opponent(r).nom)}</b> du ${esc(dateCourte(r.reporte_de))} est reporté au
         <b>${esc(dateCourte(r.date))}${r.heure ? " à " + r.heure.replace(":", "h") : ""}</b>${isHome(r) ? "" : " (à l'extérieur)"}.</div>
     </button>`).join("");
-  let html = "";
+  let html = typeof rappelEntrainements === "function" ? rappelEntrainements() : "";
   if (next) {
     html += `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next);
   } else {
@@ -413,6 +413,7 @@ function renderAll() {
   renderPlanning();
   renderClassement();
   renderInfos();
+  if (typeof renderEntrainement === "function") renderEntrainement();
   if (typeof renderCovoit === "function") renderCovoit();
 }
 
