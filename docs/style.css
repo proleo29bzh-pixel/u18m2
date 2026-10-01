@@ -170,6 +170,13 @@ h2.section:first-child { margin-top: 4px; }
 .wl.V { background: var(--win); } .wl.D { background: var(--loss); } .wl.N { background: var(--muted); }
 .result .h { font-weight: 800; font-size: 14px; }
 
+.avis-report {
+  display: block; width: 100%; text-align: left; cursor: pointer; margin-bottom: 12px;
+  padding: 14px 16px; border-radius: 16px; border: 2px solid #f59e0b;
+  background: rgba(245, 158, 11, .14); color: var(--ink); font-size: 14.5px; line-height: 1.45;
+}
+.avis-titre { font-family: Anton, Impact, sans-serif; font-size: 18px; text-transform: uppercase; letter-spacing: .02em; color: #d97706; margin-bottom: 4px; }
+@media (prefers-color-scheme: dark) { .avis-titre { color: #fbbf24; } }
 .tag.report { background: #f59e0b; color: #1f1300; }
 .match.reporte { opacity: .7; }
 .match.reporte .opp s { text-decoration-thickness: 2px; }

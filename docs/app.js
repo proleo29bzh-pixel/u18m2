@@ -169,11 +169,19 @@ function renderAccueil() {
   const t = today();
   const next = ours.find((r) => new Date(r.date + "T00:00") >= t && !isPlayed(r));
   const last = [...ours].reverse().find((r) => isPlayed(r));
+  // matchs reportés dont la date d'origine est à venir ou toute récente (7 jours)
+  const reportes = ours.filter((r) => r.reporte_de && new Date(r.reporte_de + "T00:00") >= new Date(t.getTime() - 7 * 864e5));
+  const avisReport = reportes.map((r) => `
+    <button class="avis-report" data-id="${esc(r.id)}">
+      <div class="avis-titre">⚠️ Match reporté</div>
+      <div><b>${isHome(r) ? "vs" : "@"} ${esc(opponent(r).nom)}</b> du ${esc(dateCourte(r.reporte_de))} est reporté au
+        <b>${esc(dateCourte(r.date))}${r.heure ? " à " + r.heure.replace(":", "h") : ""}</b>${isHome(r) ? "" : " (à l'extérieur)"}.</div>
+    </button>`).join("");
   let html = "";
   if (next) {
-    html += `<h2 class="section">Prochain match</h2>` + detailHtml(next);
+    html += `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next);
   } else {
-    html += `<div class="empty">Pas de match à venir pour l'instant.</div>`;
+    html += avisReport + `<div class="empty">Pas de match à venir pour l'instant.</div>`;
   }
   if (last) {
     html += `<h2 class="section">Dernier résultat</h2>` + matchRow(last);
