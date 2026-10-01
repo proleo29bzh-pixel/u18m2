@@ -158,7 +158,7 @@ function detailHtml(r) {
 
   const links = [];
   if (r.cjr) links.push(`<a class="btn" href="${esc(r.cjr)}" target="_blank" rel="noopener">${icon.link} Fiche CJR</a>`);
-  if (r.journee && DATA.liens?.ffbb) links.push(`<a class="btn" href="${esc(DATA.liens.ffbb)}" target="_blank" rel="noopener">${icon.link} FFBB</a>`);
+  if (DATA.liens?.cjr_convocations) links.push(`<a class="btn" href="${esc(DATA.liens.cjr_convocations)}" target="_blank" rel="noopener">${icon.link} Convocations CJR</a>`);
   if (links.length) html += `<div class="actions">${links.join("")}</div>`;
   return html;
 }
@@ -250,8 +250,7 @@ function renderClassement() {
         </tr>`).join("")}</tbody>
     </table>
   </div>
-  <p class="small muted">${esc(DATA.competition)} · Victoire 2 pts, défaite 1 pt.${missing ? ` ${missing} score(s) pas encore connu(s) : le classement officiel est sur la FFBB.` : ""}</p>
-  <div class="actions"><a class="btn full" href="${esc(DATA.liens?.ffbb || "#")}" target="_blank" rel="noopener">${icon.link} Classement officiel FFBB</a></div>
+  <p class="small muted">${esc(DATA.competition)} · Victoire 2 pts, défaite 1 pt.${missing ? ` ${missing} score(s) pas encore connu(s) : le classement peut être incomplet.` : ""}</p>
   <h2 class="section">Tous les matchs de la poule</h2>
   <div class="card others">`;
   let j = 0;
@@ -288,7 +287,6 @@ function renderInfos() {
   <div class="card">
     <h3>Liens utiles</h3>
     <div class="actions">
-      <a class="btn full" href="${esc(DATA.liens?.ffbb)}" target="_blank" rel="noopener">${icon.link} Poule D2C sur la FFBB</a>
       <a class="btn full" href="${esc(DATA.liens?.cjr_convocations)}" target="_blank" rel="noopener">${icon.link} Convocations CJR</a>
       <a class="btn full" href="${esc(DATA.liens?.cjr_equipe)}" target="_blank" rel="noopener">${icon.link} Page U18M2 du CJR</a>
     </div>
