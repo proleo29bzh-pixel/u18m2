@@ -32,8 +32,8 @@ const PLACES = () => DATA.covoiturage?.places_defaut || 4;
 const cvJoueurs = () => DATA.joueurs || [];
 const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role }));
 const cvFamilles = () => (DATA.familles || []).map((f) => ({
-  id: "Famille:" + f.enfant, nom: f.nom || "", enfant: f.enfant,
-  libelle: f.nom ? "Famille " + f.nom : "Parents de " + f.enfant,
+  id: "Famille:" + f.enfant, nom: (f.nom || "").toUpperCase(), enfant: f.enfant,
+  libelle: f.nom ? "Famille " + f.nom.toUpperCase() : "Parents de " + f.enfant,
 }));
 const ROLES_PARENT = ["Maman", "Papa"];
 const parentId = (f, role) => `Parent:${f.enfant}:${role}`;
