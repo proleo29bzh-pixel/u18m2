@@ -11,9 +11,18 @@
 
   "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
 
-  "_aide_familles": "Une ligne par famille : nom de famille + prénom du joueur. Chaque famille a une ligne Maman et une ligne Papa dans l'appli.",
+  "_aide_familles": "Une ligne par famille : nom de famille + prénom du joueur (nom vide = affiché « Parents de <joueur> »). Chaque famille a une ligne Maman et une ligne Papa dans l'appli.",
   "familles": [
-    {"nom": "Guillou", "enfant": "Bastien"}
+    {"nom": "Guillou", "enfant": "Bastien"},
+    {"nom": "Lucas", "enfant": "Gabin"},
+    {"nom": "Eono", "enfant": "Tom (Grand)"},
+    {"nom": "", "enfant": "Tom (Petit)"},
+    {"nom": "Vilgicquel", "enfant": "Thomas"},
+    {"nom": "", "enfant": "Nils"},
+    {"nom": "Tatard", "enfant": "Evan"},
+    {"nom": "Jestin", "enfant": "Malo"},
+    {"nom": "Morvan", "enfant": "Nathan"},
+    {"nom": "Lebiez", "enfant": "Raphaël"}
   ],
 
   "_aide_ultras": "Accompagnateurs (ultras du CJR) : un prénom par case.",

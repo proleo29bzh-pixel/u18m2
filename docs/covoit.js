@@ -25,22 +25,32 @@ const PLACES = () => DATA.covoiturage?.places_defaut || 4;
 // ------------------------------------------------------------ les personnes
 // Identifiants stockés dans le Google Sheet (colonne "famille") :
 //   joueur  -> "Gabin"            staff -> "Coach Léo"
-//   parent  -> "Parent:Guillou:Maman"    ultra -> "Ultra:Jean"
-// Les trajets sont comptés par famille ("Famille:Guillou") pour la rotation.
+//   parent  -> "Parent:Bastien:Maman" (rattaché au prénom du joueur, stable même si le nom de famille change)
+//   ultra   -> "Ultra:Jean"
+// Les trajets sont comptés par famille ("Famille:Bastien") pour la rotation.
 
 const cvJoueurs = () => DATA.joueurs || [];
 const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role }));
-const cvFamilles = () => (DATA.familles || []).map((f) => ({ id: "Famille:" + f.nom, nom: f.nom, enfant: f.enfant }));
+const cvFamilles = () => (DATA.familles || []).map((f) => ({
+  id: "Famille:" + f.enfant, nom: f.nom || "", enfant: f.enfant,
+  libelle: f.nom ? "Famille " + f.nom : "Parents de " + f.enfant,
+}));
 const ROLES_PARENT = ["Maman", "Papa"];
-const cvParents = () => cvFamilles().flatMap((f) => ROLES_PARENT.map((r) => ({ id: `Parent:${f.nom}:${r}`, famille: f, role: r })));
+const parentId = (f, role) => `Parent:${f.enfant}:${role}`;
+const cvParents = () => cvFamilles().flatMap((f) => ROLES_PARENT.map((r) => ({ id: parentId(f, r), famille: f, role: r })));
+const familleDe = (enfant) => cvFamilles().find((f) => f.enfant === enfant);
 const cvUltras = () => (DATA.ultras || []).map((u) => ({ id: "Ultra:" + u, nom: u }));
 
 const estStaff = (id) => id.startsWith("Coach ");
 /** Qui compte pour la rotation : la famille pour un parent, la personne pour le staff. */
 const groupe = (id) => id.startsWith("Parent:") ? "Famille:" + id.split(":")[1] : id;
 function nomDe(id) {
-  if (id.startsWith("Parent:")) { const [, fam, role] = id.split(":"); return `${role} ${fam}`; }
-  if (id.startsWith("Famille:")) return "Famille " + id.slice(8);
+  if (id.startsWith("Parent:")) {
+    const [, enfant, role] = id.split(":");
+    const f = familleDe(enfant);
+    return f?.nom ? `${role} ${f.nom}` : `${role} de ${enfant}`;
+  }
+  if (id.startsWith("Famille:")) return familleDe(id.slice(8))?.libelle || id.slice(8);
   if (id.startsWith("Ultra:")) return id.slice(6);
   return estStaff(id) ? id.slice(6) : id;
 }
@@ -150,7 +160,7 @@ function cvRepartition() {
       joueursPresents, joueursAbsents, staffPresents, placeCoach, ultrasPlace,
       staffPassagers: staffPresents.filter((s) => !chauffeurs.includes(s)).length + placeCoach,
       sansReponse: {
-        parents: cvFamilles().filter((f) => ROLES_PARENT.every((r) => !R(`Parent:${f.nom}:${r}`).conduit)).length,
+        parents: cvFamilles().filter((f) => ROLES_PARENT.every((r) => !R(parentId(f, r)).conduit)).length,
         joueurs: cvJoueurs().filter((j) => !R(j).present).length,
         staff: staffIds.filter((s) => !R(s).present && !R(s).conduit).length,
         ultras: cvUltras().filter((u) => !R(u.id).present).length,
@@ -202,9 +212,9 @@ function pageParents(m, a, trajets) {
   ${cvFamilles().map((f) => {
     const t = trajets[f.id];
     return `<div class="card plist">
-      <div class="fhead"><b>Famille ${esc(f.nom)}</b><span>${esc(f.enfant)} · ${pl(t.faits + t.prevus, "trajet")}</span></div>
+      <div class="fhead"><b>${esc(f.libelle)}</b><span>${f.nom ? esc(f.enfant) + " · " : ""}${pl(t.faits + t.prevus, "trajet")}</span></div>
       ${ROLES_PARENT.map((role) => {
-        const id = `Parent:${f.nom}:${role}`;
+        const id = parentId(f, role);
         const r = a.rep[id] || {};
         return ligne((role === "Maman" ? "👩 " : "👨 ") + role, "", [
           cvBtn(m, a, id, { conduit: "oui" }, "🚗 Je conduis", "g"),
