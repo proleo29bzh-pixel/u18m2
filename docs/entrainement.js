@@ -54,6 +54,7 @@ function renderEntrainement() {
     </div>`;
   }).join("")}
 
+  ${s.theme ? `
   <h2 class="section">Séance du jeudi</h2>
   <div class="card seance">
     ${s.theme ? `
@@ -62,8 +63,8 @@ function renderEntrainement() {
       ${s.objectifs?.length ? `<h3>Ce qu'on travaille</h3>${liste(s.objectifs)}` : ""}
       ${s.pourquoi ? `<h3>Pourquoi, à quoi ça sert</h3><p>${esc(s.pourquoi)}</p>` : ""}
       ${s.deroule?.length ? `<h3>Déroulé</h3><ol class="deroule">${s.deroule.map((x) => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}
-    ` : `<p class="muted" style="margin:0">Le programme de la prochaine séance sera affiché ici avant le jeudi.</p>`}
-  </div>
+    ` : ""}
+  </div>` : ""}
 
   ${DATA.etat_esprit?.length ? `
   <h2 class="section">L'état d'esprit</h2>
