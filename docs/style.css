@@ -259,6 +259,40 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .cchip.me { box-shadow: 0 0 0 2px var(--orange); }
 @media (prefers-color-scheme: dark) { .cchip.drv { background: #2a3d6e; } }
 
+/* --- covoit : matchs, sous-onglets, listes --- */
+.mchips { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 8px; margin: 0 -2px; scrollbar-width: none; }
+.mchips::-webkit-scrollbar { display: none; }
+.mchip {
+  flex: none; display: flex; flex-direction: column; align-items: flex-start; gap: 1px;
+  padding: 8px 12px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--card); cursor: pointer; max-width: 150px;
+}
+.mchip b { font-size: 13px; }
+.mchip span { font-size: 11.5px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 126px; }
+.mchip.on { border-color: var(--red); box-shadow: 0 0 0 2px rgba(227, 6, 19, .15); }
+.mhead { margin-top: 6px; padding: 12px 16px; }
+.mhead .opp { font-weight: 800; font-size: 16px; }
+.subtabs {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 4px; margin: 12px 0 4px;
+  background: var(--chip); padding: 4px; border-radius: 14px;
+}
+.subtabs button { border: 0; background: none; padding: 9px 2px; border-radius: 10px; font-weight: 800; font-size: 12.5px; color: var(--muted); cursor: pointer; }
+.subtabs button.on { background: var(--card); color: var(--ink); box-shadow: var(--shadow); }
+.plist { padding: 4px 14px; }
+.prow { padding: 12px 0; }
+.prow + .prow { border-top: 1px dashed var(--line); }
+.pname { font-weight: 800; font-size: 15px; margin-bottom: 8px; }
+.pname small { display: block; font-weight: 600; font-size: 12px; color: var(--muted); margin-top: 1px; }
+.pdrive { margin-top: 8px; }
+.badge { display: inline-block; margin-top: 8px; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; background: var(--chip); color: var(--muted); }
+.badge.drv { background: var(--navy); color: #fff; }
+@media (prefers-color-scheme: dark) { .badge.drv { background: #2a3d6e; } }
+.bilan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+.stat { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 6px; text-align: center; box-shadow: var(--shadow); }
+.stat b { display: block; font-family: Anton, sans-serif; font-size: 30px; font-weight: 400; line-height: 1.1; }
+.stat span { font-size: 11.5px; font-weight: 700; color: var(--muted); }
+.stat.ok b { color: var(--win); }
+.stat.ko b { color: var(--loss); }
+
 .foot { text-align: center; font-size: 12px; color: var(--muted); margin-top: 24px; }
 .empty { text-align: center; padding: 40px 10px; color: var(--muted); }
 

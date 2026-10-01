@@ -1,5 +1,5 @@
 {
- "maj": "2026-09-30T20:05:35+00:00",
+ "maj": "2026-10-01T10:35:53+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -51,14 +51,53 @@
   "Nathan",
   "Raphaël"
  ],
+ "parents": [
+  {
+   "nom": "Parent de Gabin",
+   "enfant": "Gabin"
+  },
+  {
+   "nom": "Parent de Tom (Grand)",
+   "enfant": "Tom (Grand)"
+  },
+  {
+   "nom": "Parent de Tom (Petit)",
+   "enfant": "Tom (Petit)"
+  },
+  {
+   "nom": "Parent de Thomas",
+   "enfant": "Thomas"
+  },
+  {
+   "nom": "Parent de Nils",
+   "enfant": "Nils"
+  },
+  {
+   "nom": "Parent de Evan",
+   "enfant": "Evan"
+  },
+  {
+   "nom": "Parent de Malo",
+   "enfant": "Malo"
+  },
+  {
+   "nom": "Parent de Bastien",
+   "enfant": "Bastien"
+  },
+  {
+   "nom": "Parent de Nathan",
+   "enfant": "Nathan"
+  },
+  {
+   "nom": "Parent de Raphaël",
+   "enfant": "Raphaël"
+  }
+ ],
+ "ultras": [],
  "covoiturage": {
   "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
   "places_defaut": 4,
   "places_coach_defaut": 1,
-  "permis": [
-   "Gabin",
-   "Tom (Grand)"
-  ],
   "matchs_domicile": false
  },
  "rencontres": [

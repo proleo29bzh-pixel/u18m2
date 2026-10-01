@@ -1,11 +1,14 @@
 "use strict";
-/* Covoiturage : dispos des familles + désignation équitable des chauffeurs.
-   Utilise les globales de app.js (DATA, $, esc, icon, fmt, isHome, opponent, salleMatch). */
+/* Covoiturage en 4 pages (Parents, Joueurs, Staff, Ultras) + un bilan.
+   Chacun répond sur la ligne à son prénom ; l'appli calcule le minimum de voitures
+   et désigne les conducteurs à tour de rôle.
+   Utilise les globales de app.js (DATA, $, esc, icon, fmt, dayLong, isHome, opponent, salleMatch). */
 
 const CV = {
-  reponses: [],       // [{match, famille, present, conduit, places}]
+  reponses: [],       // [{match, famille: id de la personne, present, conduit, places}]
   charge: false,
   erreur: null,
+  match: null,        // id du match affiché
 };
 
 const store = {
@@ -14,8 +17,24 @@ const store = {
 };
 
 const cvApi = () => DATA?.covoiturage?.api || "";
-const cvMoi = () => store.get("covoit-famille") || "";
 const cvCode = () => store.get("covoit-code") || "";
+const PLACES = () => DATA.covoiturage?.places_defaut || 4;
+
+// ------------------------------------------------------------ les personnes
+// Identifiants stockés dans le Google Sheet (colonne "famille") :
+//   joueur  -> "Gabin"            staff -> "Coach Léo"
+//   parent  -> "Parent:Sophie"    ultra -> "Ultra:Jean"
+
+const cvJoueurs = () => DATA.joueurs || [];
+const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role }));
+const cvParents = () => (DATA.parents || []).map((p) => ({ id: "Parent:" + p.nom, nom: p.nom, enfant: p.enfant }));
+const cvUltras = () => (DATA.ultras || []).map((u) => ({ id: "Ultra:" + u, nom: u }));
+
+const estStaff = (id) => id.startsWith("Coach ");
+function nomDe(id) {
+  if (id.startsWith("Parent:") || id.startsWith("Ultra:")) return id.split(":").slice(1).join(":");
+  return estStaff(id) ? id.slice(6) : id;
+}
 
 // ------------------------------------------------------------ données (Google Sheet ou démo locale)
 
@@ -37,12 +56,11 @@ async function cvCharger() {
   CV.charge = true;
 }
 
-async function cvEnregistrer(match, champs) {
-  const famille = cvMoi();
-  let r = CV.reponses.find((x) => x.match === match && x.famille === famille);
-  if (!r) { r = { match, famille, present: "", conduit: "", places: null }; CV.reponses.push(r); }
+async function cvEnregistrer(match, qui, champs) {
+  let r = CV.reponses.find((x) => x.match === match && x.famille === qui);
+  if (!r) { r = { match, famille: qui, present: "", conduit: "", places: null }; CV.reponses.push(r); }
   Object.assign(r, champs);
-  if (r.conduit === "oui" && !r.places) r.places = DATA.covoiturage?.places_defaut || 4;
+  if (r.conduit === "oui" && !r.places) r.places = PLACES();
   renderCovoit();
 
   if (!cvApi()) { store.set("covoit-demo", JSON.stringify(CV.reponses)); return; }
@@ -53,210 +71,287 @@ async function cvEnregistrer(match, champs) {
     if (j.ok) { CV.reponses = j.reponses; CV.erreur = null; }
     else CV.erreur = "Réponse refusée : " + j.erreur;
   } catch {
-    CV.erreur = "Pas de réseau : ta réponse n'est pas enregistrée.";
+    CV.erreur = "Pas de réseau : la réponse n'est pas enregistrée.";
   }
   renderCovoit();
 }
 
-// ------------------------------------------------------------ répartition équitable
+// ------------------------------------------------------------ calcul
 
 function cvMatchs() {
   const dom = DATA.covoiturage?.matchs_domicile;
   return DATA.rencontres.filter((r) => r.nous && (dom || !isHome(r)));
 }
 
-/** Joueurs (représentés par leur famille) + coachs, ex. "Coach Léo". */
-const cvCoachs = () => (DATA.coachs || []).map((c) => "Coach " + c.nom);
-const cvMembres = () => [...(DATA.joueurs || []), ...cvCoachs()];
-const estCoach = (n) => cvCoachs().includes(n);
-/** Joueurs qui ont le permis : ils peuvent conduire eux-mêmes. */
-const aPermis = (n) => (DATA.covoiturage?.permis || []).includes(n);
-/** Au volant, sans compter sa propre place : un coach, ou un joueur qui conduit lui-même. */
-const auVolant = (n, r) => estCoach(n) || r?.conduit === "joueur";
-
 function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return h; }
 
-/** Parcourt les matchs dans l'ordre : à chaque match, les familles dispo qui ont
-    le moins conduit (puis le plus anciennement) sont désignées jusqu'à avoir assez de places. */
+/** Pour chaque match, dans l'ordre de la saison :
+    - à transporter : joueurs présents (sans réponse = présent) + staff présent
+      (aucun staff annoncé = 1 place gardée) + ultras qui cherchent une place ;
+    - les ultras qui viennent avec leur voiture apportent leurs places ;
+    - puis parents et staff dispo sont désignés à tour de rôle (le moins de trajets d'abord)
+      jusqu'à avoir assez de places. Un membre du staff au volant n'a pas besoin de place passager. */
 function cvRepartition() {
-  const joueurs = cvMembres();
-  const trajets = Object.fromEntries(joueurs.map((f) => [f, { faits: 0, prevus: 0, dernier: -1 }]));
+  const conducteurs = [...cvParents().map((p) => p.id), ...cvStaff().map((s) => s.id)];
+  const trajets = Object.fromEntries(conducteurs.map((id) => [id, { faits: 0, prevus: 0, dernier: -1 }]));
   const res = {};
   const auj = new Date(); auj.setHours(0, 0, 0, 0);
+
   cvMatchs().forEach((m, idx) => {
     const rep = Object.fromEntries(CV.reponses.filter((x) => x.match === m.id).map((x) => [x.famille, x]));
-    // joueur sans réponse = présent ; coach compté seulement s'il annonce venir (ou conduire)
-    const presents = joueurs.filter((f) => estCoach(f)
-      ? rep[f]?.present === "oui" || (rep[f]?.conduit === "oui" && rep[f]?.present !== "non")
-      : rep[f]?.present !== "non");
-    const absents = joueurs.filter((f) => rep[f]?.present === "non");
-    const coachsVenus = presents.filter(estCoach).length;
-    const coachsAbsents = cvCoachs().filter((f) => rep[f]?.present === "non").length;
-    // aucun coach annoncé : on garde une place pour un coach (sauf si tous ont dit absent)
-    const placeCoach = !coachsVenus && coachsAbsents < cvCoachs().length ? (DATA.covoiturage?.places_coach_defaut ?? 1) : 0;
-    const sansReponse = joueurs.filter((f) => !rep[f] || (!rep[f].present && !rep[f].conduit));
-    const dispo = joueurs.filter((f) => rep[f]?.conduit === "oui" || (rep[f]?.conduit === "joueur" && aPermis(f)))
+    const R = (id) => rep[id] || {};
+
+    const joueursPresents = cvJoueurs().filter((j) => R(j).present !== "non");
+    const joueursAbsents = cvJoueurs().filter((j) => R(j).present === "non");
+    const staffIds = cvStaff().map((s) => s.id);
+    const staffPresents = staffIds.filter((s) => R(s).present === "oui" || (R(s).conduit === "oui" && R(s).present !== "non"));
+    const staffAbsents = staffIds.filter((s) => R(s).present === "non");
+    const placeCoach = !staffPresents.length && staffAbsents.length < staffIds.length ? (DATA.covoiturage?.places_coach_defaut ?? 1) : 0;
+    const ultrasVoiture = cvUltras().map((u) => u.id).filter((u) => R(u).present === "oui" && R(u).conduit === "oui");
+    const ultrasPlace = cvUltras().map((u) => u.id).filter((u) => R(u).present === "oui" && R(u).conduit !== "oui");
+
+    const passagers = joueursPresents.length + staffPresents.length + placeCoach + ultrasPlace.length;
+    const besoinAvec = (ch) => passagers - ch.filter(estStaff).length;
+
+    const dispo = conducteurs
+      .filter((id) => R(id).conduit === "oui" && R(id).present !== "non")
       .sort((a, b) => trajets[a].faits + trajets[a].prevus - (trajets[b].faits + trajets[b].prevus)
         || trajets[a].dernier - trajets[b].dernier || hash(m.id + a) - hash(m.id + b));
-    // celui qui est au volant n'a pas besoin de place passager
-    const besoinAvec = (ch) => presents.length + placeCoach - ch.filter((f) => auVolant(f, rep[f])).length;
+
+    let places = ultrasVoiture.reduce((t, u) => t + (R(u).places || PLACES()), 0);
     const chauffeurs = [];
-    let places = 0;
-    for (const f of dispo) {
+    for (const id of dispo) {
       if (places >= besoinAvec(chauffeurs)) break;
-      chauffeurs.push(f);
-      places += rep[f].places || DATA.covoiturage?.places_defaut || 4;
+      chauffeurs.push(id);
+      places += R(id).places || PLACES();
     }
     const besoin = besoinAvec(chauffeurs);
     const passe = new Date(m.date + "T00:00") < auj;
-    for (const f of chauffeurs) {
-      trajets[f][passe ? "faits" : "prevus"]++;
-      trajets[f].dernier = idx;
+    for (const id of chauffeurs) {
+      trajets[id][passe ? "faits" : "prevus"]++;
+      trajets[id].dernier = idx;
     }
-    res[m.id] = { rep, presents, absents, sansReponse, dispo, chauffeurs, reserve: dispo.filter((f) => !chauffeurs.includes(f)), besoin, places, passe, placeCoach };
+
+    res[m.id] = {
+      rep, passe, besoin, places,
+      voitures: chauffeurs.length + ultrasVoiture.length,
+      chauffeurs, ultrasVoiture, reserve: dispo.filter((id) => !chauffeurs.includes(id)),
+      joueursPresents, joueursAbsents, staffPresents, placeCoach, ultrasPlace,
+      staffPassagers: staffPresents.filter((s) => !chauffeurs.includes(s)).length + placeCoach,
+      sansReponse: {
+        parents: cvParents().filter((p) => !R(p.id).conduit).length,
+        joueurs: cvJoueurs().filter((j) => !R(j).present).length,
+        staff: staffIds.filter((s) => !R(s).present && !R(s).conduit).length,
+        ultras: cvUltras().filter((u) => !R(u.id).present).length,
+      },
+    };
   });
   return { parMatch: res, trajets };
 }
 
 // ------------------------------------------------------------ rendu
 
-function chip(nom, cls = "", extra = "") {
-  return `<span class="cchip ${cls}">${esc(nom)}${extra}</span>`;
+const PAGES = [
+  ["bilan", "Bilan"], ["parents", "Parents"], ["joueurs", "Joueurs"], ["staff", "Staff"], ["ultras", "Ultras"],
+];
+
+function chip(txt, cls = "") { return `<span class="cchip ${cls}">${esc(txt)}</span>`; }
+const pl = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
+
+/** Bouton de réponse : `champs` est appliqué ; re-cliquer sur le choix actif l'annule. */
+function cvBtn(m, a, qui, champs, label, cls) {
+  const r = a.rep[qui] || {};
+  const actif = Object.entries(champs).every(([k, v]) => (r[k] || "") === v);
+  return `<button class="seg ${actif ? "on " + cls : ""}" data-cv="${esc(m.id)}" data-qui="${esc(qui)}"
+    data-set='${esc(JSON.stringify(champs))}' ${a.passe ? "disabled" : ""}>${label}</button>`;
 }
 
-function cvCarte(m, a, trajets) {
-  const moi = cvMoi();
-  const r = a.rep[moi] || {};
-  const home = isHome(m);
+function cvStepper(m, a, qui, label) {
+  const r = a.rep[qui] || {};
+  return `<div class="stepper"><span class="k">${label}</span>
+    <div><button data-cvplaces="${esc(m.id)}" data-qui="${esc(qui)}" data-d="-1" ${a.passe ? "disabled" : ""}>−</button><b>${r.places || PLACES()}</b><button data-cvplaces="${esc(m.id)}" data-qui="${esc(qui)}" data-d="1" ${a.passe ? "disabled" : ""}>+</button></div></div>`;
+}
+
+function ligne(nom, sous, boutons, extra = "") {
+  return `<div class="prow">
+    <div class="pname">${esc(nom)}${sous ? `<small>${esc(sous)}</small>` : ""}</div>
+    <div class="segs ${boutons.length === 3 ? "trois" : ""}">${boutons.join("")}</div>
+    ${extra}
+  </div>`;
+}
+
+function badgeDesig(a, id) {
+  return a.chauffeurs.includes(id) ? `<span class="badge drv">🚗 Désigné pour conduire</span>`
+    : a.reserve.includes(id) ? `<span class="badge">En réserve si besoin</span>` : "";
+}
+
+function pageParents(m, a, trajets) {
+  if (!cvParents().length) return `<div class="empty">Pas encore de parents enregistrés.</div>`;
+  return `<p class="small muted">Indiquez si vous pouvez conduire. L'appli désigne à tour de rôle juste ce qu'il faut de voitures.</p>
+  <div class="card plist">${cvParents().map((p) => {
+    const r = a.rep[p.id] || {};
+    const t = trajets[p.id];
+    return ligne(p.nom, [p.enfant && "parent de " + p.enfant, pl(t.faits + t.prevus, "trajet")].filter(Boolean).join(" · "), [
+      cvBtn(m, a, p.id, { conduit: "oui" }, "🚗 Je conduis", "g"),
+      cvBtn(m, a, p.id, { conduit: "non" }, "Pas dispo", "r"),
+    ], (r.conduit === "oui" ? cvStepper(m, a, p.id, "Places passagers") : "") + badgeDesig(a, p.id));
+  }).join("")}</div>`;
+}
+
+function pageJoueurs(m, a) {
+  return `<p class="small muted">Sans réponse, un joueur est compté présent.</p>
+  <div class="card plist">${cvJoueurs().map((j) => ligne(j, "", [
+    cvBtn(m, a, j, { present: "oui" }, "✅ Présent", "g"),
+    cvBtn(m, a, j, { present: "non" }, "❌ Absent", "r"),
+  ])).join("")}</div>`;
+}
+
+function pageStaff(m, a) {
+  return `<p class="small muted">Tant que personne du staff n'a répondu, une place est gardée pour un coach.</p>
+  <div class="card plist">${cvStaff().map((s) => {
+    const r = a.rep[s.id] || {};
+    return ligne(s.nom, s.role, [
+      cvBtn(m, a, s.id, { present: "oui" }, "✅ Présent", "g"),
+      cvBtn(m, a, s.id, { present: "non", conduit: "" }, "❌ Absent", "r"),
+    ], r.present !== "non" ? `<div class="pdrive">
+        <div class="segs">${cvBtn(m, a, s.id, { conduit: "oui" }, "🚗 Je peux conduire", "g")}${cvBtn(m, a, s.id, { conduit: "non" }, "Passager", "r")}</div>
+        ${r.conduit === "oui" ? cvStepper(m, a, s.id, "Places passagers") : ""}${badgeDesig(a, s.id)}
+      </div>` : "");
+  }).join("")}</div>`;
+}
+
+function pageUltras(m, a) {
+  if (!cvUltras().length) return `<div class="empty">Pas encore d'accompagnateurs enregistrés.</div>`;
+  return `<p class="small muted">Vous venez avec votre voiture (et pouvez prendre des passagers) ou vous cherchez une place.</p>
+  <div class="card plist">${cvUltras().map((u) => {
+    const r = a.rep[u.id] || {};
+    return ligne(u.nom, "", [
+      cvBtn(m, a, u.id, { present: "oui", conduit: "oui" }, "🚗 Avec ma voiture", "g"),
+      cvBtn(m, a, u.id, { present: "oui", conduit: "non" }, "🙋 Je cherche une place", "g"),
+      cvBtn(m, a, u.id, { present: "non", conduit: "" }, "Je ne viens pas", "r"),
+    ], r.present === "oui" && r.conduit === "oui" ? cvStepper(m, a, u.id, "Places passagers") : "");
+  }).join("")}</div>`;
+}
+
+function pageBilan(m, a, trajets) {
   const ok = a.places >= a.besoin;
-  const verrou = a.passe;
-  const places = r.places || DATA.covoiturage?.places_defaut || 4;
-  const coach = estCoach(moi);
-  const nbCoachs = a.presents.filter(estCoach).length - a.chauffeurs.filter(estCoach).length + a.placeCoach;
-  const nbJoueurs = a.presents.filter((f) => !estCoach(f)).length - a.chauffeurs.filter((f) => a.rep[f].conduit === "joueur").length;
-  const permis = aPermis(moi);
-  const btn = (champ, val, label, cls = "") =>
-    `<button class="seg ${r[champ] === val ? "on " + cls : ""}" data-cv="${esc(m.id)}" data-champ="${champ}" data-val="${val}" ${verrou ? "disabled" : ""}>${label}</button>`;
+  const sr = a.sansReponse;
+  const attente = [
+    sr.parents && pl(sr.parents, "parent"), sr.joueurs && pl(sr.joueurs, "joueur"),
+    sr.staff && `${sr.staff} du staff`, sr.ultras && pl(sr.ultras, "ultra"),
+  ].filter(Boolean);
+  const conducteurs = [...cvParents().map((p) => p.id), ...cvStaff().map((s) => s.id)];
+  const lignesT = conducteurs.map((id) => ({ id, ...trajets[id] }))
+    .sort((x, y) => y.faits + y.prevus - (x.faits + x.prevus) || nomDe(x.id).localeCompare(nomDe(y.id)));
+  const voiture = (id, type) => `<div class="row"><div class="ico">${icon.car}</div><div><div class="v">${esc(nomDe(id))}</div><div class="small muted">${type} · ${pl((a.rep[id] || {}).places || PLACES(), "place")}</div></div></div>`;
 
   return `
-  <div class="card cvcard ${verrou ? "past" : ""}">
-    <div class="cvhead">
-      <div class="datebox"><div class="j">${fmt(m, { weekday: "short" }).replace(".", "")}</div><div class="n">${fmt(m, { day: "numeric" })}</div><div class="m">${fmt(m, { month: "short" }).replace(".", "")}</div></div>
-      <div>
-        <div class="opp">${home ? "vs" : "@"} ${esc(opponent(m).nom)}</div>
-        <div class="meta">${esc(salleMatch(m).adresse || salleMatch(m).nom || "")}</div>
-      </div>
-    </div>
+  <div class="bilan-grid">
+    <div class="stat"><b>${a.besoin}</b><span>à transporter</span></div>
+    <div class="stat"><b>${a.voitures}</b><span>voiture${a.voitures > 1 ? "s" : ""}</span></div>
+    <div class="stat ${ok ? "ok" : "ko"}"><b>${a.places}</b><span>places</span></div>
+  </div>
+  <div class="cvbilan ${ok ? "ok" : "ko"}">
+    <div>${pl(a.joueursPresents.length, "joueur")}${a.staffPassagers ? ` + ${a.staffPassagers} staff` : ""}${a.ultrasPlace.length ? ` + ${pl(a.ultrasPlace.length, "ultra")}` : ""}${a.placeCoach ? " (place gardée pour un coach)" : ""}</div>
+    <div>${ok ? "C'est bon ✅" : a.voitures ? `Il manque ${pl(a.besoin - a.places, "place")}` : "Aucun conducteur pour l'instant"}</div>
+  </div>
 
-    ${moi ? `
-    <div class="cvq">
-      <div class="k">${coach ? "Vous venez au match ?" : esc(moi) + " joue ?"}</div>
-      <div class="segs">${btn("present", "oui", "✅ Présent", "g")}${btn("present", "non", "❌ Absent", "r")}</div>
-    </div>
-    <div class="cvq">
-      <div class="k">${permis ? `Qui peut conduire ? (${esc(moi)} a le permis)` : "Vous pouvez conduire ?"}</div>
-      <div class="segs ${permis ? "trois" : ""}">${permis
-        ? btn("conduit", "joueur", `🪪 ${esc(moi)} conduit`, "g") + btn("conduit", "oui", "🚗 Un parent", "g") + btn("conduit", "non", "Personne", "r")
-        : btn("conduit", "oui", "🚗 Oui", "g") + btn("conduit", "non", "Non", "r")}</div>
-      ${r.conduit === "oui" || r.conduit === "joueur" ? `
-      <div class="stepper">
-        <span class="k">${coach || r.conduit === "joueur" ? "Places passagers disponibles" : "Places pour les joueurs (le vôtre compris)"}</span>
-        <div><button data-cvplaces="${esc(m.id)}" data-d="-1" ${verrou ? "disabled" : ""}>−</button><b>${places}</b><button data-cvplaces="${esc(m.id)}" data-d="1" ${verrou ? "disabled" : ""}>+</button></div>
-      </div>` : ""}
-    </div>` : ""}
+  <div class="card">
+    <h3>Voitures</h3>
+    ${a.chauffeurs.length || a.ultrasVoiture.length ? [
+      ...a.chauffeurs.map((id) => voiture(id, estStaff(id) ? "Staff" : "Parent")),
+      ...a.ultrasVoiture.map((id) => voiture(id, "Ultra du CJR")),
+    ].join("") : `<p class="small muted" style="margin:0">Personne ne s'est encore proposé pour conduire.</p>`}
+    ${a.reserve.length ? `<div class="cvl"><div class="k">En réserve si besoin</div>${a.reserve.map((id) => chip(nomDe(id))).join("")}</div>` : ""}
+  </div>
 
-    <div class="cvbilan ${ok ? "ok" : "ko"}">
-      <div><b>${a.places}</b> place${a.places > 1 ? "s" : ""} pour <b>${a.besoin}</b> personne${a.besoin > 1 ? "s" : ""}
-        <div class="small" style="opacity:.8">${nbJoueurs} joueur${nbJoueurs > 1 ? "s" : ""}${nbCoachs ? ` + ${nbCoachs} coach${nbCoachs > 1 ? "s" : ""} passager${nbCoachs > 1 ? "s" : ""}` : ""}${a.placeCoach ? " (place gardée pour un coach)" : ""}</div></div>
-      <div>${ok ? "C'est bon ✅" : a.dispo.length ? `Il manque ${a.besoin - a.places} place${a.besoin - a.places > 1 ? "s" : ""}` : "Aucun chauffeur pour l'instant"}</div>
-    </div>
+  ${a.joueursAbsents.length ? `<div class="card"><h3>Joueurs absents</h3>${a.joueursAbsents.map((j) => chip(j, "abs")).join("")}</div>` : ""}
+  ${!a.passe && attente.length ? `<div class="card"><h3>Pas encore répondu</h3><p class="small" style="margin:0">${esc(attente.join(" · "))}</p></div>` : ""}
 
-    ${a.chauffeurs.length ? `<div class="cvl"><div class="k">🚗 Chauffeurs ${verrou ? "" : "désignés"}</div>${a.chauffeurs.map((f) => chip((a.rep[f].conduit === "joueur" ? "🪪 " : "") + f, "drv" + (f === moi ? " me" : ""), `${a.rep[f].conduit === "oui" && !estCoach(f) ? " (parent)" : ""} · ${a.rep[f].places || 4} pl.`)).join("")}</div>` : ""}
-    ${a.reserve.length ? `<div class="cvl"><div class="k">En réserve si besoin</div>${a.reserve.map((f) => chip(f, f === moi ? "me" : "")).join("")}</div>` : ""}
-    ${a.absents.length ? `<div class="cvl"><div class="k">Absents</div>${a.absents.map((f) => chip(f, "abs")).join("")}</div>` : ""}
-    ${!verrou && a.sansReponse.length ? `<div class="cvl"><div class="k">Pas encore répondu (${a.sansReponse.length})</div>${a.sansReponse.map((f) => chip(f, "wait" + (f === moi ? " me" : ""))).join("")}</div>` : ""}
+  <h2 class="section">Trajets par conducteur</h2>
+  <div class="card" style="padding:6px 10px">
+    <table class="standings">
+      <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Total</th></tr></thead>
+      <tbody>${lignesT.map((l) => `<tr><td class="t">${esc(nomDe(l.id))}${estStaff(l.id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${l.faits}</td><td>${l.prevus}</td><td class="pts">${l.faits + l.prevus}</td></tr>`).join("")}</tbody>
+    </table>
   </div>`;
 }
 
 function renderCovoit() {
   const el = $("#view-covoit");
   if (!el || !DATA) return;
-  const joueurs = DATA.joueurs || [];
-  const coachs = cvCoachs();
-  const moi = cvMoi();
   const besoinCode = cvApi() && !cvCode();
 
   let html = `<h2 class="section">Covoiturage</h2>`;
-
-  html += `<div class="card">
-    <h3>Qui êtes-vous ?</h3>
-    <select id="cv-moi" class="cvselect">
-      <option value="">Choisir…</option>
-      <optgroup label="Famille de">
-        ${joueurs.map((f) => `<option ${f === moi ? "selected" : ""}>${esc(f)}</option>`).join("")}
-      </optgroup>
-      <optgroup label="Staff">
-        ${coachs.map((f) => `<option ${f === moi ? "selected" : ""}>${esc(f)}</option>`).join("")}
-      </optgroup>
-    </select>
-    ${besoinCode ? `<div class="cvcode"><input id="cv-code" type="text" inputmode="text" autocomplete="off" placeholder="Code équipe (donné par le coach)"><button class="btn primary" id="cv-code-ok">OK</button></div>` : ""}
-    ${!cvApi() ? `<div class="note">Mode démo : les réponses restent sur cet appareil. Le partage entre familles s'active quand le coach branche le Google Sheet.</div>` : ""}
-    ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
-  </div>`;
-
+  if (besoinCode || CV.erreur || !cvApi()) {
+    html += `<div class="card">
+      ${besoinCode ? `<h3>Code équipe</h3><div class="cvcode"><input id="cv-code" type="text" autocomplete="off" placeholder="Code donné par le coach"><button class="btn primary" id="cv-code-ok">OK</button></div>` : ""}
+      ${!cvApi() ? `<div class="note">Mode démo : les réponses restent sur cet appareil.</div>` : ""}
+      ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
+    </div>`;
+  }
   if (besoinCode) { el.innerHTML = html; return; }
   if (!CV.charge) { el.innerHTML = html + `<div class="empty">Chargement…</div>`; return; }
 
-  const { parMatch, trajets } = cvRepartition();
   const auj = new Date(); auj.setHours(0, 0, 0, 0);
   const avenir = cvMatchs().filter((m) => new Date(m.date + "T00:00") >= auj);
+  if (!avenir.length) { el.innerHTML = html + `<div class="empty">Pas de déplacement à venir.</div>`; return; }
+  if (!avenir.some((m) => m.id === CV.match)) CV.match = avenir[0].id;
+  const m = avenir.find((x) => x.id === CV.match);
+  const page = PAGES.some(([k]) => k === store.get("covoit-page")) ? store.get("covoit-page") : "bilan";
+  const { parMatch, trajets } = cvRepartition();
+  const a = parMatch[m.id];
 
-  html += `<p class="small muted">Les chauffeurs sont choisis automatiquement parmi les familles et les coachs disponibles : ceux qui ont le moins conduit passent en premier. Sans réponse, un joueur est compté présent. Une place est gardée pour un coach tant qu'aucun coach n'a répondu.${(DATA.covoiturage?.permis || []).length ? ` ${esc(DATA.covoiturage.permis.join(" et "))} ${DATA.covoiturage.permis.length > 1 ? "ont" : "a"} le permis et ${DATA.covoiturage.permis.length > 1 ? "peuvent" : "peut"} conduire.` : ""}</p>`;
-  html += avenir.length ? avenir.map((m) => cvCarte(m, parMatch[m.id], trajets)).join("") : `<div class="empty">Pas de déplacement à venir.</div>`;
+  html += `<div class="mchips">${avenir.map((x) => `<button class="mchip ${x.id === m.id ? "on" : ""}" data-cvmatch="${esc(x.id)}">
+      <b>${fmt(x, { day: "numeric", month: "short" }).replace(".", "")}</b><span>${esc(opponent(x).nom)}</span></button>`).join("")}</div>
+    <div class="card mhead">
+      <div class="opp">${isHome(m) ? "vs" : "@"} ${esc(opponent(m).nom)}</div>
+      <div class="small muted">${esc(dayLong(m))}${m.heure ? " · " + m.heure.replace(":", "h") : ""} · ${esc(salleMatch(m).adresse || salleMatch(m).nom || "")}</div>
+    </div>
+    <div class="subtabs">${PAGES.map(([k, l]) => `<button class="${k === page ? "on" : ""}" data-cvpage="${k}">${l}</button>`).join("")}</div>`;
 
-  const lignes = cvMembres().map((f) => ({ f, ...trajets[f] })).sort((a, b) => b.faits + b.prevus - (a.faits + a.prevus) || a.f.localeCompare(b.f));
-  html += `<h2 class="section">Trajets par conducteur</h2>
-  <div class="card" style="padding:6px 10px">
-    <table class="standings">
-      <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Total</th></tr></thead>
-      <tbody>${lignes.map((l) => `<tr class="${l.f === moi ? "us" : ""}"><td class="t">${esc(l.f)}</td><td>${l.faits}</td><td>${l.prevus}</td><td class="pts">${l.faits + l.prevus}</td></tr>`).join("")}</tbody>
-    </table>
-  </div>`;
+  html += page === "parents" ? pageParents(m, a, trajets)
+    : page === "joueurs" ? pageJoueurs(m, a)
+    : page === "staff" ? pageStaff(m, a)
+    : page === "ultras" ? pageUltras(m, a)
+    : pageBilan(m, a, trajets);
   el.innerHTML = html;
 }
 
 /** Petit résumé covoit dans la fiche d'un match (onglet Prochain). */
 function covoitResume(m) {
-  if (!DATA?.joueurs?.length || !cvMatchs().some((x) => x.id === m.id) || (cvApi() && !cvCode())) return "";
+  if (!cvMatchs().some((x) => x.id === m.id) || (cvApi() && !cvCode()) || !CV.charge) return "";
   const a = cvRepartition().parMatch[m.id];
   if (!a) return "";
-  const ok = a.places >= a.besoin;
+  const noms = [...a.chauffeurs, ...a.ultrasVoiture].map(nomDe);
   return `<div class="row"><div class="ico">${icon.car}</div><div>
     <div class="k">Covoiturage</div>
-    <div class="v">${a.chauffeurs.length ? esc(a.chauffeurs.join(", ")) : '<span class="tbd">aucun chauffeur pour l\'instant</span>'}</div>
-    <div class="small ${ok ? "" : "muted"}">${a.places}/${a.besoin} places · <a href="#" data-goto="covoit">répondre</a></div>
+    <div class="v">${noms.length ? esc(noms.join(", ")) : '<span class="tbd">aucun conducteur pour l\'instant</span>'}</div>
+    <div class="small">${a.places}/${a.besoin} places · <a href="#" data-goto="covoit">répondre</a></div>
   </div></div>`;
 }
 
 // ------------------------------------------------------------ événements
 
-document.addEventListener("change", (e) => {
-  if (e.target.id === "cv-moi") { store.set("covoit-famille", e.target.value); renderCovoit(); renderAccueil(); }
-});
-
 document.addEventListener("click", async (e) => {
-  const b = e.target.closest("[data-cv]");
+  const b = e.target.closest("[data-set]");
   if (b) {
-    const r = CV.reponses.find((x) => x.match === b.dataset.cv && x.famille === cvMoi()) || {};
-    const val = r[b.dataset.champ] === b.dataset.val ? "" : b.dataset.val; // re-cliquer annule
-    return cvEnregistrer(b.dataset.cv, { [b.dataset.champ]: val });
+    const champs = JSON.parse(b.dataset.set);
+    const r = CV.reponses.find((x) => x.match === b.dataset.cv && x.famille === b.dataset.qui) || {};
+    const actif = Object.entries(champs).every(([k, v]) => (r[k] || "") === v);
+    // re-cliquer sur le choix actif l'annule
+    return cvEnregistrer(b.dataset.cv, b.dataset.qui, actif ? Object.fromEntries(Object.keys(champs).map((k) => [k, ""])) : champs);
   }
   const p = e.target.closest("[data-cvplaces]");
   if (p) {
-    const r = CV.reponses.find((x) => x.match === p.dataset.cvplaces && x.famille === cvMoi()) || {};
-    const n = Math.max(1, Math.min(8, (r.places || 4) + Number(p.dataset.d)));
-    return cvEnregistrer(p.dataset.cvplaces, { places: n });
+    const r = CV.reponses.find((x) => x.match === p.dataset.cvplaces && x.famille === p.dataset.qui) || {};
+    const n = Math.max(1, Math.min(8, (r.places || PLACES()) + Number(p.dataset.d)));
+    return cvEnregistrer(p.dataset.cvplaces, p.dataset.qui, { places: n });
   }
+  const mc = e.target.closest("[data-cvmatch]");
+  if (mc) { CV.match = mc.dataset.cvmatch; return renderCovoit(); }
+  const pg = e.target.closest("[data-cvpage]");
+  if (pg) { store.set("covoit-page", pg.dataset.cvpage); return renderCovoit(); }
   const g = e.target.closest("[data-goto]");
   if (g) { e.preventDefault(); if ($(".sheet.open")) history.back(); return show(g.dataset.goto); }
   if (e.target.id === "cv-code-ok") {
