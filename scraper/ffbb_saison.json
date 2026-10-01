@@ -16,7 +16,7 @@
     "plouzane": {"nom": "Gymnase de Kerallan", "adresse": "Place Jules Ferry, 29280 Plouzané", "lat": 48.37314, "lon": -4.59085}
   },
   "rencontres": [
-    {"id": "200000014843595", "journee": 1, "date": "2026-10-03T00:00", "dom": "CARHAIX BASKET", "ext": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "salle": "carhaix"},
+    {"id": "200000014843595", "journee": 1, "date": "2026-11-28T18:00", "reporte_de": "2026-10-03", "cjr": "3026", "dom": "CARHAIX BASKET", "ext": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "salle": "carhaix"},
     {"id": "200000014843594", "journee": 1, "date": "2026-10-03T17:00", "dom": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "ext": "AMICALE SPORTIVE ERGUE ARMEL", "salle": "plouzane"},
     {"id": "200000014843624", "journee": 2, "date": "2026-10-10T00:00", "dom": "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB", "ext": "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS", "salle": "plouarzel"},
     {"id": "200000014843625", "journee": 2, "date": "2026-10-10T00:00", "dom": "AMICALE SPORTIVE ERGUE ARMEL", "ext": "CARHAIX BASKET", "salle": "quimper"},

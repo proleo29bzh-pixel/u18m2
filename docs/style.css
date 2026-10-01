@@ -170,6 +170,11 @@ h2.section:first-child { margin-top: 4px; }
 .wl.V { background: var(--win); } .wl.D { background: var(--loss); } .wl.N { background: var(--muted); }
 .result .h { font-weight: 800; font-size: 14px; }
 
+.tag.report { background: #f59e0b; color: #1f1300; }
+.match.reporte { opacity: .7; }
+.match.reporte .opp s { text-decoration-thickness: 2px; }
+.report-note { margin-top: 8px; font-weight: 800; color: #fbbf24; }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */

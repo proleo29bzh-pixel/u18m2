@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-01T12:03:23+00:00",
+ "maj": "2026-10-01T15:52:59+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -150,38 +150,6 @@
     "rdv": null,
     "heure": "14:30",
     "salle": "LAVALLOT"
-   }
-  },
-  {
-   "id": "200000014843595",
-   "journee": 1,
-   "type": "Championnat",
-   "date": "2026-10-03",
-   "heure": "16:00",
-   "dom": {
-    "nom": "Carhaix Basket",
-    "nous": false,
-    "logo": "logos/logo-carhaix-basket.jpg"
-   },
-   "ext": {
-    "nom": "CTC St Renan-Plouarzel",
-    "nous": true,
-    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
-   },
-   "salle": {
-    "nom": "Salle Omnisports",
-    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
-    "lat": 48.27884,
-    "lon": -3.54778
-   },
-   "nous": true,
-   "score": null,
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3026/20261003-carhaix-basket?mode=full",
-   "convoc": {
-    "domicile": false,
-    "rdv": null,
-    "heure": "16:00",
-    "salle": "SALLE OMNISPORTS"
    }
   },
   {
@@ -421,6 +389,33 @@
    },
    "nous": false,
    "score": null
+  },
+  {
+   "id": "200000014843595",
+   "journee": 1,
+   "type": "Championnat",
+   "date": "2026-11-28",
+   "heure": "18:00",
+   "dom": {
+    "nom": "Carhaix Basket",
+    "nous": false,
+    "logo": "logos/logo-carhaix-basket.jpg"
+   },
+   "ext": {
+    "nom": "CTC St Renan-Plouarzel",
+    "nous": true,
+    "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
+   },
+   "salle": {
+    "nom": "Salle Omnisports",
+    "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer",
+    "lat": 48.27884,
+    "lon": -3.54778
+   },
+   "nous": true,
+   "score": null,
+   "reporte_de": "2026-10-03",
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3026/20261003-carhaix-basket?mode=full"
   },
   {
    "id": "200000014843745",

@@ -204,7 +204,12 @@ def construire():
     for r in saison["rencontres"]:
         jour = r["date"][:10]
         a_nous = nous in (r["dom"], r["ext"])
-        m = next((x for x in cjr if a_nous and x.get("debut", "")[:10] == jour), None)
+        if r.get("cjr"):   # match rattaché à sa fiche CJR (utile quand il est reporté)
+            m = next((x for x in cjr if f"/apercu/{r['cjr']}/" in x["url"]), None)
+        else:
+            m = next((x for x in cjr if a_nous and x.get("debut", "")[:10] == jour), None)
+        # fiche CJR encore à l'ancienne date : on ne reprend ni son heure ni sa convocation
+        cjr_a_jour = bool(m) and m.get("debut", "")[:10] == jour
         if m:
             cjr_utilises.add(m["url"])
         s = salles.get(r["salle"], {})
@@ -216,12 +221,15 @@ def construire():
             "ext": {"nom": equipes[r["ext"]]["court"], "nous": r["ext"] == nous, "logo": logo(r["ext"])},
             "salle": dict(s), "nous": a_nous, "score": None,
         }
+        if r.get("reporte_de"):
+            rencontre["reporte_de"] = r["reporte_de"]
         if m:
             rencontre["cjr"] = m["url"]
-            rencontre["heure"] = (m.get("convoc") or {}).get("heure") or m.get("heure") or rencontre["heure"]
+            if cjr_a_jour:
+                rencontre["heure"] = (m.get("convoc") or {}).get("heure") or m.get("heure") or rencontre["heure"]
             if m.get("score"):
                 rencontre["score"] = m["score"]
-            if m.get("convoc"):
+            if m.get("convoc") and cjr_a_jour:
                 rencontre["convoc"] = m["convoc"]
         manuel = infos.get("scores_manuels", {}).get(r["id"])
         if isinstance(manuel, list) and len(manuel) == 2:

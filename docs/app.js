@@ -104,6 +104,7 @@ function heroHtml(r) {
     <div class="hero-date">
       <div class="d">${esc(dayLong(r))}</div>
       <div class="h">${r.heure ? "Coup d'envoi " + r.heure.replace(":", "h") : "Horaire à confirmer"}</div>
+      ${r.reporte_de ? `<div class="h report-note">⚠️ Match reporté (prévu initialement le ${esc(dateCourte(r.reporte_de))})</div>` : ""}
     </div>
   </div>`;
 }
@@ -184,7 +185,8 @@ function matchRow(r, isNext = false) {
   const o = outcome(r);
   const home = isHome(r);
   const past = new Date(r.date + "T23:59") < new Date();
-  const typeTag = r.type !== "Championnat" ? `<span class="tag amical">${esc(r.type)}</span>` : `<span>J${r.journee}</span>`;
+  const typeTag = (r.type !== "Championnat" ? `<span class="tag amical">${esc(r.type)}</span>` : `<span>J${r.journee}</span>`)
+    + (r.reporte_de ? `<span class="tag report">Reporté du ${esc(fmt({ date: r.reporte_de }, { day: "numeric", month: "short" }))}</span>` : "");
   const right = o
     ? `<div class="s">${o.nous}-${o.eux}</div><span class="wl ${o.code}">${o.code === "V" ? "Victoire" : o.code === "D" ? "Défaite" : "Nul"}</span>`
     : past
@@ -205,16 +207,38 @@ function matchRow(r, isNext = false) {
   </button>`;
 }
 
+const dateCourte = (d) => new Intl.DateTimeFormat("fr-FR", { weekday: "short", day: "numeric", month: "long" }).format(new Date(d + "T12:00"));
+
+function ligneReportee(r) {
+  const o = r.fantome;
+  return `
+  <button class="match reporte" data-id="${esc(o.id)}">
+    <div class="datebox">
+      <div class="j">${fmt(r, { weekday: "short" }).replace(".", "")}</div>
+      <div class="n">${fmt(r, { day: "numeric" })}</div>
+      <div class="m">${fmt(r, { month: "short" }).replace(".", "")}</div>
+    </div>
+    <div>
+      <div class="opp"><s>${isHome(o) ? "vs" : "@"} ${esc(opponent(o).nom)}</s></div>
+      <div class="meta"><span class="tag report">Reporté</span><span>au ${esc(dateCourte(o.date))}${o.heure ? " à " + o.heure.replace(":", "h") : ""}</span></div>
+    </div>
+    <div class="result"><span class="small muted">→</span></div>
+  </button>`;
+}
+
 function renderPlanning() {
   const ours = DATA.rencontres.filter((r) => r.nous);
   const t = today();
   const nextId = ours.find((r) => new Date(r.date + "T00:00") >= t && !isPlayed(r))?.id;
   let html = `<h2 class="section">Planning de la saison</h2>`;
   let month = "";
-  for (const r of ours) {
+  // un match reporté apparaît aussi, barré, à sa date d'origine
+  const lignes = [...ours, ...ours.filter((r) => r.reporte_de).map((r) => ({ ...r, date: r.reporte_de, fantome: r }))]
+    .sort((a, b) => a.date.localeCompare(b.date) || (a.heure || "99").localeCompare(b.heure || "99"));
+  for (const r of lignes) {
     const m = fmt(r, { month: "long", year: "numeric" });
     if (m !== month) { html += `<div class="month">${m}</div>`; month = m; }
-    html += matchRow(r, r.id === nextId);
+    html += r.fantome ? ligneReportee(r) : matchRow(r, r.id === nextId);
   }
   $("#view-planning").innerHTML = html;
 }
@@ -254,10 +278,14 @@ function renderClassement() {
   <h2 class="section">Tous les matchs de la poule</h2>
   <div class="card others">`;
   let j = 0;
-  for (const r of champ) {
-    if (r.journee !== j) { j = r.journee; html += `<div class="month" style="margin:12px 0 0">Journée ${j} · ${fmt(r, { day: "numeric", month: "long" })}</div>`; }
+  for (const r of [...champ].sort((x, y) => x.journee - y.journee || x.date.localeCompare(y.date))) {
+    if (r.journee !== j) {
+      j = r.journee;
+      const dates = [...new Set(champ.filter((x) => x.journee === j).map((x) => fmt(x, { day: "numeric", month: "long" })))];
+      html += `<div class="month" style="margin:12px 0 0">Journée ${j} · ${dates.join(" / ")}</div>`;
+    }
     html += `<div class="o"><div class="a" style="${r.dom.nous ? "color:var(--red)" : ""}">${esc(r.dom.nom)}</div>
-      <div class="sc ${isPlayed(r) ? "" : "tbd muted"}">${isPlayed(r) ? `${r.score[0]} - ${r.score[1]}` : r.heure ? r.heure.replace(":", "h") : "—"}</div>
+      <div class="sc ${isPlayed(r) ? "" : "tbd muted"}">${isPlayed(r) ? `${r.score[0]} - ${r.score[1]}` : r.reporte_de ? "reporté" : r.heure ? r.heure.replace(":", "h") : "—"}</div>
       <div class="b" style="${r.ext.nous ? "color:var(--red)" : ""}">${esc(r.ext.nom)}</div></div>`;
   }
   html += `</div>`;
