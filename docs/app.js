@@ -169,8 +169,9 @@ function renderAccueil() {
   const t = today();
   const next = ours.find((r) => new Date(r.date + "T00:00") >= t && !isPlayed(r));
   const last = [...ours].reverse().find((r) => isPlayed(r));
-  // matchs reportés dont la date d'origine est à venir ou toute récente (7 jours)
-  const reportes = ours.filter((r) => r.reporte_de && new Date(r.reporte_de + "T00:00") >= new Date(t.getTime() - 7 * 864e5));
+  // matchs reportés : l'avis reste affiché jusqu'au dimanche qui suit la date d'origine, puis disparaît le lundi
+  const finAvis = (d) => { const x = new Date(d + "T00:00"); x.setDate(x.getDate() + ((7 - x.getDay()) % 7)); return x; };
+  const reportes = ours.filter((r) => r.reporte_de && t <= finAvis(r.reporte_de));
   const avisReport = reportes.map((r) => `
     <button class="avis-report" data-id="${esc(r.id)}">
       <div class="avis-titre">⚠️ Match reporté</div>
