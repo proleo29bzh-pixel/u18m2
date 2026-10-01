@@ -404,7 +404,7 @@ document.addEventListener("click", (e) => {
   if (tab) return show(tab.dataset.view);
   const ics = e.target.closest("[data-ics]");
   if (ics) return downloadIcs(ics.dataset.ics);
-  const m = e.target.closest(".match[data-id]");
+  const m = e.target.closest(".match[data-id], .avis-report[data-id]");
   if (m) return openSheet(m.dataset.id);
 });
 
