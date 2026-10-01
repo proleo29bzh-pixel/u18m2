@@ -202,6 +202,26 @@ h2.section:first-child { margin-top: 4px; }
 .deroule { margin: 0; padding-left: 22px; line-height: 1.55; }
 .esprit { border-left: 4px solid var(--red); }
 
+/* --- espace coach --- */
+.schema { display: block; width: 100%; max-width: 420px; height: auto; margin: 10px auto; }
+.sc-lab { font: 800 12px Manrope, system-ui, sans-serif; fill: #fff; }
+.sc-txt { font: 800 11px Manrope, system-ui, sans-serif; fill: #1f2937; paint-order: stroke; stroke: rgba(255,255,255,.85); stroke-width: 3px; }
+.sc-zone { font: 800 12px Manrope, system-ui, sans-serif; fill: #0b1f4d; paint-order: stroke; stroke: rgba(255,255,255,.8); stroke-width: 3px; }
+.sc-tapis { font: 800 11px Manrope, system-ui, sans-serif; fill: #fff; }
+.exo-head { display: flex; gap: 10px; align-items: center; }
+.exo-num { flex: none; width: 34px; height: 34px; border-radius: 10px; background: var(--red); color: #fff; display: grid; place-items: center; font-family: Anton, sans-serif; font-size: 18px; }
+.exo-titre { font-weight: 800; font-size: 16px; }
+.exo-but { margin: 10px 0 0; font-weight: 600; }
+.exo-points { display: flex; flex-wrap: wrap; margin-top: 10px; }
+.legende { display: flex; flex-wrap: wrap; gap: 6px 12px; font-size: 12px; color: var(--muted); font-weight: 700; margin: 12px 4px 0; }
+.legende span { display: inline-flex; align-items: center; gap: 5px; }
+.lg { display: inline-block; width: 14px; height: 14px; border-radius: 50%; font-style: normal; }
+.lg.att { background: #0b1f4d; } .lg.def { background: #e30613; } .lg.coach { background: #15803d; } .lg.ballon { background: #ff7a1a; width: 9px; height: 9px; }
+.lg.plot { border-radius: 0; width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-bottom: 12px solid #ff7a1a; }
+.lg.trait, .lg.tirets, .lg.points { width: 22px; height: 0; border-radius: 0; border-top: 2.5px solid var(--ink); }
+.lg.tirets { border-top-style: dashed; } .lg.points { border-top-style: dotted; border-color: #e30613; }
+.lg.onde { width: auto; height: auto; font-weight: 800; color: var(--ink); }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */

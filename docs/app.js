@@ -334,6 +334,7 @@ function renderInfos() {
     <div class="row"><div class="ico">${icon.bag}</div><div class="small"><b>Mac</b> : dans Safari, menu Fichier puis « Ajouter au Dock ». Avec Chrome : icône d'installation dans la barre d'adresse.</div></div>
     <div class="row"><div class="ico">${icon.bag}</div><div class="small"><b>iPhone</b> : dans Safari, bouton Partager puis « Sur l'écran d'accueil ».</div></div>
   </div>
+  <div class="actions"><button class="btn full" data-show="coach">🔒 Espace coach</button></div>
   <p class="foot">Dernière modification des données : le ${maj.toLocaleDateString("fr-FR")} à ${maj.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}<br>Sources : FFBB · cjr-basketball.com</p>`;
 }
 
@@ -415,6 +416,7 @@ function renderAll() {
   renderClassement();
   renderInfos();
   if (typeof renderEntrainement === "function") renderEntrainement();
+  if (typeof renderCoach === "function") renderCoach();
   if (typeof renderCovoit === "function") renderCovoit();
 }
 
