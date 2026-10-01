@@ -25,9 +25,6 @@
     {"nom": "Lebiez", "enfant": "Raphaël"}
   ],
 
-  "_aide_ultras": "Accompagnateurs (ultras du CJR) : un prénom par case.",
-  "ultras": [],
-
   "covoiturage": {
     "_aide": "api = URL du script Google (voir apps-script/LISEZMOI.md). Vide = mode démo (réponses gardées sur le téléphone seulement).",
     "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",

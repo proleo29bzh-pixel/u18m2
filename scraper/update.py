@@ -261,7 +261,6 @@ def construire():
         "liens": infos.get("liens", {}),
         "joueurs": infos.get("joueurs", []),
         "familles": infos.get("familles", []),
-        "ultras": infos.get("ultras", []),
         "covoiturage": {k: v for k, v in infos.get("covoiturage", {}).items() if not k.startswith("_")},
         "rencontres": rencontres,
         "erreurs": erreurs,

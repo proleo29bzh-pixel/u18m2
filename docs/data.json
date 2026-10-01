@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-01T11:08:45+00:00",
+ "maj": "2026-10-01T11:15:49+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -93,7 +93,6 @@
    "enfant": "Raphaël"
   }
  ],
- "ultras": [],
  "covoiturage": {
   "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
   "places_defaut": 4,
