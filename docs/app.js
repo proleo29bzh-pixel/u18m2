@@ -550,6 +550,8 @@ async function load() {
 
 $("#refresh").addEventListener("click", load);
 try { const v = localStorage.getItem("vue"); if (v) show(v); } catch {}
-load();
+// attendre que tous les scripts (covoit, entraînement, annonces, maillots…) soient chargés avant le premier affichage
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", load);
+else load();
 
 if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
