@@ -158,10 +158,12 @@ function cvRepartition() {
     }
 
     const passe = new Date(m.date + "T00:00") < auj;
-    const conducteurs = [...surs, ...designes];
+    // trajets saisis à la main (déplacements faits avant l'appli) : infos.json → covoiturage.trajets_faits[id du match]
+    const manuels = (DATA.covoiturage?.trajets_faits || {})[m.id];
+    const conducteurs = Array.isArray(manuels) ? manuels : [...surs, ...designes];
     const vues = new Set();
     for (const id of conducteurs) {
-      if (vues.has(groupe(id))) continue;     // 1 trajet par famille et par match
+      if (!T(id) || vues.has(groupe(id))) continue;     // 1 trajet par famille et par match
       vues.add(groupe(id));
       T(id)[passe ? "faits" : "prevus"]++;
       T(id).dernier = idx;

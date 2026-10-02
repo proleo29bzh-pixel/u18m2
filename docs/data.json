@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-02T21:10:11+00:00",
+ "maj": "2026-10-02T21:17:48+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -144,6 +144,13 @@
   "places_defaut": 4,
   "places_coach_defaut": 1,
   "objectif_trajets": 2,
+  "trajets_faits": {
+   "cjr-2966": [
+    "Famille:Thomas",
+    "Famille:Tom (Grand)",
+    "Coach Léo"
+   ]
+  },
   "matchs_domicile": false
  },
  "rencontres": [
