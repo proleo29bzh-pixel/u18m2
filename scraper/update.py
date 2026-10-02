@@ -289,7 +289,7 @@ def ics(data):
 
     lignes = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//U18M2 CTC St Renan-Plouarzel//FR",
               "CALSCALE:GREGORIAN", f"X-WR-CALNAME:{esc(data['equipe'] + ' ' + data['club'])}",
-              "X-WR-TIMEZONE:Europe/Paris", "REFRESH-INTERVAL;VALUE=DURATION:PT6H"]
+              "X-WR-TIMEZONE:Europe/Paris", "REFRESH-INTERVAL;VALUE=DURATION:PT6H", "X-PUBLISHED-TTL:PT6H"]
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     for r in data["rencontres"]:
         if not r["nous"]:
