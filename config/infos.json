@@ -66,7 +66,8 @@
   "rassemblement_defaut": {
     "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
     "exterieur": "Départ groupé en covoiturage depuis le parking du Complexe sportif Bel-Air (Saint-Renan).",
-    "exterieur_lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Complexe sportif Bel-Air, 29290 Saint-Renan"},
+    "exterieur_lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Complexe sportif Bel-Air, 29290 Saint-Renan", "lat": 48.433, "lon": -4.622},
+    "avance_min": 45,
     "a_prevoir": ["Maillot + short", "Gourde", "Chaussures propres", "Licence / pièce d'identité"]
   },
 

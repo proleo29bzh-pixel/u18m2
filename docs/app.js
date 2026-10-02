@@ -65,15 +65,44 @@ function wazeUrl(place) {
   return null;
 }
 
-/** Heure et lieu de rassemblement (priorité : coach > convocation CJR > défaut). */
+/** Temps de route estimé (minutes) entre deux points GPS : distance à vol d'oiseau × 1,3, à 75 km/h, arrondi aux 5 min. */
+function minutesDeRoute(a, b) {
+  if (!a?.lat || !b?.lat) return null;
+  const R = 6371, rad = (x) => (x * Math.PI) / 180;
+  const h = Math.sin(rad(b.lat - a.lat) / 2) ** 2 + Math.cos(rad(a.lat)) * Math.cos(rad(b.lat)) * Math.sin(rad(b.lon - a.lon) / 2) ** 2;
+  const km = 2 * R * Math.asin(Math.sqrt(h)) * 1.3;
+  return Math.max(15, Math.ceil(((km / 75) * 60) / 5) * 5);
+}
+const enMinutes = (h) => { const [a, b] = h.split(":").map(Number); return a * 60 + b; };
+const enHeure = (m) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+const dureeTxt = (m) => (m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}` : `${m} min`);
+
+/** Mardi de la semaine du match : à partir de là, les infos du rassemblement s'affichent. */
+function mardiDuMatch(r) {
+  const d = new Date(r.date + "T00:00");
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 1);
+  return d;
+}
+
+/** Heure et lieu de rassemblement (priorité : coach > convocation CJR > calcul automatique).
+    Domicile : à la salle, 45 min avant. Extérieur : au Complexe Bel-Air, 45 min avant + temps de route. */
 function rassemblement(r) {
   const def = DATA.rassemblement || {};
   const c = r.coach || {}, cv = r.convoc || {};
   const home = isHome(r);
+  const avance = def.avance_min ?? 45;
+  const trajet = home ? 0 : minutesDeRoute(def.exterieur_lieu, salleMatch(r));
+  let heure = c.rdv_heure || cv.rdv || null, calcule = false;
+  if (!heure && r.heure && (home || trajet != null)) {
+    heure = enHeure(Math.floor((enMinutes(r.heure) - avance - trajet) / 5) * 5);
+    calcule = true;
+  }
   return {
-    heure: c.rdv_heure || cv.rdv || null,
-    lieu: c.rdv_lieu || (home ? null : def.exterieur_lieu?.nom) || null,
-    lieuPlace: c.rdv_lieu ? { nom: c.rdv_lieu } : home ? null : def.exterieur_lieu,
+    visible: today() >= mardiDuMatch(r),
+    heure, calcule, trajet, avance,
+    lieu: c.rdv_lieu || (home ? "Directement à la salle du match" : def.exterieur_lieu?.nom) || null,
+    // pour l'itinéraire vers Bel-Air : l'adresse (les coordonnées ne servent qu'à estimer le temps de route)
+    lieuPlace: c.rdv_lieu ? { nom: c.rdv_lieu } : home ? salleMatch(r) : { nom: def.exterieur_lieu?.nom, adresse: def.exterieur_lieu?.adresse },
     texte: home ? def.domicile : def.exterieur,
   };
 }
@@ -152,7 +181,7 @@ function detailHtml(r) {
     <div class="duo">
       <button class="duo-btn ${ouvert === "rdv" ? "on" : ""}" data-pli="${esc(r.id)}:rdv">
         <span class="duo-ico">${icon.clock}</span><span class="duo-titre">Rassemblement</span>
-        <span class="duo-val">${rv.heure ? "RDV " + rv.heure.replace(":", "h") : "RDV à confirmer"}</span>
+        <span class="duo-val">${rv.visible && rv.heure ? "RDV " + rv.heure.replace(":", "h") : "RDV à confirmer"}</span>
         <span class="duo-plus">${ouvert === "rdv" ? "Masquer ▴" : "Touchez pour voir ▾"}</span>
       </button>
       <button class="duo-btn ${ouvert === "prevoir" ? "on" : ""}" data-pli="${esc(r.id)}:prevoir">
@@ -165,13 +194,27 @@ function detailHtml(r) {
       html += `<div class="card pli"><ul class="checklist">${prevoir.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
     }
   }
-  if (!isPlayed(r) && ouvert === "rdv") {
+  if (!isPlayed(r) && ouvert === "rdv" && !rv.visible) {
     html += `
     <div class="card pli">
       <h3>Rassemblement</h3>
-      <div class="row"><div class="ico">${icon.clock}</div><div><div class="k">Heure de RDV</div><div class="v big">${rv.heure ? rv.heure.replace(":", "h") : tbd}</div></div></div>
-      ${rv.lieu ? `<div class="row"><div class="ico">${icon.car}</div><div><div class="k">Point de rendez-vous</div><div class="v">${esc(rv.lieu)}</div></div></div>` : ""}
-      ${rv.texte ? `<div class="row"><div class="ico">${icon.users}</div><div class="small">${esc(rv.texte)}</div></div>` : ""}
+      <p class="muted" style="margin:0">Les infos du rassemblement (adversaire, lieu, heure de RDV) seront affichées à partir du <b>mardi ${esc(new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long" }).format(mardiDuMatch(r)))}</b>.</p>
+    </div>`;
+  }
+  if (!isPlayed(r) && ouvert === "rdv" && rv.visible) {
+    const home = isHome(r);
+    html += `
+    <div class="card pli">
+      <h3>Rassemblement</h3>
+      <div class="row"><div class="ico">${icon.flag}</div><div><div class="k">${home ? "À domicile" : "À l'extérieur"}</div><div class="v">${home ? "vs" : "@"} ${esc(opponent(r).nom)}</div></div></div>
+      <div class="row"><div class="ico">${icon.pin}</div><div><div class="k">Lieu du match</div><div class="v">${s.nom ? esc(s.nom) : tbd}</div>${s.adresse ? `<div class="small muted">${esc(s.adresse)}</div>` : ""}</div></div>
+      <div class="row"><div class="ico">${icon.car}</div><div><div class="k">Point de rendez-vous</div><div class="v">${esc(rv.lieu || "")}</div></div></div>
+      <div class="row"><div class="ico">${icon.clock}</div><div><div class="k">Heure de RDV</div>
+        <div class="v big">${rv.heure ? rv.heure.replace(":", "h") : tbd}</div>
+        <div class="small muted">${!rv.heure ? "L'horaire du match est souvent donné en fin de semaine."
+          : rv.calcule ? (home ? `${rv.avance} min avant le match (${r.heure.replace(":", "h")})`
+            : `Match à ${r.heure.replace(":", "h")} · ≈ ${dureeTxt(rv.trajet)} de route + ${rv.avance} min d'avance`) : ""}</div></div></div>
+      ${!home && rv.trajet ? `<div class="row"><div class="ico">⏱️</div><div class="small">Trajet estimé depuis Saint-Renan : <b>≈ ${dureeTxt(rv.trajet)}</b> (estimation, prévoir de la marge).</div></div>` : ""}
       ${typeof covoitResume === "function" ? covoitResume(r) : ""}
       ${rvUrl ? `<div class="actions"><a class="btn full" href="${rvUrl}" target="_blank" rel="noopener">${icon.nav} Aller au point de RDV</a></div>` : ""}
     </div>`;
