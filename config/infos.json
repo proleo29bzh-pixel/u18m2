@@ -37,7 +37,7 @@
   "entrainements": [
     {"jour": "Jeudi", "jour_num": 4, "debut": "19:00", "fin": "20:30", "coach": "Léo",
      "lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Complexe sportif Bel-Air, 29290 Saint-Renan"}},
-    {"jour": "Vendredi", "jour_num": 5, "debut": "19:00", "fin": "20:30", "coach": "",
+    {"jour": "Vendredi", "jour_num": 5, "debut": "19:00", "fin": "20:30", "coach": "Maxime",
      "lieu": {"nom": "Salle polyvalente du Bourg", "adresse": "Salle polyvalente du Bourg, 29810 Plouarzel"}}
   ],
 
@@ -70,6 +70,10 @@
     "a_prevoir": ["Maillot + short", "Gourde", "Chaussures propres", "Licence / pièce d'identité"]
   },
 
+  "_aide_maillots": "true = une famille différente lave les maillots à chaque match de championnat (ordre de la liste « familles »). Pour forcer une famille sur un match : matchs[date].maillots = \"Famille X\".",
+  "maillots_rotation": true,
+
+  "_aide_matchs": "Par date de match (AAAA-MM-JJ) : rdv_lieu, rdv_heure, note (avant le match) ; mot_coach, joueur_du_match (après le match) ; maillots (forcer la famille).",
   "matchs": {
     "2026-10-03": {
       "rdv_lieu": "",

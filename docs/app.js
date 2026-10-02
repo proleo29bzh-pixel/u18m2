@@ -109,6 +109,17 @@ function heroHtml(r) {
   </div>`;
 }
 
+/** Tour de lavage des maillots : une famille par match de championnat, dans l'ordre de la saison.
+    Familles sans nom connu exclues ; un nom imposé dans infos.json (matchs[date].maillots) est prioritaire. */
+function maillotsPour(r) {
+  if (r.coach?.maillots) return r.coach.maillots;
+  if (!DATA.maillots_rotation || r.type !== "Championnat") return "";
+  const familles = (DATA.familles || []).filter((f) => f.nom).map((f) => "Famille " + f.nom.toUpperCase());
+  const matchs = DATA.rencontres.filter((x) => x.nous && x.type === "Championnat").sort((a, b) => a.date.localeCompare(b.date));
+  const i = matchs.findIndex((x) => x.id === r.id);
+  return i < 0 || !familles.length ? "" : familles[i % familles.length];
+}
+
 function detailHtml(r) {
   const rv = rassemblement(r);
   const s = salleMatch(r);
@@ -117,6 +128,15 @@ function detailHtml(r) {
   const gm = mapsUrl(s), wz = wazeUrl(s), rvUrl = mapsUrl(rv.lieuPlace);
 
   let html = heroHtml(r);
+
+  // après-match : mot du coach et joueur du match
+  if (r.coach?.mot_coach || r.coach?.joueur_du_match) {
+    html += `<div class="card apres-match">
+      <h3>Après-match</h3>
+      ${r.coach.joueur_du_match ? `<div class="mvp">⭐ Joueur du match : <b>${esc(r.coach.joueur_du_match)}</b></div>` : ""}
+      ${r.coach.mot_coach ? `<div class="mot-coach">🗣️ <i>« ${esc(r.coach.mot_coach)} »</i><div class="small muted">— le coach</div></div>` : ""}
+    </div>`;
+  }
 
   if (!isPlayed(r)) {
     html += `
@@ -156,6 +176,11 @@ function detailHtml(r) {
   if (!isPlayed(r) && prevoir.length) {
     html += `<div class="card"><h3>À prévoir</h3><ul class="checklist">${prevoir.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
   }
+  const maillots = maillotsPour(r);
+  if (maillots) {
+    html += `<div class="card"><h3>Maillots</h3><div class="row"><div class="ico">🧺</div><div>
+      <div class="v">${esc(maillots)}</div><div class="small muted">récupère le sac de maillots après ce match, les lave et les rapporte au match suivant.</div></div></div></div>`;
+  }
 
   const links = [];
   if (r.cjr) links.push(`<a class="btn" href="${esc(r.cjr)}" target="_blank" rel="noopener">${icon.link} Fiche CJR</a>`);
@@ -178,13 +203,12 @@ function renderAccueil() {
       <div><b>${isHome(r) ? "vs" : "@"} ${esc(opponent(r).nom)}</b> du ${esc(dateCourte(r.reporte_de))} est reporté au
         <b>${esc(dateCourte(r.date))}${r.heure ? " à " + r.heure.replace(":", "h") : ""}</b>${isHome(r) ? "" : " (à l'extérieur)"}.</div>
     </button>`).join("");
+  const entr = typeof rappelEntrainements === "function" ? rappelEntrainements() : "";
+  const matchSemaine = next && (new Date(next.date + "T00:00") - t) / 864e5 <= 6;
+  const blocMatch = next ? `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next)
+    : avisReport + `<div class="empty">Pas de match à venir pour l'instant.</div>`;
   let html = (typeof annoncesAccueil === "function" ? annoncesAccueil() : "")
-    + (typeof rappelEntrainements === "function" ? rappelEntrainements() : "");
-  if (next) {
-    html += `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next);
-  } else {
-    html += avisReport + `<div class="empty">Pas de match à venir pour l'instant.</div>`;
-  }
+    + (matchSemaine ? blocMatch + `<div style="margin-top:14px">${entr}</div>` : entr + blocMatch);
   if (last) {
     html += `<h2 class="section">Dernier résultat</h2>` + matchRow(last);
   }
@@ -196,7 +220,8 @@ function matchRow(r, isNext = false) {
   const home = isHome(r);
   const past = new Date(r.date + "T23:59") < new Date();
   const typeTag = (r.type !== "Championnat" ? `<span class="tag amical">${esc(r.type)}</span>` : `<span>J${r.journee}</span>`)
-    + (r.reporte_de ? `<span class="tag report">Reporté du ${esc(fmt({ date: r.reporte_de }, { day: "numeric", month: "short" }))}</span>` : "");
+    + (r.reporte_de ? `<span class="tag report">Reporté du ${esc(fmt({ date: r.reporte_de }, { day: "numeric", month: "short" }))}</span>` : "")
+    + (r.coach?.joueur_du_match ? `<span class="tag mvp-tag">⭐ ${esc(r.coach.joueur_du_match)}</span>` : "");
   const right = o
     ? `<div class="s">${o.nous}-${o.eux}</div><span class="wl ${o.code}">${o.code === "V" ? "Victoire" : o.code === "D" ? "Défaite" : "Nul"}</span>`
     : past

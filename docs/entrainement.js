@@ -33,6 +33,51 @@ function rappelEntrainements() {
   </button>`;
 }
 
+// ------------------------------------------------------------ présence (même Google Sheet que le covoit)
+// Ligne « match » = "entr:AAAA-MM-JJ", ligne « famille » = prénom du joueur.
+
+const isoJour = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const idSeance = (e) => "entr:" + isoJour(e.p.date);
+
+/** Joueur pour qui ce téléphone répond : le joueur lui-même, ou l'enfant de la famille choisie. */
+function joueurDuTel() {
+  if (typeof cvMoi !== "function") return "";
+  const moi = cvMoi();
+  if (moi.startsWith("Famille:")) return moi.slice(8);
+  return (DATA.joueurs || []).includes(moi) ? moi : "";
+}
+
+function blocPresence(e) {
+  if (typeof cvApi !== "function" || !cvApi()) return "";
+  if (!cvCode()) return `<div class="presence"><button class="btn full" data-show="covoit">Entrez votre code (onglet Covoiturage) pour dire si vous venez</button></div>`;
+  if (!CV.charge) return "";
+  const id = idSeance(e);
+  const rep = Object.fromEntries(CV.reponses.filter((x) => x.match === id).map((x) => [x.famille, x.present]));
+  const joueurs = DATA.joueurs || [];
+  const oui = joueurs.filter((j) => rep[j] === "oui"), non = joueurs.filter((j) => rep[j] === "non");
+  const sans = joueurs.filter((j) => !rep[j]);
+  const moi = joueurDuTel();
+  const btn = (val, label, cls) => `<button class="seg ${rep[moi] === val ? "on " + cls : ""}" data-entr="${esc(id)}" data-joueur="${esc(moi)}" data-val="${val}">${label}</button>`;
+  return `<div class="presence">
+    ${moi ? `<div class="k">${esc(moi)} sera là ?</div><div class="segs">${btn("oui", "✅ Présent", "g")}${btn("non", "❌ Absent", "r")}</div>`
+      : `<div class="small muted">Choisissez qui vous êtes dans l'onglet Covoiturage pour répondre.</div>`}
+    <div class="presence-bilan"><b>✅ ${oui.length}</b> présent${oui.length > 1 ? "s" : ""} · <b>❌ ${non.length}</b> absent${non.length > 1 ? "s" : ""} · ${sans.length} sans réponse</div>
+    ${oui.length ? `<div class="cvl"><div class="k">Présents</div>${oui.map((j) => `<span class="cchip ok">${esc(j)}</span>`).join("")}</div>` : ""}
+    ${non.length ? `<div class="cvl"><div class="k">Absents</div>${non.map((j) => `<span class="cchip abs">${esc(j)}</span>`).join("")}</div>` : ""}
+  </div>`;
+}
+
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest("[data-entr]");
+  if (!b) return;
+  const id = b.dataset.entr, j = b.dataset.joueur;
+  const avant = (CV.reponses.find((x) => x.match === id && x.famille === j) || {}).present || "";
+  const envoi = cvEnregistrer(id, j, { present: avant === b.dataset.val ? "" : b.dataset.val });  // re-cliquer annule
+  renderEntrainement();          // affichage immédiat
+  await envoi;
+  renderEntrainement();          // état confirmé par le Google Sheet
+});
+
 function renderEntrainement() {
   const el = $("#view-entrainement");
   if (!el || !DATA) return;
@@ -51,6 +96,7 @@ function renderEntrainement() {
       <div class="row"><div class="ico">${icon.pin}</div><div><div class="v">${esc(e.lieu.nom)}</div><div class="small muted">${esc(e.lieu.adresse || "")}</div></div></div>
       ${e.coach ? `<div class="row"><div class="ico">${icon.whistle}</div><div><div class="k">Coach</div><div class="v">${esc(e.coach)}</div></div></div>` : ""}
       ${url ? `<div class="actions"><a class="btn full" href="${url}" target="_blank" rel="noopener">${icon.nav} Itinéraire</a></div>` : ""}
+      ${blocPresence(e)}
     </div>`;
   }).join("")}
 

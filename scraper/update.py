@@ -273,6 +273,7 @@ def construire():
         "seance_jeudi": infos.get("seance_jeudi", {}),
         "etat_esprit": infos.get("etat_esprit", []),
         "annonces": infos.get("annonces", []),
+        "maillots_rotation": bool(infos.get("maillots_rotation")),
         "covoiturage": {k: v for k, v in infos.get("covoiturage", {}).items() if not k.startswith("_")},
         "rencontres": rencontres,
         "erreurs": erreurs,
@@ -316,6 +317,19 @@ def ics(data):
                    f"SUMMARY:{esc(titre)}",
                    f"LOCATION:{esc(', '.join(x for x in [s.get('nom'), s.get('adresse')] if x))}",
                    f"DESCRIPTION:{esc(chr(10).join(desc))}", "END:VEVENT"]
+    # entraînements : un événement qui se répète chaque semaine jusqu'à la fin de saison
+    debut_saison, fin_saison = date(2026, 9, 1), "20270630T235959Z"
+    for e in data.get("entrainements", []):
+        jour = debut_saison + timedelta(days=(e["jour_num"] - debut_saison.isoweekday()) % 7)
+        d = jour.strftime("%Y%m%d")
+        lieu = e.get("lieu", {})
+        lignes += ["BEGIN:VEVENT", f"UID:entr-{e['jour'].lower()}@u18m2-ctc", f"DTSTAMP:{stamp}",
+                   f"DTSTART;TZID=Europe/Paris:{d}T{e['debut'].replace(':', '')}00",
+                   f"DTEND;TZID=Europe/Paris:{d}T{e['fin'].replace(':', '')}00",
+                   f"RRULE:FREQ=WEEKLY;UNTIL={fin_saison}",
+                   f"SUMMARY:{esc('🏀 Entraînement U18M2' + (' (' + e['coach'] + ')' if e.get('coach') else ''))}",
+                   f"LOCATION:{esc(lieu.get('adresse') or lieu.get('nom') or '')}",
+                   "END:VEVENT"]
     lignes.append("END:VCALENDAR")
     return "\r\n".join(lignes) + "\r\n"
 

@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-02T16:37:52+00:00",
+ "maj": "2026-10-02T16:50:31+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -110,7 +110,7 @@
    "jour_num": 5,
    "debut": "19:00",
    "fin": "20:30",
-   "coach": "",
+   "coach": "Maxime",
    "lieu": {
     "nom": "Salle polyvalente du Bourg",
     "adresse": "Salle polyvalente du Bourg, 29810 Plouarzel"
@@ -134,6 +134,7 @@
   "Respect des coéquipiers, du coach et du matériel. On aide à sortir et ranger."
  ],
  "annonces": [],
+ "maillots_rotation": true,
  "covoiturage": {
   "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
   "places_defaut": 4,

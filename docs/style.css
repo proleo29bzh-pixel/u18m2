@@ -254,6 +254,14 @@ h2.section:first-child { margin-top: 4px; }
 .ann-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 10px; }
 .ann-options label { font-size: 12px; font-weight: 800; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
 
+/* --- après-match, maillots, présence entraînement --- */
+.mvp { font-size: 16px; padding: 6px 0; }
+.mot-coach { margin-top: 8px; padding: 12px 14px; border-radius: 12px; background: var(--chip); font-size: 15px; line-height: 1.5; }
+.tag.mvp-tag { background: #fde68a; color: #713f12; }
+.presence { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.presence .k { font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
+.presence-bilan { margin-top: 10px; font-size: 14px; }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */
