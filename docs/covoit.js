@@ -182,8 +182,11 @@ function cvRepartition() {
 const pl = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 /** Objectif de trajets par famille sur la saison (infos.json → covoiturage.objectif_trajets). */
 const OBJ = () => DATA.covoiturage?.objectif_trajets || 2;
-/** ✅ atteint (trajets faits) · 🕓 atteint en comptant les trajets prévus · sinon x/objectif. */
-const objectifTxt = (t) => t.faits >= OBJ() ? "✅" : t.faits + t.prevus >= OBJ() ? "🕓" : `${t.faits + t.prevus}/${OBJ()}`;
+/** « 2/2 ✅ » atteint (trajets faits) · « 2/2 🕓 » atteint en comptant les trajets prévus · sinon « 1/2 ». */
+const objectifTxt = (t) => {
+  const n = t.faits + t.prevus;
+  return `${n}/${OBJ()}` + (t.faits >= OBJ() ? " ✅" : n >= OBJ() ? " 🕓" : "");
+};
 function chip(txt, cls = "") { return `<span class="cchip ${cls}">${esc(txt)}</span>`; }
 
 /** Bouton de réponse : `champs` est appliqué ; re-cliquer sur le choix actif l'annule. */
