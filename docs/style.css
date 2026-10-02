@@ -295,6 +295,14 @@ h2.section:first-child { margin-top: 4px; }
 .card.pli { border-color: var(--red); }
 .duo-plus { margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--red); }
 
+/* --- objectif de trajets : couleur des lignes --- */
+.standings tr.obj-ok td { background: rgba(22, 163, 74, .16); }
+.standings tr.obj-ok td.t { color: var(--win); }
+.standings tr.obj-encours td { background: rgba(245, 158, 11, .18); }
+.standings tr.obj-encours td.t { color: #d97706; }
+@media (prefers-color-scheme: dark) { .standings tr.obj-encours td.t { color: #fbbf24; } }
+.standings tr.us td.t { text-decoration: underline; text-underline-offset: 3px; }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */
