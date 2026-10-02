@@ -89,6 +89,48 @@ function cvDeconnecter() {
   CV.reponses = [];
 }
 
+/** Version en clair d'une réponse, recopiée dans les colonnes lisibles du Google Sheet. */
+function libellesReponse(r) {
+  const jourCourt = (d) => new Intl.DateTimeFormat("fr-FR", { weekday: "short", day: "numeric", month: "short" }).format(d).replace(/\./g, "");
+  let date_txt = "", match_txt = "";
+  const m = DATA.rencontres.find((x) => x.id === r.match);
+  if (m) {
+    date_txt = jourCourt(new Date(m.date + "T12:00")) + (m.heure ? " " + m.heure.replace(":", "h") : "");
+    const s = salleMatch(m);
+    match_txt = `${isHome(m) ? "vs" : "@"} ${opponent(m).nom}${s.nom ? " – " + s.nom : ""}${s.adresse ? " (" + s.adresse.split(",").pop().trim() + ")" : ""}`;
+  } else if (r.match.startsWith("entr:")) {
+    const d = new Date(r.match.slice(5) + "T12:00");
+    const e = (DATA.entrainements || []).find((x) => x.jour_num === d.getDay());
+    date_txt = jourCourt(d) + (e ? " " + e.debut.replace(":", "h") : "");
+    match_txt = "Entraînement" + (e ? " – " + e.lieu.nom : "");
+  } else if (r.match === "maillots") {
+    match_txt = "Sac de maillots";
+  }
+
+  let qui_txt = r.famille;
+  if (estParent(r.famille)) qui_txt = `${nomDe(r.famille)} (${r.famille.split(":")[1]})`;
+  else if (estStaff(r.famille)) qui_txt = `${nomDe(r.famille)} (staff)`;
+  else if (r.famille === "etat") qui_txt = "—";
+
+  let clair;
+  if (r.match === "maillots" && typeof STATUTS !== "undefined" && STATUTS[r.present]) {
+    clair = STATUTS[r.present].txt(nomChez(r.conduit));
+  } else if (estParent(r.famille)) {
+    clair = [
+      r.conduit === "oui" ? `Conduit (${r.places || PLACES()} places)` : r.conduit === "non" ? "Ne conduit pas" : "",
+      r.present === "oui" ? "Vient au match" : r.present === "non" ? "Ne vient pas" : "",
+    ].filter(Boolean).join(" · ");
+  } else if (estStaff(r.famille)) {
+    clair = [
+      r.present === "oui" ? "Présent(e)" : r.present === "non" ? "Absent(e)" : "",
+      r.conduit === "oui" ? `Conduit (${r.places || PLACES()} places)` : r.conduit === "non" ? "Passager" : "",
+    ].filter(Boolean).join(" · ");
+  } else {
+    clair = r.present === "oui" ? "Présent" : r.present === "non" ? "Absent" : "";
+  }
+  return { date_txt, match_txt, qui_txt, clair: clair || "Réponse annulée" };
+}
+
 async function cvEnregistrer(match, qui, champs) {
   let r = CV.reponses.find((x) => x.match === match && x.famille === qui);
   if (!r) { r = { match, famille: qui, present: "", conduit: "", places: null }; CV.reponses.push(r); }
@@ -99,7 +141,7 @@ async function cvEnregistrer(match, qui, champs) {
   if (!cvApi()) { store.set("covoit-demo", JSON.stringify(CV.reponses)); return; }
   try {
     // text/plain : pas de pré-requête CORS avec Google Apps Script
-    const res = await fetch(cvApi(), { method: "POST", body: JSON.stringify({ code: cvCode(), ...r }) });
+    const res = await fetch(cvApi(), { method: "POST", body: JSON.stringify({ code: cvCode(), ...r, ...libellesReponse(r) }) });
     const j = await res.json();
     if (j.ok) { CV.reponses = j.reponses; CV.erreur = null; }
     else CV.erreur = "Réponse refusée : " + j.erreur;
