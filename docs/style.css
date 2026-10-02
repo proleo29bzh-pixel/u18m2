@@ -262,6 +262,11 @@ h2.section:first-child { margin-top: 4px; }
 .presence .k { font-size: 12px; font-weight: 800; color: var(--muted); margin-bottom: 6px; }
 .presence-bilan { margin-top: 10px; font-size: 14px; }
 
+/* --- maillots --- */
+.mail-etat { font-size: 17px; font-weight: 800; line-height: 1.4; }
+.mail-actions { display: grid; gap: 8px; }
+.mail-actions .seg { text-align: left; padding: 12px 14px; }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */

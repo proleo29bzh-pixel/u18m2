@@ -211,6 +211,7 @@ function renderAccueil() {
   const blocMatch = next ? `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next)
     : avisReport + `<div class="empty">Pas de match à venir pour l'instant.</div>`;
   let html = (typeof annoncesAccueil === "function" ? annoncesAccueil() : "")
+    + (typeof maillotsAccueil === "function" ? maillotsAccueil() : "")
     + (matchSemaine ? blocMatch + `<div style="margin-top:14px">${entr}</div>` : entr + blocMatch);
   if (last) {
     html += `<h2 class="section">Dernier résultat</h2>` + matchRow(last);
@@ -447,6 +448,7 @@ function renderAll() {
   if (typeof renderEntrainement === "function") renderEntrainement();
   if (typeof renderCoach === "function") renderCoach();
   if (typeof renderAnnonces === "function") renderAnnonces();
+  if (typeof renderMaillots === "function") renderMaillots();
   if (typeof renderCovoit === "function") renderCovoit();
 }
 

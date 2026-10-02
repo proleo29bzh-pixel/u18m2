@@ -90,7 +90,7 @@ function blocIdentiteEntr() {
     return `<div class="card">
       <h3>Tu viens à l'entraînement ?</h3>
       <p class="small muted" style="margin-top:0">Entrez votre code joueur pour dire si vous venez.</p>
-      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur"><button class="btn primary" id="entr-code-ok">OK</button></div>
+      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur"><button class="btn primary" id="entr-code-ok" data-code-de="entr-code">OK</button></div>
       ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
     </div>`;
   }
@@ -117,11 +117,8 @@ function blocIdentiteEntr() {
   return "";
 }
 
-document.addEventListener("click", async (ev) => {
-  if (ev.target.id !== "entr-code-ok") return;
-  const v = $("#entr-code").value.trim();
-  if (!v) return;
-  ev.target.disabled = true; ev.target.textContent = "…";
+/** Connexion par code (joueur, parent ou mot de passe coach), partagée par Entraînement et Maillots. */
+async function connexionCode(v) {
   // Mot de passe coach ? Il ouvre le fichier chiffré de l'Espace coach, qui contient le code d'accès aux réponses.
   let codeCoach = "";
   try { codeCoach = (await coachDechiffrer(v)).acces?.code_parents || ""; } catch {}
@@ -133,9 +130,18 @@ document.addEventListener("click", async (ev) => {
     CV.code = v;
     cvMemoriserCode();
   }
-  CV.charge = false; renderEntrainement();
+  CV.charge = false; renderAll();
   await cvCharger();
   renderAll();
+}
+
+document.addEventListener("click", async (ev) => {
+  const b = ev.target.closest("[data-code-de]");
+  if (!b) return;
+  const v = $("#" + b.dataset.codeDe).value.trim();
+  if (!v) return;
+  b.disabled = true; b.textContent = "…";
+  await connexionCode(v);
 });
 document.addEventListener("click", (ev) => {
   if (ev.target.id === "entr-changer") { ev.preventDefault(); store.set("covoit-moi", ""); renderAll(); }
