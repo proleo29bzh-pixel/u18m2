@@ -109,12 +109,15 @@ function heroHtml(r) {
   </div>`;
 }
 
-/** Tour de lavage des maillots : une famille par match de championnat, dans l'ordre de la saison.
-    Familles sans nom connu exclues ; un nom imposé dans infos.json (matchs[date].maillots) est prioritaire. */
+/** Tour de lavage des maillots : une famille par match de championnat, dans l'ordre des numéros de maillot.
+    Rien n'est affiché tant que les numéros ne sont pas renseignés ; matchs[date].maillots force une famille. */
 function maillotsPour(r) {
   if (r.coach?.maillots) return r.coach.maillots;
   if (!DATA.maillots_rotation || r.type !== "Championnat") return "";
-  const familles = (DATA.familles || []).filter((f) => f.nom).map((f) => "Famille " + f.nom.toUpperCase());
+  const num = DATA.numeros_maillot || {};
+  const familles = (DATA.familles || []).filter((f) => num[f.enfant] != null)
+    .sort((a, b) => num[a.enfant] - num[b.enfant])
+    .map((f) => (f.nom ? "Famille " + f.nom.toUpperCase() : "Parents de " + f.enfant) + ` (n° ${num[f.enfant]})`);
   const matchs = DATA.rencontres.filter((x) => x.nous && x.type === "Championnat").sort((a, b) => a.date.localeCompare(b.date));
   const i = matchs.findIndex((x) => x.id === r.id);
   return i < 0 || !familles.length ? "" : familles[i % familles.length];

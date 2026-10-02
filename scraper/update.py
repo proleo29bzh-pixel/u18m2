@@ -274,6 +274,7 @@ def construire():
         "etat_esprit": infos.get("etat_esprit", []),
         "annonces": infos.get("annonces", []),
         "maillots_rotation": bool(infos.get("maillots_rotation")),
+        "numeros_maillot": infos.get("numeros_maillot", {}),
         "covoiturage": {k: v for k, v in infos.get("covoiturage", {}).items() if not k.startswith("_")},
         "rencontres": rencontres,
         "erreurs": erreurs,

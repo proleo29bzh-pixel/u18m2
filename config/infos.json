@@ -70,8 +70,9 @@
     "a_prevoir": ["Maillot + short", "Gourde", "Chaussures propres", "Licence / pièce d'identité"]
   },
 
-  "_aide_maillots": "true = une famille différente lave les maillots à chaque match de championnat (ordre de la liste « familles »). Pour forcer une famille sur un match : matchs[date].maillots = \"Famille X\".",
+  "_aide_maillots": "Une famille lave les maillots à chaque match de championnat, dans l'ordre des numéros de maillot. Le tour n'est affiché que si les numéros sont renseignés. Pour forcer une famille sur un match : matchs[date].maillots = \"Famille X\".",
   "maillots_rotation": true,
+  "numeros_maillot": {},
 
   "_aide_matchs": "Par date de match (AAAA-MM-JJ) : rdv_lieu, rdv_heure, note (avant le match) ; mot_coach, joueur_du_match (après le match) ; maillots (forcer la famille).",
   "matchs": {
