@@ -293,6 +293,7 @@ h2.section:first-child { margin-top: 4px; }
 .duo-titre { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
 .duo-val { font-weight: 800; font-size: 15px; }
 .card.pli { border-color: var(--red); }
+.duo-plus { margin-top: 6px; font-size: 12px; font-weight: 800; color: var(--red); }
 
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 

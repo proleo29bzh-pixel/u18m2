@@ -153,10 +153,12 @@ function detailHtml(r) {
       <button class="duo-btn ${ouvert === "rdv" ? "on" : ""}" data-pli="${esc(r.id)}:rdv">
         <span class="duo-ico">${icon.clock}</span><span class="duo-titre">Rassemblement</span>
         <span class="duo-val">${rv.heure ? "RDV " + rv.heure.replace(":", "h") : "RDV à confirmer"}</span>
+        <span class="duo-plus">${ouvert === "rdv" ? "Masquer ▴" : "Touchez pour voir ▾"}</span>
       </button>
       <button class="duo-btn ${ouvert === "prevoir" ? "on" : ""}" data-pli="${esc(r.id)}:prevoir">
         <span class="duo-ico">${icon.bag}</span><span class="duo-titre">À prévoir</span>
         <span class="duo-val">${prevoir.length} chose${prevoir.length > 1 ? "s" : ""}</span>
+        <span class="duo-plus">${ouvert === "prevoir" ? "Masquer ▴" : "Touchez pour voir ▾"}</span>
       </button>
     </div>`;
     if (ouvert === "prevoir" && prevoir.length) {
