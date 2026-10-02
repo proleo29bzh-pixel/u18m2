@@ -35,7 +35,7 @@ function tuileMaillots() {
     const fam = e.chez?.startsWith("Famille:") ? (familleDe(e.chez.slice(8))?.nom || e.chez.slice(8)) : "";
     info = e.statut === "bureau" || e.statut === "coach" ? court[e.statut] : court[e.statut] + fam;
   }
-  return tuile("maillots", "🧺", "Maillots", info);
+  return tuile("maillots", "🧺", "Maillots", info, !!e);
 }
 
 /** Bouton sur la page d'accueil. */

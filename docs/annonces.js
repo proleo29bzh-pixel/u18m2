@@ -27,7 +27,7 @@ const texteAnnonce = (t) => esc(t).replace(/\n/g, "<br>").replace(/(https?:\/\/[
 function tuileAnnonces() {
   const liste = annListe();
   const n = liste.filter((a) => (a.date || "") > annVues()).length;
-  return tuile("annonces", "📢", "Annonces", n ? `${n} nouvelle${n > 1 ? "s" : ""}` : liste.length ? "Rien de neuf" : "Aucune", n > 0);
+  return tuile("annonces", "📢", "Annonces", liste.length ? "Touchez pour voir" : "Aucune", n > 0);
 }
 
 /** Bouton unique sur la page d'accueil (ouvre la page des annonces). */
