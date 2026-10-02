@@ -39,8 +39,12 @@ function rappelEntrainements() {
 const isoJour = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const idSeance = (e) => "entr:" + isoJour(e.p.date);
 
-/** Seul le joueur répond pour lui-même (c'est lui qui vient à l'entraînement, pas ses parents). */
+/** Mode coach (mot de passe coach) : gardé en mémoire seulement, jamais sur l'appareil. */
+const ENTR = { coach: false, pour: "" };
+
+/** Seul le joueur répond pour lui-même (c'est lui qui vient, pas ses parents). Le coach peut répondre pour n'importe qui. */
 function joueurDuTel() {
+  if (ENTR.coach) return ENTR.pour;
   if (typeof cvMoi !== "function") return "";
   const moi = cvMoi();
   return (DATA.joueurs || []).includes(moi) ? moi : "";
@@ -57,12 +61,14 @@ function blocPresence(e) {
   const sans = joueurs.filter((j) => !rep[j]);
   const moi = joueurDuTel();
   const btn = (val, label, cls) => `<button class="seg ${rep[moi] === val ? "on " + cls : ""}" data-entr="${esc(id)}" data-joueur="${esc(moi)}" data-val="${val}">${label}</button>`;
+  const groupe = (titre, noms, cls) => `<div class="cvl"><div class="k">${titre} (${noms.length})</div>${noms.length ? noms.map((j) => `<span class="cchip ${cls}">${esc(j)}</span>`).join("") : '<span class="small muted">—</span>'}</div>`;
   return `<div class="presence">
     ${moi ? `<div class="k">${esc(moi)} sera là ?</div><div class="segs">${btn("oui", "✅ Présent", "g")}${btn("non", "❌ Absent", "r")}</div>`
+      : ENTR.coach ? `<div class="small muted">Choisissez un joueur en haut pour répondre à sa place.</div>`
       : `<div class="small muted">Ce sont les joueurs qui répondent, avec leur code joueur.</div>`}
-    <div class="presence-bilan"><b>✅ ${oui.length}</b> présent${oui.length > 1 ? "s" : ""} · <b>❌ ${non.length}</b> absent${non.length > 1 ? "s" : ""} · ${sans.length} sans réponse</div>
-    ${oui.length ? `<div class="cvl"><div class="k">Présents</div>${oui.map((j) => `<span class="cchip ok">${esc(j)}</span>`).join("")}</div>` : ""}
-    ${non.length ? `<div class="cvl"><div class="k">Absents</div>${non.map((j) => `<span class="cchip abs">${esc(j)}</span>`).join("")}</div>` : ""}
+    ${groupe("✅ Présents", oui, "ok")}
+    ${groupe("❌ Absents", non, "abs")}
+    ${groupe("⏳ Pas encore répondu", sans, "wait")}
   </div>`;
 }
 
@@ -84,11 +90,23 @@ function blocIdentiteEntr() {
     return `<div class="card">
       <h3>Tu viens à l'entraînement ?</h3>
       <p class="small muted" style="margin-top:0">Entrez votre code joueur pour dire si vous venez.</p>
-      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur"><button class="btn primary" id="entr-code-ok">OK</button></div>
+      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur (ou code coach)"><button class="btn primary" id="entr-code-ok">OK</button></div>
       ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
     </div>`;
   }
   if (!CV.charge) return `<div class="empty">Chargement…</div>`;
+  if (ENTR.coach) {
+    return `<div class="card">
+      <h3>🔑 Mode coach</h3>
+      <p class="small muted" style="margin-top:0">Vous voyez toutes les réponses et pouvez répondre à la place d'un joueur (pour tester ou corriger).</p>
+      <select id="entr-pour" class="cvselect"><option value="">Répondre pour…</option>
+        ${(DATA.joueurs || []).map((j) => `<option ${j === ENTR.pour ? "selected" : ""}>${esc(j)}</option>`).join("")}</select>
+      <p class="small" style="margin:10px 0 0"><a href="#" id="entr-sortir">Quitter le mode coach</a></p>
+    </div>`;
+  }
+  if (cvRole() === "joueur" && joueurDuTel()) {
+    return `<p class="small muted" style="margin:0 4px 6px">Connecté en tant que <b>${esc(joueurDuTel())}</b> · <a href="#" id="entr-changer">Pas toi ? Changer</a></p>`;
+  }
   if (cvRole() === "joueur" && !joueurDuTel()) {
     return `<div class="card">
       <h3>Qui es-tu ?</h3>
@@ -103,19 +121,37 @@ document.addEventListener("click", async (ev) => {
   if (ev.target.id !== "entr-code-ok") return;
   const v = $("#entr-code").value.trim();
   if (!v) return;
-  CV.code = v;
-  cvMemoriserCode();
+  ev.target.disabled = true; ev.target.textContent = "…";
+  // Mot de passe coach ? Il ouvre le fichier chiffré de l'Espace coach, qui contient le code d'accès aux réponses.
+  let codeCoach = "";
+  try { codeCoach = (await coachDechiffrer(v)).acces?.code_parents || ""; } catch {}
+  if (codeCoach) {
+    ENTR.coach = true; ENTR.pour = "";
+    CV.code = codeCoach;                    // en mémoire seulement
+    store.set("covoit-code", "");
+  } else {
+    CV.code = v;
+    cvMemoriserCode();
+  }
   CV.charge = false; renderEntrainement();
   await cvCharger();
   renderAll();
+});
+document.addEventListener("click", (ev) => {
+  if (ev.target.id === "entr-changer") { ev.preventDefault(); store.set("covoit-moi", ""); renderAll(); }
+  if (ev.target.id === "entr-sortir") {
+    ev.preventDefault();
+    ENTR.coach = false; ENTR.pour = ""; CV.code = ""; CV.reponses = [];
+    store.set("covoit-code", ""); store.set("covoit-role", "");
+    renderAll();
+  }
 });
 document.addEventListener("keydown", (ev) => {
   if (ev.key === "Enter" && ev.target.id === "entr-code") $("#entr-code-ok").click();
 });
 document.addEventListener("change", (ev) => {
-  if (ev.target.id !== "entr-moi") return;
-  store.set("covoit-moi", ev.target.value);
-  renderAll();
+  if (ev.target.id === "entr-moi") { store.set("covoit-moi", ev.target.value); renderAll(); }
+  if (ev.target.id === "entr-pour") { ENTR.pour = ev.target.value; renderEntrainement(); }
 });
 
 function renderEntrainement() {
