@@ -81,6 +81,7 @@ async function cvCharger() {
 
 function cvDeconnecter() {
   CV.code = "";
+  if (typeof ENTR !== "undefined") { ENTR.coach = false; ENTR.pour = ""; }
   store.set("covoit-code", ""); store.set("covoit-role", ""); store.set("covoit-moi", "");
   CV.reponses = [];
 }
@@ -409,7 +410,7 @@ function renderCovoit() {
   else if (estStaff(moi)) html += pageStaff(m, a, cvStaff().find((s) => s.id === moi));
   else html += pageJoueur(m, a, moi);
 
-  if (cvApi()) html += `<p class="foot"><a href="#" id="cv-logout">Changer de code</a> · connecté en ${cvRole() === "joueur" ? "joueur" : "parent / staff"}${estStaff(moi) ? " · code redemandé à chaque ouverture (staff)" : ""}</p>`;
+  if (cvApi()) html += `<p class="foot"><a href="#" id="cv-logout">Changer de code</a> · connecté en ${typeof ENTR !== "undefined" && ENTR.coach ? "coach 🔑" : cvRole() === "joueur" ? "joueur" : "parent / staff"}${estStaff(moi) ? " · code redemandé à chaque ouverture (staff)" : ""}</p>`;
   el.innerHTML = html;
   selectMoi(moi);
 }
@@ -475,6 +476,9 @@ document.addEventListener("click", async (e) => {
   if (e.target.id === "cv-code-ok") {
     const v = $("#cv-code").value.trim();
     if (!v) return;
+    e.target.disabled = true; e.target.textContent = "…";
+    // même connexion que les onglets Entraînement et Maillots : reconnaît aussi le mot de passe coach
+    if (typeof connexionCode === "function") return connexionCode(v);
     CV.code = v;
     cvMemoriserCode();
     CV.charge = false; renderCovoit();
