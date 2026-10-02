@@ -38,7 +38,7 @@ function cvMemoriserCode() {
 const ROLES_PARENT = ["Maman", "Papa"];
 const cvJoueurs = () => DATA.joueurs || [];
 // famille : membre du staff qui est aussi parent (ses trajets comptent pour sa famille) ; voiture: false = toujours passager
-const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role, famille: c.famille || "", voiture: c.voiture !== false }));
+const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role, famille: c.famille || "", voiture: c.voiture !== false, presentDefaut: !!c.present_defaut }));
 const staffDe = (id) => cvStaff().find((s) => s.id === id);
 const cvFamilles = () => (DATA.familles || []).map((f) => ({
   id: "Famille:" + f.enfant, nom: (f.nom || "").toUpperCase(), enfant: f.enfant,
@@ -139,7 +139,9 @@ function cvRepartition() {
 
     const joueursPresents = cvJoueurs().filter((j) => R(j).present !== "non");
     const staffIds = cvStaff().map((s) => s.id);
-    const staffPresents = staffIds.filter((s) => R(s).present === "oui" || (R(s).conduit === "oui" && R(s).present !== "non"));
+    // présent s'il le dit (ou s'il conduit) ; le coach principal est compté présent sauf s'il répond « absent »
+    const staffPresents = staffIds.filter((s) => R(s).present === "oui" || (R(s).conduit === "oui" && R(s).present !== "non")
+      || (staffDe(s)?.presentDefaut && R(s).present !== "non"));
     const staffAbsents = staffIds.filter((s) => R(s).present === "non");
     const placeCoach = !staffPresents.length && staffAbsents.length < staffIds.length ? (DATA.covoiturage?.places_coach_defaut ?? 1) : 0;
     const staffConduit = staffPresents.filter((s) => R(s).conduit === "oui" && staffDe(s)?.voiture);
@@ -266,7 +268,7 @@ function pageStaff(m, a, s) {
   const etat = [
     r.present === "oui" ? "✅ Présent(e)" : r.present === "non" ? "❌ Absent(e)" : "",
     r.present !== "non" && r.conduit === "oui" ? `conduit (${pl(r.places || PLACES(), "place")})` : r.conduit === "non" ? "passager" : "",
-  ].filter(Boolean).join(", ") || "Pas encore répondu";
+  ].filter(Boolean).join(", ") || (s.presentDefaut ? "✅ Compté présent par défaut (répondez « Absent » si vous ne venez pas)" : "Pas encore répondu");
   return `
   <div class="recap ${r.present === "oui" ? "ok" : r.present === "non" ? "ko" : ""}"><div><b>${esc(s.nom)}</b> (${esc(s.role)}) : ${etat}</div></div>
   <div class="card">
@@ -293,8 +295,8 @@ function pageBilan(m, a, trajets) {
   const absents = cvJoueurs().filter((j) => R(j).present === "non");
   const sansRepJ = cvJoueurs().filter((j) => !R(j).present);
   const famillesSansRep = cvFamilles().filter((f) => ROLES_PARENT.every((r) => { const x = R(parentId(f, r)); return !x.conduit && !x.present; }));
-  const etatStaff = (r) => r.present === "oui" || (r.conduit === "oui" && r.present !== "non")
-    ? "Présent(e) · " + (r.conduit === "oui" ? "conduit" : "passager") : r.present === "non" ? "Absent(e)" : "Pas encore répondu";
+  const etatStaff = (r, s) => r.present === "oui" || (r.conduit === "oui" && r.present !== "non")
+    ? "Présent(e) · " + (r.conduit === "oui" ? "conduit" : "passager") : r.present === "non" ? "Absent(e)" : s.presentDefaut ? "Présent (par défaut) · passager" : "Pas encore répondu";
 
   return `
   <div class="bilan-grid">
@@ -327,7 +329,7 @@ function pageBilan(m, a, trajets) {
 
   <div class="card">
     <h3>Staff</h3>
-    ${cvStaff().map((s) => `<div class="row"><div class="ico">${icon.whistle}</div><div><div class="v">${esc(s.nom)}</div><div class="small muted">${etatStaff(R(s.id))}</div></div></div>`).join("")}
+    ${cvStaff().map((s) => `<div class="row"><div class="ico">${icon.whistle}</div><div><div class="v">${esc(s.nom)}</div><div class="small muted">${etatStaff(R(s.id), s)}</div></div></div>`).join("")}
     ${a.placeCoach ? `<p class="small muted" style="margin:6px 0 0">Une place est gardée pour un coach tant que personne du staff n'a répondu.</p>` : ""}
   </div>
 
