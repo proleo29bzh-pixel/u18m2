@@ -4,9 +4,9 @@
   "equipe": "U18M2",
   "club": "CTC St Renan-Plouarzel",
   "coachs": [
-    {"nom": "Léo", "role": "Coach principal", "tel": "", "present_defaut": true},
+    {"nom": "Léo", "role": "Coach principal", "tel": "", "present_defaut": true, "famille": "Gabin"},
     {"nom": "Angélique", "role": "Coach adjointe", "tel": "", "famille": "Bastien"},
-    {"nom": "Eline", "role": "Coach adjointe", "tel": "", "voiture": false}
+    {"nom": "Eline", "role": "Coach adjointe", "tel": "", "famille": "Evan"}
   ],
 
   "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
