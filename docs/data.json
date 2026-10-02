@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-01T16:43:15+00:00",
+ "maj": "2026-10-02T16:37:52+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -133,6 +133,7 @@
   "100 % d'engagement sur chaque exercice, jusqu'au dernier : on s'entraîne comme on joue.",
   "Respect des coéquipiers, du coach et du matériel. On aide à sortir et ranger."
  ],
+ "annonces": [],
  "covoiturage": {
   "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
   "places_defaut": 4,

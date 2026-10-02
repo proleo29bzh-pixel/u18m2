@@ -50,6 +50,9 @@
     "deroule": []
   },
 
+  "_aide_annonces": "Annonces affichées dans l'appli (bouton sur l'accueil). Visibles par toute personne qui a le lien : pas d'info sensible. date = AAAA-MM-JJTHH:MM",
+  "annonces": [],
+
   "etat_esprit": [
     "Être à l'heure : en tenue sur le terrain à 19h pile, pas à 19h05.",
     "Prévenir le coach à l'avance en cas d'absence ou de retard.",

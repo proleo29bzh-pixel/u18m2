@@ -272,6 +272,7 @@ def construire():
         "entrainements": infos.get("entrainements", []),
         "seance_jeudi": infos.get("seance_jeudi", {}),
         "etat_esprit": infos.get("etat_esprit", []),
+        "annonces": infos.get("annonces", []),
         "covoiturage": {k: v for k, v in infos.get("covoiturage", {}).items() if not k.startswith("_")},
         "rencontres": rencontres,
         "erreurs": erreurs,

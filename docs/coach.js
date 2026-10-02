@@ -32,7 +32,6 @@ async function coachOuvrir(mdp, memoriser) {
     COACH.erreur = null;
     COACH.mdp = mdp;
     if (memoriser) coachStore.set("coach-mdp", mdp);
-    if (typeof annCharger === "function") await annCharger(mdp);
   } catch (e) {
     COACH.seances = null;
     COACH.erreur = e.message === "absent" ? "Aucune séance publiée pour l'instant." : "Mot de passe incorrect.";
@@ -190,8 +189,6 @@ function renderCoach() {
   const dateS = s.date ? new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(s.date + "T12:00")) : "";
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
-    ${typeof annoncesCoach === "function" ? annoncesCoach() : ""}
-    <h2 class="section">Séances du jeudi</h2>
     ${liste.length > 1 ? `<div class="mchips">${liste.map((x, i) => `<button class="mchip ${i === COACH.ouverte ? "on" : ""}" data-coach-seance="${i}"><b>${esc(x.date ? new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(x.date + "T12:00")) : "Séance")}</b><span>${esc(x.titre || "")}</span></button>`).join("")}</div>` : ""}
     <div class="card seance-tete">
       ${dateS ? `<div class="small muted">Jeudi · ${esc(dateS)}</div>` : ""}

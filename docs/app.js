@@ -430,7 +430,6 @@ async function load() {
     DATA = await res.json();
     renderAll();
     if (typeof cvCharger === "function") { await cvCharger(); renderAll(); }
-    if (typeof annCharger === "function") { await annCharger(); renderAll(); }
   } catch (err) {
     if (!DATA) $("#view-accueil").innerHTML = `<div class="empty">Impossible de charger les données. Vérifie ta connexion.</div>`;
   } finally {

@@ -466,6 +466,5 @@ document.addEventListener("click", async (e) => {
     cvMemoriserCode();
     CV.charge = false; renderCovoit();
     await cvCharger(); renderCovoit(); renderAccueil();
-    if (typeof annCharger === "function") { await annCharger(); renderAccueil(); renderAnnonces(); }
   }
 });
