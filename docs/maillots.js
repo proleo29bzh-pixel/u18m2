@@ -72,6 +72,7 @@ function renderMaillots() {
 
   // --- famille : déclarer où en sont les maillots
   if (maFamille && !coach) {
+    html += `<p class="small muted" style="margin:0 4px 6px">Vous êtes <b>${esc(familleDe(maFamille.slice(8))?.libelle || "")}</b> · <a href="#" id="mail-changer">Changer</a></p>`;
     const nous = e?.chez === maFamille;
     const b = (statut, label) => `<button class="seg ${nous && e.statut === statut ? "on g" : ""}" data-mail="${statut}" data-chez="${esc(maFamille)}">${label}</button>`;
     html += `<div class="card"><h3>${esc(familleDe(maFamille.slice(8))?.libelle || "Votre famille")}</h3>
@@ -81,7 +82,11 @@ function renderMaillots() {
         ${b("bureau", "🏢 Je les dépose au bureau du club")}
       </div></div>`;
   } else if (!coach && cvRole() !== "joueur") {
-    html += `<p class="small muted" style="margin:0 4px">Pour indiquer que vous avez les maillots, choisissez votre famille dans l'onglet Covoiturage.</p>`;
+    html += `<div class="card"><h3>Votre famille</h3>
+      <p class="small muted" style="margin-top:0">Choisissez votre famille pour indiquer que vous avez les maillots.</p>
+      <select id="mail-famille" class="cvselect"><option value="">Choisir…</option>
+        ${(DATA.familles || []).map((f) => `<option value="Famille:${esc(f.enfant)}">${esc(f.nom ? "Famille " + f.nom.toUpperCase() : "Parents de " + f.enfant)}</option>`).join("")}
+      </select></div>`;
   }
 
   // --- coach : dire qui a le sac, ou qu'il est récupéré
@@ -112,6 +117,17 @@ document.addEventListener("change", async (ev) => {
   renderMaillots(); renderAccueil();
   await envoi;
   renderMaillots(); renderAccueil();
+});
+document.addEventListener("change", (ev) => {
+  if (ev.target.id !== "mail-famille" || !ev.target.value) return;
+  store.set("covoit-moi", ev.target.value);
+  renderAll();
+});
+document.addEventListener("click", (ev) => {
+  if (ev.target.id !== "mail-changer") return;
+  ev.preventDefault();
+  store.set("covoit-moi", "");
+  renderAll();
 });
 document.addEventListener("keydown", (ev) => {
   if (ev.key === "Enter" && ev.target.id === "mail-code") $('[data-code-de="mail-code"]').click();
