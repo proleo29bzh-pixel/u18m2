@@ -34,7 +34,8 @@
     "objectif_periode": "d'ici janvier",
     "_aide_trajets_faits": "Déplacements déjà faits (avant l'appli ou corrigés à la main), par id de match : \"Famille:<prénom du joueur>\" ou \"Coach <prénom>\".",
     "trajets_faits": {
-      "cjr-2966": ["Famille:Thomas", "Famille:Tom (Grand)", "Coach Léo"]
+      "cjr-2966": ["Famille:Thomas", "Famille:Tom (Grand)", "Coach Léo"],
+      "cjr-3018": ["Famille:Nathan", "Famille:Malo", "Famille:Nils"]
     },
     "matchs_domicile": false
   },
