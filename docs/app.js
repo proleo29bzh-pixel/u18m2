@@ -123,6 +123,9 @@ function maillotsPour(r) {
   return i < 0 || !familles.length ? "" : familles[i % familles.length];
 }
 
+/** Bouton déplié dans chaque fiche de match : "rdv", "prevoir" ou rien. */
+const PLIS = {};
+
 function detailHtml(r) {
   const rv = rassemblement(r);
   const s = salleMatch(r);
@@ -141,15 +144,33 @@ function detailHtml(r) {
     </div>`;
   }
 
+  const prevoir = DATA.rassemblement?.a_prevoir || [];
+  const ouvert = PLIS[r.id] || "";
   if (!isPlayed(r)) {
+    if (r.coach?.note) html += `<div class="note" style="margin-top:12px">📣 ${esc(r.coach.note)}</div>`;
     html += `
-    <div class="card">
+    <div class="duo">
+      <button class="duo-btn ${ouvert === "rdv" ? "on" : ""}" data-pli="${esc(r.id)}:rdv">
+        <span class="duo-ico">${icon.clock}</span><span class="duo-titre">Rassemblement</span>
+        <span class="duo-val">${rv.heure ? "RDV " + rv.heure.replace(":", "h") : "RDV à confirmer"}</span>
+      </button>
+      <button class="duo-btn ${ouvert === "prevoir" ? "on" : ""}" data-pli="${esc(r.id)}:prevoir">
+        <span class="duo-ico">${icon.bag}</span><span class="duo-titre">À prévoir</span>
+        <span class="duo-val">${prevoir.length} chose${prevoir.length > 1 ? "s" : ""}</span>
+      </button>
+    </div>`;
+    if (ouvert === "prevoir" && prevoir.length) {
+      html += `<div class="card pli"><ul class="checklist">${prevoir.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
+    }
+  }
+  if (!isPlayed(r) && ouvert === "rdv") {
+    html += `
+    <div class="card pli">
       <h3>Rassemblement</h3>
       <div class="row"><div class="ico">${icon.clock}</div><div><div class="k">Heure de RDV</div><div class="v big">${rv.heure ? rv.heure.replace(":", "h") : tbd}</div></div></div>
       ${rv.lieu ? `<div class="row"><div class="ico">${icon.car}</div><div><div class="k">Point de rendez-vous</div><div class="v">${esc(rv.lieu)}</div></div></div>` : ""}
       ${rv.texte ? `<div class="row"><div class="ico">${icon.users}</div><div class="small">${esc(rv.texte)}</div></div>` : ""}
       ${typeof covoitResume === "function" ? covoitResume(r) : ""}
-      ${r.coach?.note ? `<div class="note">📣 ${esc(r.coach.note)}</div>` : ""}
       ${rvUrl ? `<div class="actions"><a class="btn full" href="${rvUrl}" target="_blank" rel="noopener">${icon.nav} Aller au point de RDV</a></div>` : ""}
     </div>`;
   }
@@ -175,10 +196,6 @@ function detailHtml(r) {
     </div>`;
   }
 
-  const prevoir = DATA.rassemblement?.a_prevoir || [];
-  if (!isPlayed(r) && prevoir.length) {
-    html += `<div class="card"><h3>À prévoir</h3><ul class="checklist">${prevoir.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></div>`;
-  }
   const maillots = maillotsPour(r);
   if (maillots) {
     html += `<div class="card"><h3>Maillots</h3><div class="row"><div class="ico">🧺</div><div>
@@ -206,17 +223,32 @@ function renderAccueil() {
       <div><b>${isHome(r) ? "vs" : "@"} ${esc(opponent(r).nom)}</b> du ${esc(dateCourte(r.reporte_de))} est reporté au
         <b>${esc(dateCourte(r.date))}${r.heure ? " à " + r.heure.replace(":", "h") : ""}</b>${isHome(r) ? "" : " (à l'extérieur)"}.</div>
     </button>`).join("");
-  const entr = typeof rappelEntrainements === "function" ? rappelEntrainements() : "";
-  const matchSemaine = next && (new Date(next.date + "T00:00") - t) / 864e5 <= 6;
+  // carrousel (on glisse avec le doigt) : annonces, maillots, prochains entraînements
+  const cartes = [
+    typeof annoncesAccueil === "function" ? annoncesAccueil() : "",
+    typeof maillotsAccueil === "function" ? maillotsAccueil() : "",
+    typeof rappelEntrainements === "function" ? rappelEntrainements() : "",
+  ].filter(Boolean);
+  const carrousel = cartes.length ? `<div class="carrousel" id="carrousel">${cartes.map((c) => `<div class="slide">${c}</div>`).join("")}</div>
+    ${cartes.length > 1 ? `<div class="points">${cartes.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}` : "";
   const blocMatch = next ? `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next)
     : avisReport + `<div class="empty">Pas de match à venir pour l'instant.</div>`;
-  let html = (typeof annoncesAccueil === "function" ? annoncesAccueil() : "")
-    + (typeof maillotsAccueil === "function" ? maillotsAccueil() : "")
-    + (matchSemaine ? blocMatch + `<div style="margin-top:14px">${entr}</div>` : entr + blocMatch);
+  let html = carrousel + blocMatch;
   if (last) {
     html += `<h2 class="section">Dernier résultat</h2>` + matchRow(last);
   }
+  const pos = $("#carrousel")?.scrollLeft || 0;     // garder la carte affichée quand l'accueil se redessine
   $("#view-accueil").innerHTML = html;
+  const car = $("#carrousel");
+  if (car) {
+    car.scrollLeft = pos;
+    const majPoints = () => {
+      const i = Math.round(car.scrollLeft / car.clientWidth);
+      document.querySelectorAll("#view-accueil .points span").forEach((p, k) => p.classList.toggle("on", k === i));
+    };
+    car.addEventListener("scroll", majPoints, { passive: true });
+    majPoints();
+  }
 }
 
 function matchRow(r, isNext = false) {
@@ -436,6 +468,15 @@ document.addEventListener("click", (e) => {
   if (tab) return show(tab.dataset.view);
   const ics = e.target.closest("[data-ics]");
   if (ics) return downloadIcs(ics.dataset.ics);
+  const pli = e.target.closest("[data-pli]");
+  if (pli) {
+    const [id, quoi] = pli.dataset.pli.split(":");
+    PLIS[id] = PLIS[id] === quoi ? "" : quoi;
+    renderAccueil();
+    const sh = $(".sheet.open");
+    if (sh) { const r = DATA.rencontres.find((x) => x.id === id); if (r) sh.innerHTML = `<div class="grab"></div><button class="close" aria-label="Fermer">✕</button>` + detailHtml(r); $(".close", sh).onclick = () => history.back(); }
+    return;
+  }
   const m = e.target.closest(".match[data-id], .avis-report[data-id]");
   if (m) return openSheet(m.dataset.id);
 });

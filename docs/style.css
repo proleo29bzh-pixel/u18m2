@@ -267,6 +267,29 @@ h2.section:first-child { margin-top: 4px; }
 .mail-actions { display: grid; gap: 8px; }
 .mail-actions .seg { text-align: left; padding: 12px 14px; }
 
+/* --- accueil : carrousel --- */
+.carrousel { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 2px -16px 0; padding: 2px 16px; scroll-padding: 0 16px; }
+.carrousel::-webkit-scrollbar { display: none; }
+.slide { flex: 0 0 100%; scroll-snap-align: start; display: flex; }
+.slide > * { margin: 0 !important; width: 100%; min-height: 96px; }
+.points { display: flex; justify-content: center; gap: 6px; margin: 8px 0 2px; }
+.points span { width: 7px; height: 7px; border-radius: 50%; background: var(--line); transition: all .2s; }
+.points span.on { background: var(--red); width: 18px; border-radius: 4px; }
+
+/* --- fiche match : deux boutons dépliables --- */
+.duo { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.duo-btn {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px; text-align: left; cursor: pointer;
+  padding: 12px 14px; border-radius: 16px; border: 2px solid var(--line); background: var(--card); color: var(--ink); box-shadow: var(--shadow);
+}
+.duo-btn.on { border-color: var(--red); }
+.duo-ico { width: 30px; height: 30px; border-radius: 9px; background: var(--chip); display: grid; place-items: center; color: var(--navy); margin-bottom: 4px; }
+@media (prefers-color-scheme: dark) { .duo-ico { color: var(--orange); } }
+.duo-ico svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.duo-titre { font-size: 12px; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); }
+.duo-val { font-weight: 800; font-size: 15px; }
+.card.pli { border-color: var(--red); }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */
