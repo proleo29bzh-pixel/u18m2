@@ -268,9 +268,9 @@ function pageStaff(m, a, s) {
   const etat = [
     r.present === "oui" ? "✅ Présent(e)" : r.present === "non" ? "❌ Absent(e)" : "",
     r.present !== "non" && r.conduit === "oui" ? `conduit (${pl(r.places || PLACES(), "place")})` : r.conduit === "non" ? "passager" : "",
-  ].filter(Boolean).join(", ") || (s.presentDefaut ? "✅ Compté présent par défaut (répondez « Absent » si vous ne venez pas)" : "Pas encore répondu");
+  ].filter(Boolean).join(", ") || (s.presentDefaut ? "✅ Compté présent par défaut" : "Pas encore répondu");
   return `
-  <div class="recap ${r.present === "oui" ? "ok" : r.present === "non" ? "ko" : ""}"><div><b>${esc(s.nom)}</b> (${esc(s.role)}) : ${etat}</div></div>
+  <div class="recap ${r.present === "oui" || (s.presentDefaut && r.present !== "non") ? "ok" : r.present === "non" ? "ko" : ""}"><div><b>${esc(s.nom)}</b> (${esc(s.role)}) : ${etat}</div></div>
   <div class="card">
     ${question("Présent(e) au match ?", [
       cvBtn(m, a, s.id, { present: "oui" }, "✅ Présent(e)", "g"),
@@ -330,6 +330,7 @@ function pageBilan(m, a, trajets) {
   <div class="card">
     <h3>Staff</h3>
     ${cvStaff().map((s) => `<div class="row"><div class="ico">${icon.whistle}</div><div><div class="v">${esc(s.nom)}</div><div class="small muted">${etatStaff(R(s.id), s)}</div></div></div>`).join("")}
+    ${cvStaff().filter((s) => s.presentDefaut && R(s.id).present === "non").map((s) => `<div class="note" style="margin-top:8px;background:rgba(220,38,38,.1);color:var(--loss);border-color:rgba(220,38,38,.3)">⚠️ ${esc(s.nom)} absent ce match : ${esc(cvStaff().filter((x) => x.id !== s.id).map((x) => x.nom).join(" ou "))} prend le relais.</div>`).join("")}
     ${a.placeCoach ? `<p class="small muted" style="margin:6px 0 0">Une place est gardée pour un coach tant que personne du staff n'a répondu.</p>` : ""}
   </div>
 
