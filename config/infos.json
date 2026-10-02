@@ -30,6 +30,7 @@
     "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
     "places_defaut": 4,
     "places_coach_defaut": 1,
+    "objectif_trajets": 2,
     "matchs_domicile": false
   },
 

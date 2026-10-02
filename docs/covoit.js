@@ -180,6 +180,10 @@ function cvRepartition() {
 // ------------------------------------------------------------ rendu : petits morceaux
 
 const pl = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
+/** Objectif de trajets par famille sur la saison (infos.json → covoiturage.objectif_trajets). */
+const OBJ = () => DATA.covoiturage?.objectif_trajets || 2;
+/** ✅ atteint (trajets faits) · 🕓 atteint en comptant les trajets prévus · sinon x/objectif. */
+const objectifTxt = (t) => t.faits >= OBJ() ? "✅" : t.faits + t.prevus >= OBJ() ? "🕓" : `${t.faits + t.prevus}/${OBJ()}`;
 function chip(txt, cls = "") { return `<span class="cchip ${cls}">${esc(txt)}</span>`; }
 
 /** Bouton de réponse : `champs` est appliqué ; re-cliquer sur le choix actif l'annule. */
@@ -216,7 +220,7 @@ function pageFamille(m, a, f, trajets) {
   const recap = ROLES_PARENT.map((role) => `<div><b>${role}</b> : ${esc(etatParent(a, parentId(f, role)))}</div>`).join("");
   return `
   <div class="recap">${recap}</div>
-  <p class="small muted">${f.nom ? esc(f.enfant) + " · " : ""}${pl(t.faits + t.prevus, "trajet")} cette saison. Si vous pouvez conduire sans venir voir le match, l'appli vous désigne seulement si besoin, à tour de rôle entre les familles.</p>
+  <p class="small muted">${f.nom ? esc(f.enfant) + " · " : ""}${pl(t.faits + t.prevus, "trajet")} cette saison sur un objectif de ${OBJ()}${t.faits >= OBJ() ? " ✅ Merci !" : "."} Si vous pouvez conduire sans venir voir le match, l'appli vous désigne seulement si besoin, à tour de rôle entre les familles.</p>
   ${ROLES_PARENT.map((role) => {
     const id = parentId(f, role);
     const r = a.rep[id] || {};
@@ -320,11 +324,13 @@ function pageBilan(m, a, trajets) {
   ${!a.passe && famillesSansRep.length ? `<div class="card"><h3>Familles qui n'ont pas répondu</h3>${famillesSansRep.map((f) => chip(f.libelle, "wait")).join("")}</div>` : ""}
 
   <h2 class="section">Trajets par famille</h2>
+  <p class="small muted" style="margin:0 4px 8px">🎯 Objectif de la saison : <b>${OBJ()} trajet${OBJ() > 1 ? "s" : ""} par famille</b>, pour que ce ne soient pas toujours les mêmes qui conduisent.</p>
   <div class="card" style="padding:6px 10px">
     <table class="standings">
-      <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Total</th></tr></thead>
-      <tbody>${Object.entries(trajets).sort(([x, t1], [y, t2]) => t2.faits + t2.prevus - (t1.faits + t1.prevus) || nomDe(x).localeCompare(nomDe(y)))
-        .map(([id, t]) => `<tr class="${cvMoi() === id ? "us" : ""}"><td class="t">${esc(nomDe(id))}${estStaff(id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${t.faits}</td><td>${t.prevus}</td><td class="pts">${t.faits + t.prevus}</td></tr>`).join("")}</tbody>
+      <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Objectif</th></tr></thead>
+      <tbody>${Object.entries(trajets).sort(([x, t1], [y, t2]) => estStaff(x) - estStaff(y) || t2.faits + t2.prevus - (t1.faits + t1.prevus) || nomDe(x).localeCompare(nomDe(y)))
+        .map(([id, t]) => `<tr class="${groupe(cvMoi() || "") === id ? "us" : ""}"><td class="t">${esc(nomDe(id))}${estStaff(id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${t.faits}</td><td>${t.prevus}</td>
+          <td>${estStaff(id) ? "—" : objectifTxt(t)}</td></tr>`).join("")}</tbody>
     </table>
   </div>`;
 }
