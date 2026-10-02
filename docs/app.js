@@ -223,32 +223,27 @@ function renderAccueil() {
       <div><b>${isHome(r) ? "vs" : "@"} ${esc(opponent(r).nom)}</b> du ${esc(dateCourte(r.reporte_de))} est reporté au
         <b>${esc(dateCourte(r.date))}${r.heure ? " à " + r.heure.replace(":", "h") : ""}</b>${isHome(r) ? "" : " (à l'extérieur)"}.</div>
     </button>`).join("");
-  // carrousel (on glisse avec le doigt) : annonces, maillots, prochains entraînements
-  const cartes = [
-    typeof annoncesAccueil === "function" ? annoncesAccueil() : "",
-    typeof maillotsAccueil === "function" ? maillotsAccueil() : "",
-    typeof rappelEntrainements === "function" ? rappelEntrainements() : "",
+  // trois raccourcis côte à côte : annonces, maillots, entraînement
+  const tuiles = [
+    typeof tuileAnnonces === "function" ? tuileAnnonces() : "",
+    typeof tuileMaillots === "function" ? tuileMaillots() : "",
+    typeof tuileEntrainement === "function" ? tuileEntrainement() : "",
   ].filter(Boolean);
-  const carrousel = cartes.length ? `<div class="carrousel" id="carrousel">${cartes.map((c) => `<div class="slide">${c}</div>`).join("")}</div>
-    ${cartes.length > 1 ? `<div class="points">${cartes.map((_, i) => `<span class="${i === 0 ? "on" : ""}"></span>`).join("")}</div>` : ""}` : "";
+  const carrousel = tuiles.length ? `<div class="tuiles">${tuiles.join("")}</div>` : "";
   const blocMatch = next ? `<h2 class="section">Prochain match</h2>` + avisReport + detailHtml(next)
     : avisReport + `<div class="empty">Pas de match à venir pour l'instant.</div>`;
   let html = carrousel + blocMatch;
   if (last) {
     html += `<h2 class="section">Dernier résultat</h2>` + matchRow(last);
   }
-  const pos = $("#carrousel")?.scrollLeft || 0;     // garder la carte affichée quand l'accueil se redessine
   $("#view-accueil").innerHTML = html;
-  const car = $("#carrousel");
-  if (car) {
-    car.scrollLeft = pos;
-    const majPoints = () => {
-      const i = Math.round(car.scrollLeft / car.clientWidth);
-      document.querySelectorAll("#view-accueil .points span").forEach((p, k) => p.classList.toggle("on", k === i));
-    };
-    car.addEventListener("scroll", majPoints, { passive: true });
-    majPoints();
-  }
+}
+
+/** Petit bouton de l'accueil : icône, nom, info courte (et pastille rouge si nouveauté). */
+function tuile(vue, emoji, nom, info, alerte = false) {
+  return `<button class="tuile ${alerte ? "alerte" : ""}" data-show="${vue}">
+    <span class="tuile-ico">${emoji}</span><span class="tuile-nom">${nom}</span><span class="tuile-info">${esc(info)}</span>
+  </button>`;
 }
 
 function matchRow(r, isNext = false) {

@@ -23,6 +23,13 @@ function entrainementsTries() {
   return (DATA.entrainements || []).map((e) => ({ ...e, p: prochaineSeance(e) })).sort((a, b) => a.p.date - b.p.date);
 }
 
+function tuileEntrainement() {
+  const e = entrainementsTries()[0];
+  if (!e) return "";
+  const q = quand(e.p);
+  return tuile("entrainement", "🏀", "Entraînement", `${q.charAt(0).toUpperCase() + q.slice(1)} ${hh(e.debut)}`, e.p.ecart === 0);
+}
+
 /** Rappel compact pour la page d'accueil. */
 function rappelEntrainements() {
   const liste = entrainementsTries();

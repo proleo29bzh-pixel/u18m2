@@ -26,6 +26,18 @@ function prochaineFamilleMaillots() {
   return next ? { famille: maillotsPour(next), match: next } : null;
 }
 
+function tuileMaillots() {
+  if (!cvApi()) return "";
+  const e = cvCode() && CV.charge ? etatMaillots() : null;
+  const court = { lavage: "Chez ", jeudi: "Jeudi · ", bureau: "Au bureau", coach: "Chez le coach" };
+  let info = "Où sont-ils ?";
+  if (e && court[e.statut] != null) {
+    const fam = e.chez?.startsWith("Famille:") ? (familleDe(e.chez.slice(8))?.nom || e.chez.slice(8)) : "";
+    info = e.statut === "bureau" || e.statut === "coach" ? court[e.statut] : court[e.statut] + fam;
+  }
+  return tuile("maillots", "🧺", "Maillots", info);
+}
+
 /** Bouton sur la page d'accueil. */
 function maillotsAccueil() {
   if (!cvApi()) return "";

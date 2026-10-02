@@ -24,6 +24,12 @@ function quandAnnonce(iso) {
 /** Texte de l'annonce : retours à la ligne et liens cliquables. */
 const texteAnnonce = (t) => esc(t).replace(/\n/g, "<br>").replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
 
+function tuileAnnonces() {
+  const liste = annListe();
+  const n = liste.filter((a) => (a.date || "") > annVues()).length;
+  return tuile("annonces", "📢", "Annonces", n ? `${n} nouvelle${n > 1 ? "s" : ""}` : liste.length ? "Rien de neuf" : "Aucune", n > 0);
+}
+
 /** Bouton unique sur la page d'accueil (ouvre la page des annonces). */
 function annoncesAccueil() {
   const liste = annListe();
