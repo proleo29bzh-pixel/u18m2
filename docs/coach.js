@@ -3,7 +3,7 @@
    avec le mot de passe coach, + schémas de terrain dessinés en SVG.
    Utilise les globales de app.js (DATA, $, esc, show). */
 
-const COACH = { seances: null, erreur: null, ouverte: 0 };
+const COACH = { seances: null, erreur: null, ouverte: 0, mdp: "" };
 const coachStore = {
   get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
   set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} },
@@ -30,7 +30,9 @@ async function coachOuvrir(mdp, memoriser) {
     const contenu = await coachDechiffrer(mdp);
     COACH.seances = (contenu.seances || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
     COACH.erreur = null;
+    COACH.mdp = mdp;
     if (memoriser) coachStore.set("coach-mdp", mdp);
+    if (typeof annCharger === "function") await annCharger(mdp);
   } catch (e) {
     COACH.seances = null;
     COACH.erreur = e.message === "absent" ? "Aucune séance publiée pour l'instant." : "Mot de passe incorrect.";
@@ -188,6 +190,8 @@ function renderCoach() {
   const dateS = s.date ? new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(s.date + "T12:00")) : "";
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
+    ${typeof annoncesCoach === "function" ? annoncesCoach() : ""}
+    <h2 class="section">Séances du jeudi</h2>
     ${liste.length > 1 ? `<div class="mchips">${liste.map((x, i) => `<button class="mchip ${i === COACH.ouverte ? "on" : ""}" data-coach-seance="${i}"><b>${esc(x.date ? new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(x.date + "T12:00")) : "Séance")}</b><span>${esc(x.titre || "")}</span></button>`).join("")}</div>` : ""}
     <div class="card seance-tete">
       ${dateS ? `<div class="small muted">Jeudi · ${esc(dateS)}</div>` : ""}
@@ -215,7 +219,7 @@ document.addEventListener("click", async (e) => {
   }
   if (e.target.id === "coach-lock") {
     e.preventDefault();
-    COACH.seances = null; COACH.erreur = null; coachStore.set("coach-mdp", "");
+    COACH.seances = null; COACH.erreur = null; COACH.mdp = ""; coachStore.set("coach-mdp", "");
     return renderCoach();
   }
   const sb = e.target.closest("[data-coach-seance]");

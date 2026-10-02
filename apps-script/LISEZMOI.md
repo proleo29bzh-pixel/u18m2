@@ -5,9 +5,10 @@ Les réponses des familles sont enregistrées dans un Google Sheet sur ton compt
 1. Va sur https://sheets.new : un nouveau Google Sheet s'ouvre. Nomme-le « Covoit U18M2 ».
 2. Menu **Extensions > Apps Script**.
 3. Efface le contenu et colle tout le fichier `Code.gs`.
-4. Lignes `CODE_PARENTS` et `CODE_JOUEURS` : remplace `A_CHANGER_...` par tes 2 codes.
-   - code parents : parents, staff et ultras (accès à tout le covoit)
-   - code joueurs : les joueurs peuvent seulement dire s'ils sont présents
+4. Lignes `CODE_PARENTS`, `CODE_JOUEURS` et `CODE_COACH` : remplace `A_CHANGER_...` par tes 3 codes.
+   - code parents : parents (tout le covoit, annonces « tous » et « parents »)
+   - code joueurs : les joueurs disent s'ils sont présents (annonces « tous » et « joueurs »)
+   - code coach : le même que le mot de passe de l'Espace coach (publier et supprimer des annonces)
    ⚠️ Tape les vrais codes uniquement dans Google, jamais dans les fichiers du dépôt GitHub (il est public).
 5. Clique sur l'icône disquette pour enregistrer.
 6. En haut à droite, clique sur **Déployer > Nouveau déploiement**.

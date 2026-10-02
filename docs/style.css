@@ -222,6 +222,37 @@ h2.section:first-child { margin-top: 4px; }
 .lg.tirets { border-top-style: dashed; } .lg.points { border-top-style: dotted; border-color: #e30613; }
 .lg.onde { width: auto; height: auto; font-weight: 800; color: var(--ink); }
 
+/* --- annonces --- */
+.ann-bouton {
+  display: block; width: 100%; text-align: left; cursor: pointer; margin: 4px 0 10px;
+  padding: 12px 14px; border-radius: 16px; border: 2px solid var(--line); background: var(--card); color: var(--ink); box-shadow: var(--shadow);
+}
+.ann-bouton.nouv { border-color: var(--red); background: rgba(227, 6, 19, .07); }
+.ann-bouton-titre { display: flex; align-items: center; gap: 8px; font-family: Anton, Impact, sans-serif; font-size: 18px; text-transform: uppercase; letter-spacing: .02em; }
+.ann-bouton-titre .tag { font-family: Manrope, system-ui, sans-serif; letter-spacing: .04em; }
+.ann-fleche { margin-left: auto; font-family: Manrope, sans-serif; font-size: 22px; color: var(--muted); }
+.ann-extrait { margin-top: 4px; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.ann-extrait b { color: var(--ink); }
+.ann-bloc { margin: 4px 0 10px; }
+.ann-bloc-titre { font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 4px 6px; display: flex; gap: 8px; align-items: center; }
+.ann-vide { display: flex; flex-direction: column; gap: 2px; width: 100%; text-align: left; cursor: pointer; padding: 12px 14px; border-radius: 16px; border: 1px dashed var(--line); background: var(--card); color: var(--ink); font-size: 14px; }
+.ann-vide span { font-size: 12.5px; color: var(--muted); }
+.annonce { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--shadow); }
+.annonce.nouv { border-color: var(--red); box-shadow: 0 0 0 2px rgba(227, 6, 19, .15), var(--shadow); }
+.cvl .annonce { box-shadow: none; }
+.ann-tete { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 14px; }
+.ann-date { margin-left: auto; font-size: 12px; color: var(--muted); font-weight: 600; }
+.tag.ann-new { background: var(--red); color: #fff; }
+.tag.ann-pour { background: var(--chip); color: var(--muted); }
+.ann-texte { margin-top: 8px; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.ann-pied { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 10px; }
+.ann-like { border: 1px solid var(--line); background: var(--chip); border-radius: 999px; padding: 5px 12px; font-weight: 800; cursor: pointer; color: var(--ink); }
+.ann-like.on { background: rgba(227, 6, 19, .12); border-color: var(--red); }
+.ann-suppr { padding: 6px 10px; font-size: 12.5px; }
+.ann-saisie { width: 100%; margin-top: 10px; padding: 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--chip); color: var(--ink); font: inherit; font-size: 15px; resize: vertical; }
+.ann-options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 10px; }
+.ann-options label { font-size: 12px; font-weight: 800; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */
