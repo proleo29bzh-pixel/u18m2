@@ -90,7 +90,7 @@ function blocIdentiteEntr() {
     return `<div class="card">
       <h3>Tu viens à l'entraînement ?</h3>
       <p class="small muted" style="margin-top:0">Entrez votre code joueur pour dire si vous venez.</p>
-      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur (ou code coach)"><button class="btn primary" id="entr-code-ok">OK</button></div>
+      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur"><button class="btn primary" id="entr-code-ok">OK</button></div>
       ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
     </div>`;
   }
