@@ -331,7 +331,7 @@ function pageBilan(m, a, trajets) {
   ${!a.passe && famillesSansRep.length ? `<div class="card"><h3>Familles qui n'ont pas répondu</h3>${famillesSansRep.map((f) => chip(f.libelle, "wait")).join("")}</div>` : ""}
 
   <h2 class="section">Trajets par famille</h2>
-  <p class="small muted" style="margin:0 4px 8px">🎯 Objectif de la saison : <b>${OBJ()} trajet${OBJ() > 1 ? "s" : ""} par famille</b>, pour que ce ne soient pas toujours les mêmes qui conduisent.</p>
+  <p class="small muted" style="margin:0 4px 8px">🎯 Objectif ${esc(DATA.covoiturage?.objectif_periode || "de la saison")} : <b>${OBJ()} trajet${OBJ() > 1 ? "s" : ""} par famille</b>, pour que ce ne soient pas toujours les mêmes qui conduisent.</p>
   <div class="card" style="padding:6px 10px">
     <table class="standings">
       <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Objectif</th></tr></thead>
