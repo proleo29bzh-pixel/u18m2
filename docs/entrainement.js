@@ -48,7 +48,7 @@ function joueurDuTel() {
 
 function blocPresence(e) {
   if (typeof cvApi !== "function" || !cvApi()) return "";
-  if (!cvCode()) return `<div class="presence"><button class="btn full" data-show="covoit">Entrez votre code (onglet Covoiturage) pour dire si vous venez</button></div>`;
+  if (!cvCode()) return "";        // le champ du code est affiché en haut de la page
   if (!CV.charge) return "";
   const id = idSeance(e);
   const rep = Object.fromEntries(CV.reponses.filter((x) => x.match === id).map((x) => [x.famille, x.present]));
@@ -77,6 +77,47 @@ document.addEventListener("click", async (ev) => {
   renderEntrainement();          // état confirmé par le Google Sheet
 });
 
+/** En haut de l'onglet : code joueur puis prénom, pour pouvoir répondre « présent / absent ». */
+function blocIdentiteEntr() {
+  if (typeof cvApi !== "function" || !cvApi()) return "";
+  if (!cvCode()) {
+    return `<div class="card">
+      <h3>Tu viens à l'entraînement ?</h3>
+      <p class="small muted" style="margin-top:0">Entrez votre code joueur pour dire si vous venez.</p>
+      <div class="cvcode"><input id="entr-code" type="text" autocomplete="off" placeholder="Code joueur"><button class="btn primary" id="entr-code-ok">OK</button></div>
+      ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
+    </div>`;
+  }
+  if (!CV.charge) return `<div class="empty">Chargement…</div>`;
+  if (cvRole() === "joueur" && !joueurDuTel()) {
+    return `<div class="card">
+      <h3>Qui es-tu ?</h3>
+      <select id="entr-moi" class="cvselect"><option value="">Choisis ton prénom…</option>
+        ${(DATA.joueurs || []).map((j) => `<option>${esc(j)}</option>`).join("")}</select>
+    </div>`;
+  }
+  return "";
+}
+
+document.addEventListener("click", async (ev) => {
+  if (ev.target.id !== "entr-code-ok") return;
+  const v = $("#entr-code").value.trim();
+  if (!v) return;
+  CV.code = v;
+  cvMemoriserCode();
+  CV.charge = false; renderEntrainement();
+  await cvCharger();
+  renderAll();
+});
+document.addEventListener("keydown", (ev) => {
+  if (ev.key === "Enter" && ev.target.id === "entr-code") $("#entr-code-ok").click();
+});
+document.addEventListener("change", (ev) => {
+  if (ev.target.id !== "entr-moi") return;
+  store.set("covoit-moi", ev.target.value);
+  renderAll();
+});
+
 function renderEntrainement() {
   const el = $("#view-entrainement");
   if (!el || !DATA) return;
@@ -87,6 +128,7 @@ function renderEntrainement() {
 
   el.innerHTML = `
   <h2 class="section">Entraînements</h2>
+  ${blocIdentiteEntr()}
   ${entrainementsTries().map((e) => {
     const url = mapsUrl(e.lieu);
     return `<div class="card entr">
