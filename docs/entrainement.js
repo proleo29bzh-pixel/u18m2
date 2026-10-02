@@ -39,11 +39,10 @@ function rappelEntrainements() {
 const isoJour = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 const idSeance = (e) => "entr:" + isoJour(e.p.date);
 
-/** Joueur pour qui ce téléphone répond : le joueur lui-même, ou l'enfant de la famille choisie. */
+/** Seul le joueur répond pour lui-même (c'est lui qui vient à l'entraînement, pas ses parents). */
 function joueurDuTel() {
   if (typeof cvMoi !== "function") return "";
   const moi = cvMoi();
-  if (moi.startsWith("Famille:")) return moi.slice(8);
   return (DATA.joueurs || []).includes(moi) ? moi : "";
 }
 
@@ -60,7 +59,7 @@ function blocPresence(e) {
   const btn = (val, label, cls) => `<button class="seg ${rep[moi] === val ? "on " + cls : ""}" data-entr="${esc(id)}" data-joueur="${esc(moi)}" data-val="${val}">${label}</button>`;
   return `<div class="presence">
     ${moi ? `<div class="k">${esc(moi)} sera là ?</div><div class="segs">${btn("oui", "✅ Présent", "g")}${btn("non", "❌ Absent", "r")}</div>`
-      : `<div class="small muted">Choisissez qui vous êtes dans l'onglet Covoiturage pour répondre.</div>`}
+      : `<div class="small muted">Ce sont les joueurs qui répondent, avec leur code joueur.</div>`}
     <div class="presence-bilan"><b>✅ ${oui.length}</b> présent${oui.length > 1 ? "s" : ""} · <b>❌ ${non.length}</b> absent${non.length > 1 ? "s" : ""} · ${sans.length} sans réponse</div>
     ${oui.length ? `<div class="cvl"><div class="k">Présents</div>${oui.map((j) => `<span class="cchip ok">${esc(j)}</span>`).join("")}</div>` : ""}
     ${non.length ? `<div class="cvl"><div class="k">Absents</div>${non.map((j) => `<span class="cchip abs">${esc(j)}</span>`).join("")}</div>` : ""}
