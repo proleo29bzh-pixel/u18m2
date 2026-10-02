@@ -37,7 +37,9 @@ function cvMemoriserCode() {
 
 const ROLES_PARENT = ["Maman", "Papa"];
 const cvJoueurs = () => DATA.joueurs || [];
-const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role }));
+// famille : membre du staff qui est aussi parent (ses trajets comptent pour sa famille) ; voiture: false = toujours passager
+const cvStaff = () => (DATA.coachs || []).map((c) => ({ id: "Coach " + c.nom, nom: c.nom, role: c.role, famille: c.famille || "", voiture: c.voiture !== false }));
+const staffDe = (id) => cvStaff().find((s) => s.id === id);
 const cvFamilles = () => (DATA.familles || []).map((f) => ({
   id: "Famille:" + f.enfant, nom: (f.nom || "").toUpperCase(), enfant: f.enfant,
   libelle: f.nom ? "Famille " + f.nom.toUpperCase() : "Parents de " + f.enfant,
@@ -48,7 +50,8 @@ const familleDe = (enfant) => cvFamilles().find((f) => f.enfant === enfant);
 
 function estStaff(id) { return id.startsWith("Coach "); }
 const estParent = (id) => id.startsWith("Parent:");
-const groupe = (id) => estParent(id) ? "Famille:" + id.split(":")[1] : id;
+const groupe = (id) => estParent(id) ? "Famille:" + id.split(":")[1]
+  : staffDe(id)?.famille ? "Famille:" + staffDe(id).famille : id;
 function nomDe(id) {
   if (estParent(id)) {
     const [, enfant, role] = id.split(":");
@@ -122,7 +125,8 @@ function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) 
     - s'il manque des places, les parents qui peuvent conduire (sans venir d'eux-mêmes) sont
       désignés à tour de rôle : la famille qui a le moins conduit d'abord. */
 function cvRepartition() {
-  const groupes = [...cvFamilles().map((f) => f.id), ...cvStaff().map((s) => s.id)];
+  // le tableau des trajets : les familles + le staff qui a une voiture et n'est pas déjà compté avec sa famille
+  const groupes = [...cvFamilles().map((f) => f.id), ...cvStaff().filter((s) => s.voiture && !s.famille).map((s) => s.id)];
   const trajets = Object.fromEntries(groupes.map((g) => [g, { faits: 0, prevus: 0, dernier: -1 }]));
   const T = (id) => trajets[groupe(id)];
   const res = {};
@@ -138,7 +142,7 @@ function cvRepartition() {
     const staffPresents = staffIds.filter((s) => R(s).present === "oui" || (R(s).conduit === "oui" && R(s).present !== "non"));
     const staffAbsents = staffIds.filter((s) => R(s).present === "non");
     const placeCoach = !staffPresents.length && staffAbsents.length < staffIds.length ? (DATA.covoiturage?.places_coach_defaut ?? 1) : 0;
-    const staffConduit = staffPresents.filter((s) => R(s).conduit === "oui");
+    const staffConduit = staffPresents.filter((s) => R(s).conduit === "oui" && staffDe(s)?.voiture);
     const parentsVoiture = cvParents().filter((p) => R(p).present === "oui" && R(p).conduit === "oui");
     const parentsPassagers = cvParents().filter((p) => R(p).present === "oui" && R(p).conduit !== "oui");
 
@@ -270,7 +274,8 @@ function pageStaff(m, a, s) {
       cvBtn(m, a, s.id, { present: "oui" }, "✅ Présent(e)", "g"),
       cvBtn(m, a, s.id, { present: "non", conduit: "" }, "❌ Absent(e)", "r"),
     ])}
-    ${r.present !== "non" ? question("Vous prenez votre voiture ?", [
+    ${!s.voiture ? `<p class="small muted" style="margin:8px 0 0">Vous êtes comptée comme passagère.</p>` : ""}
+    ${r.present !== "non" && s.voiture ? question("Vous prenez votre voiture ?", [
       cvBtn(m, a, s.id, { conduit: "oui" }, "🚗 Oui", "g"),
       cvBtn(m, a, s.id, { conduit: "non" }, "Passager", "r"),
     ], r.conduit === "oui" ? cvStepper(m, a, s.id, "Places passagers") : "") : ""}

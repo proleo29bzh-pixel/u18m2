@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-02T21:23:38+00:00",
+ "maj": "2026-10-02T21:30:50+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -12,12 +12,14 @@
   {
    "nom": "Angélique",
    "role": "Coach adjointe",
-   "tel": ""
+   "tel": "",
+   "famille": "Bastien"
   },
   {
    "nom": "Eline",
    "role": "Coach adjointe",
-   "tel": ""
+   "tel": "",
+   "voiture": false
   }
  ],
  "rassemblement": {
@@ -143,8 +145,8 @@
   "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
   "places_defaut": 4,
   "places_coach_defaut": 1,
-  "objectif_trajets": 1,
-  "objectif_periode": "d'ici janvier",
+  "objectif_trajets": 2,
+  "objectif_periode": "de la saison",
   "trajets_faits": {
    "cjr-2966": [
     "Famille:Thomas",

@@ -5,8 +5,8 @@
   "club": "CTC St Renan-Plouarzel",
   "coachs": [
     {"nom": "Léo", "role": "Coach principal", "tel": ""},
-    {"nom": "Angélique", "role": "Coach adjointe", "tel": ""},
-    {"nom": "Eline", "role": "Coach adjointe", "tel": ""}
+    {"nom": "Angélique", "role": "Coach adjointe", "tel": "", "famille": "Bastien"},
+    {"nom": "Eline", "role": "Coach adjointe", "tel": "", "voiture": false}
   ],
 
   "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
@@ -30,8 +30,8 @@
     "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
     "places_defaut": 4,
     "places_coach_defaut": 1,
-    "objectif_trajets": 1,
-    "objectif_periode": "d'ici janvier",
+    "objectif_trajets": 2,
+    "objectif_periode": "de la saison",
     "_aide_trajets_faits": "Déplacements déjà faits (avant l'appli ou corrigés à la main), par id de match : \"Famille:<prénom du joueur>\" ou \"Coach <prénom>\".",
     "trajets_faits": {
       "cjr-2966": ["Famille:Thomas", "Famille:Tom (Grand)", "Coach Léo"],
