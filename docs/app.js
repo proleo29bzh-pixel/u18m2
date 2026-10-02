@@ -316,10 +316,10 @@ function renderInfos() {
   </div>` : ""}
   <div class="card">
     <h3>Calendrier automatique</h3>
-    <p class="small" style="margin-top:0">Abonne-toi une fois : tous les matchs arrivent dans l'agenda de ton téléphone ou de ton Mac et se mettent à jour tout seuls.</p>
+    <p class="small" style="margin-top:0">Un seul clic : tous les matchs s'ajoutent dans l'agenda de ton téléphone ou de ton Mac et se mettent à jour tout seuls. <b>C'est gratuit</b>, rien à payer.</p>
     <div class="actions">
-      <a class="btn primary full" href="${esc(webcal)}">${icon.cal} S'abonner (iPhone / Mac)</a>
-      <a class="btn full" href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">${icon.cal} S'abonner (Google Agenda / Android)</a>
+      <a class="btn primary full" href="${esc(webcal)}">${icon.cal} Ajouter les matchs à mon agenda (iPhone / Mac)</a>
+      <a class="btn full" href="https://calendar.google.com/calendar/r?cid=${encodeURIComponent(webcal)}" target="_blank" rel="noopener">${icon.cal} Ajouter les matchs à Google Agenda (Android)</a>
     </div>
   </div>
   <div class="card">
