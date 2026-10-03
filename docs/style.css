@@ -303,7 +303,9 @@ h2.section:first-child { margin-top: 4px; }
 @media (prefers-color-scheme: dark) { .standings tr.obj-encours td.t { color: #fbbf24; } }
 .standings tr.us td.t { text-decoration: underline; text-underline-offset: 3px; }
 
-.notes-staff { border-left: 4px solid #f59e0b; }
+.notes-staff { border-left: 4px solid var(--line); margin-top: 24px; }
+.notes-staff summary { cursor: pointer; font-size: 13px; font-weight: 800; color: var(--muted); }
+.notes-staff[open] summary { margin-bottom: 10px; }
 .note-staff + .note-staff { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
 .note-staff div:last-child { line-height: 1.5; }
 

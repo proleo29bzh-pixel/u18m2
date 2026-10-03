@@ -174,13 +174,14 @@ function blocExercice(titre, duree, but, schema, consignes, points, num) {
 /** Notes privées du staff (chiffrées avec les séances : invisibles pour les parents et les joueurs). */
 function notesStaff() {
   if (!COACH.notes?.length) return "";
-  return `<div class="card notes-staff"><h3>📝 Notes du staff (privé)</h3>
+  // repliée par défaut, en bas de page : il faut l'ouvrir volontairement
+  return `<details class="card notes-staff"><summary>📝 Notes de Léo</summary>
     ${COACH.notes.map((n) => `<div class="note-staff">
       ${n.date ? `<div class="small muted">${esc(new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(new Date(n.date + "T12:00")))}</div>` : ""}
       ${n.titre ? `<b>${esc(n.titre)}</b>` : ""}
       <div>${esc(n.texte)}</div>
     </div>`).join("")}
-  </div>`;
+  </details>`;
 }
 
 function renderCoach() {
@@ -202,8 +203,6 @@ function renderCoach() {
   const dateS = s.date ? new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(s.date + "T12:00")) : "";
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
-    ${notesStaff()}
-    <h2 class="section">Séances du jeudi</h2>
     ${liste.length > 1 ? `<div class="mchips">${liste.map((x, i) => `<button class="mchip ${i === COACH.ouverte ? "on" : ""}" data-coach-seance="${i}"><b>${esc(x.date ? new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(x.date + "T12:00")) : "Séance")}</b><span>${esc(x.titre || "")}</span></button>`).join("")}</div>` : ""}
     <div class="card seance-tete">
       ${dateS ? `<div class="small muted">Jeudi · ${esc(dateS)}</div>` : ""}
@@ -217,6 +216,7 @@ function renderCoach() {
     ${(s.ateliers || []).map((a) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)).join("")}
     ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
     ${s.etirements ? `<div class="card exo"><div class="exo-titre">🧘 Étirements de fin</div><p style="margin:8px 0 0">${esc(s.etirements)}</p></div>` : ""}
+    ${notesStaff()}
     <p class="foot"><a href="#" id="coach-lock">🔒 Verrouiller</a></p>`;
 }
 
