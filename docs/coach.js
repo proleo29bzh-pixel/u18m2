@@ -198,24 +198,27 @@ function renderCoach() {
     return;
   }
   const liste = COACH.seances;
-  if (!liste.length) { el.innerHTML = `<h2 class="section">Espace coach</h2><div class="empty">Aucune séance pour l'instant.</div>`; return; }
-  const s = liste[Math.min(COACH.ouverte, liste.length - 1)];
-  const dateS = s.date ? new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(s.date + "T12:00")) : "";
+  const ouvertes = COACH.ouvertes || (COACH.ouvertes = new Set());
+  // une séance = un bloc repliable (la plus récente en haut) : on garde l'historique de tous les entraînements
+  const blocSeance = (s, i) => {
+    const dateS = s.date ? new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(s.date + "T12:00")).replace(/ 1 /, " 1er ") : "";
+    return `<details class="card seance-pli" data-seance="${i}" ${ouvertes.has(i) ? "open" : ""}>
+      <summary>🏀 ${esc(dateS ? dateS.charAt(0).toUpperCase() + dateS.slice(1) : "Séance")} · ${esc(s.titre || "")}</summary>
+      ${s.resume ? `<p style="margin:10px 0 0">${esc(s.resume)}</p>` : ""}
+      ${s.bilan ? `<div class="note" style="margin-top:10px">📋 ${esc(s.bilan)}</div>` : ""}
+      ${LEGENDE}
+      ${s.organisation?.length || s.plan ? `<div class="card exo"><div class="exo-titre">Organisation</div>
+        ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
+        ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
+      ${(s.ateliers || []).map((a) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)).join("")}
+      ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
+      ${s.etirements ? `<div class="card exo"><div class="exo-titre">🧘 Étirements de fin</div><p style="margin:8px 0 0">${esc(s.etirements)}</p></div>` : ""}
+    </details>`;
+  };
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
-    ${liste.length > 1 ? `<div class="mchips">${liste.map((x, i) => `<button class="mchip ${i === COACH.ouverte ? "on" : ""}" data-coach-seance="${i}"><b>${esc(x.date ? new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(x.date + "T12:00")) : "Séance")}</b><span>${esc(x.titre || "")}</span></button>`).join("")}</div>` : ""}
-    <div class="card seance-tete">
-      ${dateS ? `<div class="small muted">Jeudi · ${esc(dateS)}</div>` : ""}
-      <div class="seance-theme">${esc(s.titre || "Séance")}</div>
-      ${s.resume ? `<p style="margin:6px 0 0">${esc(s.resume)}</p>` : ""}
-    </div>
-    ${LEGENDE}
-    ${s.organisation?.length || s.plan ? `<div class="card exo"><div class="exo-titre">Organisation</div>
-      ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
-      ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
-    ${(s.ateliers || []).map((a) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)).join("")}
-    ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
-    ${s.etirements ? `<div class="card exo"><div class="exo-titre">🧘 Étirements de fin</div><p style="margin:8px 0 0">${esc(s.etirements)}</p></div>` : ""}
+    <h3 class="seances-titre">Séances du jeudi</h3>
+    ${liste.length ? liste.map(blocSeance).join("") : `<div class="empty">Aucune séance pour l'instant.</div>`}
     ${notesStaff()}
     <p class="foot"><a href="#" id="coach-lock">🔒 Verrouiller</a></p>`;
 }
@@ -237,6 +240,13 @@ document.addEventListener("click", async (e) => {
   const sb = e.target.closest("[data-coach-seance]");
   if (sb) { COACH.ouverte = Number(sb.dataset.coachSeance); renderCoach(); window.scrollTo({ top: 0 }); }
 });
+document.addEventListener("toggle", (e) => {
+  const d = e.target.closest?.("[data-seance]");
+  if (!d) return;
+  const i = Number(d.dataset.seance);
+  COACH.ouvertes = COACH.ouvertes || new Set();
+  d.open ? COACH.ouvertes.add(i) : COACH.ouvertes.delete(i);
+}, true);
 document.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.target.id === "coach-mdp") $("#coach-ok").click();
 });

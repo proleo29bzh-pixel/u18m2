@@ -303,6 +303,11 @@ h2.section:first-child { margin-top: 4px; }
 @media (prefers-color-scheme: dark) { .standings tr.obj-encours td.t { color: #fbbf24; } }
 .standings tr.us td.t { text-decoration: underline; text-underline-offset: 3px; }
 
+.seances-titre { margin: 4px 4px 0; font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 800; }
+.seance-pli { border-left: 4px solid var(--red); }
+.seance-pli summary { cursor: pointer; font-weight: 800; font-size: 15px; line-height: 1.35; }
+.seance-pli[open] summary { margin-bottom: 4px; }
+.seance-pli .card { box-shadow: none; }
 .notes-staff { border-left: 4px solid var(--line); margin-top: 24px; }
 .notes-staff summary { cursor: pointer; font-size: 13px; font-weight: 800; color: var(--muted); }
 .notes-staff[open] summary { margin-bottom: 10px; }
