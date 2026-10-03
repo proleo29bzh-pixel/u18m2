@@ -303,6 +303,10 @@ h2.section:first-child { margin-top: 4px; }
 @media (prefers-color-scheme: dark) { .standings tr.obj-encours td.t { color: #fbbf24; } }
 .standings tr.us td.t { text-decoration: underline; text-underline-offset: 3px; }
 
+.notes-staff { border-left: 4px solid #f59e0b; }
+.note-staff + .note-staff { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line); }
+.note-staff div:last-child { line-height: 1.5; }
+
 .month { font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 22px 0 2px 4px; }
 
 /* --- classement --- */

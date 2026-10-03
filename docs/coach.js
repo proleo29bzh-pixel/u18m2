@@ -3,7 +3,7 @@
    avec le mot de passe coach, + schémas de terrain dessinés en SVG.
    Utilise les globales de app.js (DATA, $, esc, show). */
 
-const COACH = { seances: null, erreur: null, ouverte: 0, mdp: "" };
+const COACH = { seances: null, erreur: null, ouverte: 0, mdp: "", notes: [] };
 const coachStore = {
   get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
   set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} },
@@ -29,6 +29,7 @@ async function coachOuvrir(mdp, memoriser) {
   try {
     const contenu = await coachDechiffrer(mdp);
     COACH.seances = (contenu.seances || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+    COACH.notes = contenu.notes_staff || [];
     COACH.erreur = null;
     COACH.mdp = mdp;
     if (memoriser) coachStore.set("coach-mdp", mdp);
@@ -170,6 +171,18 @@ function blocExercice(titre, duree, but, schema, consignes, points, num) {
   </div>`;
 }
 
+/** Notes privées du staff (chiffrées avec les séances : invisibles pour les parents et les joueurs). */
+function notesStaff() {
+  if (!COACH.notes?.length) return "";
+  return `<div class="card notes-staff"><h3>📝 Notes du staff (privé)</h3>
+    ${COACH.notes.map((n) => `<div class="note-staff">
+      ${n.date ? `<div class="small muted">${esc(new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long", year: "numeric" }).format(new Date(n.date + "T12:00")))}</div>` : ""}
+      ${n.titre ? `<b>${esc(n.titre)}</b>` : ""}
+      <div>${esc(n.texte)}</div>
+    </div>`).join("")}
+  </div>`;
+}
+
 function renderCoach() {
   const el = $("#view-coach");
   if (!el) return;
@@ -189,6 +202,8 @@ function renderCoach() {
   const dateS = s.date ? new Intl.DateTimeFormat("fr-FR", { weekday: "long", day: "numeric", month: "long" }).format(new Date(s.date + "T12:00")) : "";
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
+    ${notesStaff()}
+    <h2 class="section">Séances du jeudi</h2>
     ${liste.length > 1 ? `<div class="mchips">${liste.map((x, i) => `<button class="mchip ${i === COACH.ouverte ? "on" : ""}" data-coach-seance="${i}"><b>${esc(x.date ? new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "short" }).format(new Date(x.date + "T12:00")) : "Séance")}</b><span>${esc(x.titre || "")}</span></button>`).join("")}</div>` : ""}
     <div class="card seance-tete">
       ${dateS ? `<div class="small muted">Jeudi · ${esc(dateS)}</div>` : ""}
