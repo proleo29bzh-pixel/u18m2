@@ -43,7 +43,9 @@ const staffDe = (id) => cvStaff().find((s) => s.id === id);
 const cvFamilles = () => (DATA.familles || []).map((f) => ({
   id: "Famille:" + f.enfant, nom: (f.nom || "").toUpperCase(), enfant: f.enfant,
   libelle: f.nom ? "Famille " + f.nom.toUpperCase() : "Parents de " + f.enfant,
+  souple: f.souple || "",   // dispo de dernière minute (ex. arbitre) : pas de relance, pas de pression sur l'objectif
 }));
+const estSouple = (g) => !!cvFamilles().find((f) => f.id === g)?.souple;
 const parentId = (f, role) => `Parent:${f.enfant}:${role}`;
 const cvParents = () => cvFamilles().flatMap((f) => ROLES_PARENT.map((r) => parentId(f, r)));
 const familleDe = (enfant) => cvFamilles().find((f) => f.enfant === enfant);
@@ -204,7 +206,8 @@ function cvRepartition() {
 
     const dispo = cvParents()
       .filter((p) => R(p).conduit === "oui" && R(p).present !== "oui" && R(p).present !== "non")
-      .sort((a, b) => T(a).faits + T(a).prevus - (T(b).faits + T(b).prevus)
+      .sort((a, b) => estSouple(groupe(a)) - estSouple(groupe(b))
+        || T(a).faits + T(a).prevus - (T(b).faits + T(b).prevus)
         || T(a).dernier - T(b).dernier || hash(m.id + a) - hash(m.id + b));
     const designes = [];
     for (const id of dispo) {
@@ -243,9 +246,10 @@ const pl = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const OBJ = () => DATA.covoiturage?.objectif_trajets || 2;
 /** « 2/2 ✅ » atteint (trajets faits) · « 2/2 🕓 » atteint en comptant les trajets prévus · sinon « 1/2 ». */
 /** Couleur de la ligne : vert objectif atteint (trajets faits), orange en cours ou seulement prévu, rien (bleu) à zéro. */
-const couleurObjectif = (t) => (t.faits >= OBJ() ? "obj-ok" : t.faits + t.prevus > 0 ? "obj-encours" : "");   // vert seulement quand c'est fait
-const objectifTxt = (t) => {
+const couleurObjectif = (t, id) => (estSouple(id) && t.faits < OBJ() ? "obj-souple" : t.faits >= OBJ() ? "obj-ok" : t.faits + t.prevus > 0 ? "obj-encours" : "");   // vert seulement quand c'est fait
+const objectifTxt = (t, id) => {
   const n = t.faits + t.prevus;
+  if (estSouple(id) && t.faits < OBJ()) return `${n}/${OBJ()} 🟨`;
   return `${n}/${OBJ()}` + (t.faits >= OBJ() ? " ✅" : n >= OBJ() ? " 🕓" : "");
 };
 function chip(txt, cls = "") { return `<span class="cchip ${cls}">${esc(txt)}</span>`; }
@@ -284,6 +288,7 @@ function pageFamille(m, a, f, trajets) {
   const recap = ROLES_PARENT.map((role) => `<div><b>${role}</b> : ${esc(etatParent(a, parentId(f, role)))}</div>`).join("");
   return `
   <div class="recap">${recap}</div>
+  ${f.souple ? `<div class="note" style="margin-bottom:10px">🟨 Pas de souci pour répondre tard, même la veille : on sait que ${esc(f.enfant)} peut être convoqué pour arbitrer au dernier moment. Si vous pouvez conduire, vous complétez les voitures sans changer ce qui est déjà prévu pour les autres familles. Merci 🙏</div>` : ""}
   <p class="small muted">${f.nom ? esc(f.enfant) + " · " : ""}${pl(t.faits + t.prevus, "trajet")} cette saison sur un objectif de ${OBJ()}${t.faits >= OBJ() ? " ✅ Merci !" : "."} Si vous pouvez conduire sans venir voir le match, l'appli vous désigne seulement si besoin, à tour de rôle entre les familles.</p>
   ${ROLES_PARENT.map((role) => {
     const id = parentId(f, role);
@@ -344,7 +349,7 @@ function pageBilan(m, a, trajets) {
   const presentsDits = cvJoueurs().filter((j) => R(j).present === "oui");
   const absents = cvJoueurs().filter((j) => R(j).present === "non");
   const sansRepJ = cvJoueurs().filter((j) => !R(j).present);
-  const famillesSansRep = cvFamilles().filter((f) => ROLES_PARENT.every((r) => { const x = R(parentId(f, r)); return !x.conduit && !x.present; }));
+  const famillesSansRep = cvFamilles().filter((f) => !f.souple && ROLES_PARENT.every((r) => { const x = R(parentId(f, r)); return !x.conduit && !x.present; }));
   const etatStaff = (r, s) => r.present === "oui" || (r.conduit === "oui" && r.present !== "non")
     ? "Présent(e) · " + (r.conduit === "oui" ? "conduit" : "passager") : r.present === "non" ? "Absent(e)" : s.presentDefaut ? "Présent (par défaut) · passager" : "Pas encore répondu";
 
@@ -395,10 +400,11 @@ function pageBilan(m, a, trajets) {
     <table class="standings">
       <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Objectif</th></tr></thead>
       <tbody>${Object.entries(trajets).sort(([x, t1], [y, t2]) => estStaff(x) - estStaff(y) || t2.faits + t2.prevus - (t1.faits + t1.prevus) || nomDe(x).localeCompare(nomDe(y)))
-        .map(([id, t]) => `<tr class="${groupe(cvMoi() || "") === id ? "us" : ""} ${estStaff(id) ? "" : couleurObjectif(t)}"><td class="t">${esc(nomDe(id))}${estStaff(id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${t.faits}</td><td>${t.prevus}</td>
-          <td>${estStaff(id) ? "—" : objectifTxt(t)}</td></tr>`).join("")}</tbody>
+        .map(([id, t]) => `<tr class="${groupe(cvMoi() || "") === id ? "us" : ""} ${estStaff(id) ? "" : couleurObjectif(t, id)}"><td class="t">${esc(nomDe(id))}${estStaff(id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${t.faits}</td><td>${t.prevus}</td>
+          <td>${estStaff(id) ? "—" : objectifTxt(t, id)}</td></tr>`).join("")}</tbody>
     </table>
-  </div>`;
+  </div>
+  ${cvFamilles().filter((f) => f.souple).map((f) => `<p class="small muted" style="margin:6px 4px 0">🟨 <b>${esc(f.libelle)}</b> : ${esc(f.souple)} Pas de pression sur l'objectif, chaque trajet est un bonus 🙏</p>`).join("")}`;
 }
 
 // ------------------------------------------------------------ rendu principal

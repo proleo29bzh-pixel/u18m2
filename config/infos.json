@@ -17,7 +17,7 @@
     {"nom": "Lucas", "enfant": "Gabin"},
     {"nom": "Eono", "enfant": "Tom (Grand)"},
     {"nom": "", "enfant": "Tom (Petit)"},
-    {"nom": "Vilgicquel", "enfant": "Thomas"},
+    {"nom": "Vilgicquel", "enfant": "Thomas", "souple": "Thomas est arbitre officiel : ses convocations tombent 72 h avant, parfois la veille. La famille répond au dernier moment, quand elle sait."},
     {"nom": "Foll-Machut", "enfant": "Nils"},
     {"nom": "Tatard", "enfant": "Evan"},
     {"nom": "Jestin", "enfant": "Malo"},
