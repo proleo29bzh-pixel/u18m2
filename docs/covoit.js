@@ -246,7 +246,7 @@ const pl = (n, mot) => `${n} ${mot}${n > 1 ? "s" : ""}`;
 const OBJ = () => DATA.covoiturage?.objectif_trajets || 2;
 /** « 2/2 ✅ » atteint (trajets faits) · « 2/2 🕓 » atteint en comptant les trajets prévus · sinon « 1/2 ». */
 /** Couleur de la ligne : vert objectif atteint (trajets faits), orange en cours ou seulement prévu, rien (bleu) à zéro. */
-const couleurObjectif = (t, id) => (estSouple(id) && t.faits < OBJ() ? "obj-souple" : t.faits >= OBJ() ? "obj-ok" : t.faits + t.prevus > 0 ? "obj-encours" : "");   // vert seulement quand c'est fait
+const couleurObjectif = (t) => (t.faits >= OBJ() ? "obj-ok" : t.faits + t.prevus > 0 ? "obj-encours" : "");   // vert seulement quand c'est fait
 const objectifTxt = (t, id) => {
   const n = t.faits + t.prevus;
   if (estSouple(id) && t.faits < OBJ()) return `${n}/${OBJ()} 🟨`;   // carton jaune, sans explication publique
@@ -349,7 +349,6 @@ function pageBilan(m, a, trajets) {
   const presentsDits = cvJoueurs().filter((j) => R(j).present === "oui");
   const absents = cvJoueurs().filter((j) => R(j).present === "non");
   const sansRepJ = cvJoueurs().filter((j) => !R(j).present);
-  const famillesSansRep = cvFamilles().filter((f) => !f.souple && ROLES_PARENT.every((r) => { const x = R(parentId(f, r)); return !x.conduit && !x.present; }));
   const etatStaff = (r, s) => r.present === "oui" || (r.conduit === "oui" && r.present !== "non")
     ? "Présent(e) · " + (r.conduit === "oui" ? "conduit" : "passager") : r.present === "non" ? "Absent(e)" : s.presentDefaut ? "Présent (par défaut) · passager" : "Pas encore répondu";
 
@@ -389,10 +388,7 @@ function pageBilan(m, a, trajets) {
     ${a.placeCoach ? `<p class="small muted" style="margin:6px 0 0">Une place est gardée pour un coach tant que personne du staff n'a répondu.</p>` : ""}
   </div>
 
-  ${a.parentsVoiture.length || a.parentsPassagers.length ? `<div class="card"><h3>Parents qui viennent au match</h3>
-    ${a.parentsVoiture.map((id) => chip("🚗 " + nomDe(id), "ok")).join("")}${a.parentsPassagers.map((id) => chip("🙋 " + nomDe(id) + " (cherche une place)")).join("")}</div>` : ""}
-
-  ${!a.passe && famillesSansRep.length ? `<div class="card"><h3>Familles qui n'ont pas répondu</h3>${famillesSansRep.map((f) => chip(f.libelle, "wait")).join("")}</div>` : ""}
+  ${!a.passe && !ok ? `<div class="cvbilan ko" style="margin-bottom:14px"><div>🚗 Il manque ${a.voitures ? "encore " : ""}${pl(Math.ceil((a.besoin - a.places) / PLACES()), "voiture")} pour ce match</div><div>${pl(a.besoin - a.places, "place")}</div></div>` : ""}
 
   <h2 class="section">Trajets par famille</h2>
   <p class="small muted" style="margin:0 4px 8px">🎯 Objectif ${esc(DATA.covoiturage?.objectif_periode || "de la saison")} : <b>${OBJ()} trajet${OBJ() > 1 ? "s" : ""} par famille</b>, pour que ce ne soient pas toujours les mêmes qui conduisent.</p>
@@ -400,7 +396,7 @@ function pageBilan(m, a, trajets) {
     <table class="standings">
       <thead><tr><th class="t">Conducteur</th><th>Faits</th><th>Prévus</th><th>Objectif</th></tr></thead>
       <tbody>${Object.entries(trajets).sort(([x, t1], [y, t2]) => estStaff(x) - estStaff(y) || t2.faits + t2.prevus - (t1.faits + t1.prevus) || nomDe(x).localeCompare(nomDe(y)))
-        .map(([id, t]) => `<tr class="${groupe(cvMoi() || "") === id ? "us" : ""} ${estStaff(id) ? "" : couleurObjectif(t, id)}"><td class="t">${esc(nomDe(id))}${estStaff(id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${t.faits}</td><td>${t.prevus}</td>
+        .map(([id, t]) => `<tr class="${estStaff(id) ? "" : couleurObjectif(t)}"><td class="t">${esc(nomDe(id))}${estStaff(id) ? ' <span class="muted small">(staff)</span>' : ""}</td><td>${t.faits}</td><td>${t.prevus}</td>
           <td>${estStaff(id) ? "—" : objectifTxt(t, id)}</td></tr>`).join("")}</tbody>
     </table>
   </div>`;
