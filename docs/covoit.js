@@ -446,6 +446,11 @@ function apercuPublic() {
     <div class="stat"><b>${a.voitures}</b><span>voiture${a.voitures > 1 ? "s" : ""}</span></div>
     <div class="stat ${ok ? "ok" : "ko"}"><b>${a.places}</b><span>places</span></div>
   </div>
+  <div class="cvbilan ${ok ? "ok" : "ko"}">
+    <div>${pl(a.joueursPresents.length, "joueur")}${(a.staffPresents.length - a.staffConduit.length + a.placeCoach) ? ` + ${a.staffPresents.length - a.staffConduit.length + a.placeCoach} staff` : ""}${a.parentsPassagers.length ? ` + ${pl(a.parentsPassagers.length, "parent")}` : ""}</div>
+    <div>${ok ? "C'est bon ✅" : a.voitures ? `Il manque ${pl(a.besoin - a.places, "place")}` : "Aucun conducteur pour l'instant"}</div>
+  </div>
+  ${ok && a.places > a.besoin ? `<p class="small muted" style="margin:6px 4px 0">🪑 ${a.places - a.besoin} place${a.places - a.besoin > 1 ? "s libres" : " libre"}.</p>` : ""}
   <div class="card">
     <h3>🚗 Voitures</h3>
     ${a.voitures ? [
