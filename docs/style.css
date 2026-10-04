@@ -299,6 +299,9 @@ h2.section:first-child { margin-top: 4px; }
 .standings tr.obj-ok td { background: rgba(22, 163, 74, .16); }
 .standings tr.obj-ok td.t { color: var(--win); }
 .standings tr.obj-encours td { background: rgba(245, 158, 11, .18); }
+.standings tr.obj-souple td { background: rgba(250, 204, 21, .28); }
+.standings tr.obj-souple td.t { color: #a16207; }
+@media (prefers-color-scheme: dark) { .standings tr.obj-souple td.t { color: #fde047; } }
 .standings tr.obj-encours td.t { color: #d97706; }
 @media (prefers-color-scheme: dark) { .standings tr.obj-encours td.t { color: #fbbf24; } }
 .standings tr.us td.t { text-decoration: underline; text-underline-offset: 3px; }
