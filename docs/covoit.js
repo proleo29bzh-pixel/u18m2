@@ -43,11 +43,12 @@ const staffDe = (id) => cvStaff().find((s) => s.id === id);
 const cvFamilles = () => (DATA.familles || []).map((f) => ({
   id: "Famille:" + f.enfant, nom: (f.nom || "").toUpperCase(), enfant: f.enfant,
   libelle: f.nom ? "Famille " + f.nom.toUpperCase() : "Parents de " + f.enfant,
+  roles: f.parents || ROLES_PARENT,   // infos.json "parents": ["Maman"] quand un seul parent suit le joueur
   souple: f.souple || "",   // dispo de dernière minute (ex. arbitre) : discret, visible seulement sur la page de la famille
 }));
 const estSouple = (g) => !!cvFamilles().find((f) => f.id === g)?.souple;
 const parentId = (f, role) => `Parent:${f.enfant}:${role}`;
-const cvParents = () => cvFamilles().flatMap((f) => ROLES_PARENT.map((r) => parentId(f, r)));
+const cvParents = () => cvFamilles().flatMap((f) => f.roles.map((r) => parentId(f, r)));
 const familleDe = (enfant) => cvFamilles().find((f) => f.enfant === enfant);
 
 function estStaff(id) { return id.startsWith("Coach "); }
@@ -285,12 +286,12 @@ function etatParent(a, id) {
 
 function pageFamille(m, a, f, trajets) {
   const t = trajets[f.id];
-  const recap = ROLES_PARENT.map((role) => `<div><b>${role}</b> : ${esc(etatParent(a, parentId(f, role)))}</div>`).join("");
+  const recap = f.roles.map((role) => `<div><b>${role}</b> : ${esc(etatParent(a, parentId(f, role)))}</div>`).join("");
   return `
   <div class="recap">${recap}</div>
   ${f.souple ? `<div class="note" style="margin-bottom:10px">🟨 Pas de souci pour répondre tard, même la veille : on sait que ${esc(f.enfant)} peut être convoqué pour arbitrer au dernier moment. Si vous pouvez conduire, vous complétez les voitures sans changer ce qui est déjà prévu pour les autres familles. Merci 🙏</div>` : ""}
   <p class="small muted">${f.nom ? esc(f.enfant) + " · " : ""}${pl(t.faits + t.prevus, "trajet")} cette saison sur un objectif de ${OBJ()}${t.faits >= OBJ() ? " ✅ Merci !" : "."} Si vous pouvez conduire sans venir voir le match, l'appli vous désigne seulement si besoin, à tour de rôle entre les familles.</p>
-  ${ROLES_PARENT.map((role) => {
+  ${f.roles.map((role) => {
     const id = parentId(f, role);
     const r = a.rep[id] || {};
     return `<div class="card">

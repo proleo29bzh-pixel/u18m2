@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-04T15:06:31+00:00",
+ "maj": "2026-10-04T15:10:53+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -73,7 +73,10 @@
   },
   {
    "nom": "Saliou",
-   "enfant": "Tom (Petit)"
+   "enfant": "Tom (Petit)",
+   "parents": [
+    "Maman"
+   ]
   },
   {
    "nom": "Vilgicquel",
