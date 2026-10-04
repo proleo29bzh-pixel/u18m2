@@ -93,7 +93,7 @@
 
   "scores_manuels": {
     "_aide": "Pour les matchs des autres équipes de la poule (le CJR ne les connaît pas). Format : \"id FFBB\": [score domicile, score extérieur]",
-    "200000014843594": null
+    "200000014843594": [61, 58]
   },
 
   "liens": {

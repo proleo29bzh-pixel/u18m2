@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-04T02:39:39+00:00",
+ "maj": "2026-10-04T12:19:22+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -218,12 +218,12 @@
    "date": "2026-10-03",
    "heure": "17:00",
    "dom": {
-    "nom": "CTC Kornog (Guilers)",
+    "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
    "ext": {
-    "nom": "AS Ergué-Armel",
+    "nom": "AS Ergué-Armel 3",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
@@ -234,7 +234,10 @@
     "lon": -4.59085
    },
    "nous": false,
-   "score": null
+   "score": [
+    61,
+    58
+   ]
   },
   {
    "id": "200000014843624",
@@ -243,12 +246,12 @@
    "date": "2026-10-10",
    "heure": null,
    "dom": {
-    "nom": "CTC St Renan-Plouarzel",
+    "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
     "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
    },
    "ext": {
-    "nom": "CTC Kornog (Guilers)",
+    "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
@@ -278,12 +281,12 @@
    "date": "2026-10-10",
    "heure": null,
    "dom": {
-    "nom": "AS Ergué-Armel",
+    "nom": "AS Ergué-Armel 3",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
    "ext": {
-    "nom": "Carhaix Basket",
+    "nom": "Carhaix Basket 1",
     "nous": false,
     "logo": "logos/logo-carhaix-basket.jpg"
    },
@@ -303,12 +306,12 @@
    "date": "2026-11-07",
    "heure": null,
    "dom": {
-    "nom": "AS Ergué-Armel",
+    "nom": "AS Ergué-Armel 3",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
    "ext": {
-    "nom": "CTC St Renan-Plouarzel",
+    "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
     "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
    },
@@ -329,12 +332,12 @@
    "date": "2026-11-07",
    "heure": null,
    "dom": {
-    "nom": "Carhaix Basket",
+    "nom": "Carhaix Basket 1",
     "nous": false,
     "logo": "logos/logo-carhaix-basket.jpg"
    },
    "ext": {
-    "nom": "CTC Kornog (Guilers)",
+    "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
@@ -354,12 +357,12 @@
    "date": "2026-11-14",
    "heure": null,
    "dom": {
-    "nom": "CTC St Renan-Plouarzel",
+    "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
     "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
    },
    "ext": {
-    "nom": "Carhaix Basket",
+    "nom": "Carhaix Basket 1",
     "nous": false,
     "logo": "logos/logo-carhaix-basket.jpg"
    },
@@ -380,12 +383,12 @@
    "date": "2026-11-14",
    "heure": null,
    "dom": {
-    "nom": "AS Ergué-Armel",
+    "nom": "AS Ergué-Armel 3",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
    "ext": {
-    "nom": "CTC Kornog (Guilers)",
+    "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
@@ -405,12 +408,12 @@
    "date": "2026-11-21",
    "heure": null,
    "dom": {
-    "nom": "CTC Kornog (Guilers)",
+    "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
    "ext": {
-    "nom": "CTC St Renan-Plouarzel",
+    "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
     "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
    },
@@ -431,12 +434,12 @@
    "date": "2026-11-21",
    "heure": null,
    "dom": {
-    "nom": "Carhaix Basket",
+    "nom": "Carhaix Basket 1",
     "nous": false,
     "logo": "logos/logo-carhaix-basket.jpg"
    },
    "ext": {
-    "nom": "AS Ergué-Armel",
+    "nom": "AS Ergué-Armel 3",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
@@ -456,12 +459,12 @@
    "date": "2026-11-28",
    "heure": "18:00",
    "dom": {
-    "nom": "Carhaix Basket",
+    "nom": "Carhaix Basket 1",
     "nous": false,
     "logo": "logos/logo-carhaix-basket.jpg"
    },
    "ext": {
-    "nom": "CTC St Renan-Plouarzel",
+    "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
     "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
    },
@@ -483,12 +486,12 @@
    "date": "2026-12-05",
    "heure": null,
    "dom": {
-    "nom": "CTC St Renan-Plouarzel",
+    "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
     "logo": "logos/logo-ctc-st-renan-plouarzel-basket_2-carre.png"
    },
    "ext": {
-    "nom": "AS Ergué-Armel",
+    "nom": "AS Ergué-Armel 3",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
@@ -509,12 +512,12 @@
    "date": "2026-12-05",
    "heure": null,
    "dom": {
-    "nom": "CTC Kornog (Guilers)",
+    "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
     "logo": "logos/logo-match-de-championnat.png"
    },
    "ext": {
-    "nom": "Carhaix Basket",
+    "nom": "Carhaix Basket 1",
     "nous": false,
     "logo": "logos/logo-carhaix-basket.jpg"
    },

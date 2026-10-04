@@ -3,10 +3,10 @@
   "_note": "Calendrier officiel FFBB - DMU18 Poule D2C, phase 1. Heure 00:00 = horaire pas encore fixe.",
   "competition": "Départementale Masculine U18 - Poule D2C",
   "equipes": {
-    "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB": {"court": "CTC St Renan-Plouarzel", "nous": true},
-    "CARHAIX BASKET": {"court": "Carhaix Basket"},
-    "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS": {"court": "CTC Kornog (Guilers)"},
-    "AMICALE SPORTIVE ERGUE ARMEL": {"court": "AS Ergué-Armel"}
+    "IE - CTC St RENAN-PLOUARZEL BASKET - PLOUARZEL BASKET CLUB": {"court": "CTC St Renan-Plouarzel 2", "nous": true},
+    "CARHAIX BASKET": {"court": "Carhaix Basket 1"},
+    "IE - CTC KORNOG BASKET - BLEUETS DE GUILERS": {"court": "CTC Kornog 2 (Guilers)"},
+    "AMICALE SPORTIVE ERGUE ARMEL": {"court": "AS Ergué-Armel 3"}
   },
   "salles": {
     "carhaix": {"nom": "Salle Omnisports", "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer", "lat": 48.27884, "lon": -3.54778},
