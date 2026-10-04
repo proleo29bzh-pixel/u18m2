@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-03T14:37:41+00:00",
+ "maj": "2026-10-04T02:39:39+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -209,13 +209,7 @@
    },
    "nous": true,
    "score": null,
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3018/20260926-landerneau-bretagne-basket?mode=full",
-   "convoc": {
-    "domicile": false,
-    "rdv": null,
-    "heure": "14:30",
-    "salle": "LAVALLOT"
-   }
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3018/20260926-landerneau-bretagne-basket?mode=full"
   },
   {
    "id": "200000014843594",
