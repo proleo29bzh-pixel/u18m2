@@ -54,6 +54,10 @@ function reponse_(obj) {
 }
 
 function doGet(e) {
+  // aperçu public en lecture seule (sans code) : réponses sans les dates de modification, aucune écriture possible
+  if (e.parameter.action === "apercu") {
+    return reponse_({ ok: true, reponses: lire_().map((r) => ({ match: r.match, famille: r.famille, present: r.present, conduit: r.conduit, places: r.places })) });
+  }
   const role = role_(e.parameter.code || "");
   if (!role) return reponse_({ ok: false, erreur: "code" });
   return reponse_({ ok: true, role: role, reponses: lire_() });

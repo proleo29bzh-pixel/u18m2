@@ -70,7 +70,15 @@ async function cvCharger() {
     CV.charge = true;
     return;
   }
-  if (!cvCode()) { CV.charge = true; return; }
+  if (!cvCode()) {
+    // aperçu public en lecture seule (le script refuse toute écriture sans code)
+    try {
+      const j = await (await fetch(cvApi() + "?action=apercu")).json();
+      CV.apercu = j.ok && Array.isArray(j.reponses) ? j.reponses : null;
+    } catch { CV.apercu = null; }
+    CV.charge = true;
+    return;
+  }
   try {
     const res = await fetch(cvApi() + "?code=" + encodeURIComponent(cvCode()));
     const j = await res.json();
@@ -412,6 +420,49 @@ function moiValide(moi) {
   return (demo || cvRole() === "joueur") && cvJoueurs().includes(moi);
 }
 
+/** Aperçu du prochain déplacement, visible sans code et sans rien pouvoir modifier. */
+function apercuPublic() {
+  if (!CV.apercu) return "";
+  const auj = new Date(); auj.setHours(0, 0, 0, 0);
+  const m = cvMatchs().find((x) => new Date(x.date + "T00:00") >= auj);
+  if (!m) return "";
+  const sauve = CV.reponses;
+  CV.reponses = CV.apercu;                 // calcul sur les réponses publiques, puis on remet comme avant
+  const a = cvRepartition().parMatch[m.id];
+  CV.reponses = sauve;
+  const R = (id) => a.rep[id] || {};
+  const ok = a.places >= a.besoin;
+  const voiture = (id, type) => `<div class="row"><div class="ico">${icon.car}</div><div><div class="v">${esc(nomDe(id))}</div><div class="small muted">${type} · ${pl(R(id).places || PLACES(), "place")}</div></div></div>`;
+  const oui = cvJoueurs().filter((j) => R(j).present === "oui"), non = cvJoueurs().filter((j) => R(j).present === "non");
+  const sans = cvJoueurs().filter((j) => !R(j).present);
+  return `
+  <h2 class="section">Prochain déplacement</h2>
+  <div class="card mhead">
+    <div class="opp">${isHome(m) ? "vs" : "@"} ${esc(opponent(m).nom)}</div>
+    <div class="small muted">${esc(dayLong(m))}${m.heure ? " · " + m.heure.replace(":", "h") : ""} · ${esc(salleMatch(m).adresse || salleMatch(m).nom || "")}</div>
+  </div>
+  <div class="bilan-grid">
+    <div class="stat"><b>${a.besoin}</b><span>passagers</span></div>
+    <div class="stat"><b>${a.voitures}</b><span>voiture${a.voitures > 1 ? "s" : ""}</span></div>
+    <div class="stat ${ok ? "ok" : "ko"}"><b>${a.places}</b><span>places</span></div>
+  </div>
+  <div class="card">
+    <h3>🚗 Voitures</h3>
+    ${a.voitures ? [
+      ...a.staffConduit.map((id) => voiture(id, "Staff")),
+      ...a.parentsVoiture.map((id) => voiture(id, "Vient au match")),
+      ...a.designes.map((id) => voiture(id, "Désigné(e) pour conduire")),
+    ].join("") : `<p class="small muted" style="margin:0">Personne ne s'est encore proposé pour conduire.</p>`}
+  </div>
+  <div class="card">
+    <h3>🏀 Joueurs</h3>
+    <div class="cvl" style="padding-top:0"><div class="k">✅ Présents (${oui.length})</div>${oui.map((j) => chip(j, "ok")).join("") || '<span class="small muted">—</span>'}</div>
+    ${non.length ? `<div class="cvl"><div class="k">❌ Absents (${non.length})</div>${non.map((j) => chip(j, "abs")).join("")}</div>` : ""}
+    ${sans.length ? `<div class="cvl"><div class="k">⏳ Pas encore répondu (${sans.length})</div>${sans.map((j) => chip(j, "wait")).join("")}</div>` : ""}
+  </div>
+  <p class="small muted" style="margin:6px 4px 0">👀 Aperçu en lecture seule. Pour répondre, entrez votre code ci-dessus.</p>`;
+}
+
 function renderCovoit() {
   const el = $("#view-covoit");
   if (!el || !DATA) return;
@@ -425,7 +476,7 @@ function renderCovoit() {
       ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}
     </div>`;
   }
-  if (besoinCode) { el.innerHTML = html; return; }
+  if (besoinCode) { el.innerHTML = html + apercuPublic(); return; }
   if (!CV.charge) { el.innerHTML = html + `<div class="empty">Chargement…</div>`; return; }
 
   const moi = moiValide(cvMoi()) ? cvMoi() : "";
@@ -521,6 +572,8 @@ document.addEventListener("click", async (e) => {
   if (e.target.id === "cv-logout") {
     e.preventDefault();
     cvDeconnecter(); CV.erreur = null;
+    renderCovoit();
+    await cvCharger();              // recharge l'aperçu public
     return renderCovoit();
   }
   if (e.target.id === "cv-code-ok") {
