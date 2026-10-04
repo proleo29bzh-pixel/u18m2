@@ -3,7 +3,7 @@
    avec le mot de passe coach, + schémas de terrain dessinés en SVG.
    Utilise les globales de app.js (DATA, $, esc, show). */
 
-const COACH = { seances: null, erreur: null, ouverte: 0, mdp: "", notes: [] };
+const COACH = { seances: null, erreur: null, ouverte: 0, mdp: "", notes: [], licences: [], licCle: "", licOuvert: false, licVue: null };
 const coachStore = {
   get: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
   set: (k, v) => { try { v ? localStorage.setItem(k, v) : localStorage.removeItem(k); } catch {} },
@@ -30,6 +30,8 @@ async function coachOuvrir(mdp, memoriser) {
     const contenu = await coachDechiffrer(mdp);
     COACH.seances = (contenu.seances || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || ""));
     COACH.notes = contenu.notes_staff || [];
+    COACH.licences = contenu.licences || [];
+    COACH.licCle = contenu.licences_cle || "";
     COACH.erreur = null;
     COACH.mdp = mdp;
     if (memoriser) coachStore.set("coach-mdp", mdp);
@@ -184,6 +186,44 @@ function notesStaff() {
   </details>`;
 }
 
+// ------------------------------------------------------------ licences (fichiers chiffrés, clé dans coach.enc.json)
+
+async function licenceOuvrir(i) {
+  const l = COACH.licences[i];
+  if (COACH.licVue?.url) URL.revokeObjectURL(COACH.licVue.url);
+  COACH.licVue = { i, url: "", erreur: "" };
+  renderCoach();
+  try {
+    const res = await fetch(l.f, { cache: "no-store" });
+    if (!res.ok) throw new Error();
+    const brut = new Uint8Array(await res.arrayBuffer());
+    const cle = await crypto.subtle.importKey("raw", b64(COACH.licCle), "AES-GCM", false, ["decrypt"]);
+    const clair = await crypto.subtle.decrypt({ name: "AES-GCM", iv: brut.slice(0, 12) }, cle, brut.slice(12));
+    COACH.licVue = { i, url: URL.createObjectURL(new Blob([clair], { type: l.type })), erreur: "" };
+  } catch {
+    COACH.licVue = { i, url: "", erreur: "Impossible d'ouvrir cette licence (réseau ?)." };
+  }
+  renderCoach();
+}
+
+function blocLicences() {
+  if (!COACH.licOuvert) return "";
+  const v = COACH.licVue;
+  const l = v ? COACH.licences[v.i] : null;
+  const vue = !v ? "" : v.erreur ? `<div class="note">⚠️ ${esc(v.erreur)}</div>`
+    : !v.url ? `<p class="small muted">Ouverture…</p>`
+    : l.type === "application/pdf" ? `<a class="btn primary" href="${v.url}" target="_blank" rel="noopener">📄 Ouvrir la licence de ${esc(l.nom)}</a>`
+    : `<a href="${v.url}" target="_blank" rel="noopener"><img src="${v.url}" alt="Licence de ${esc(l.nom)}" style="width:100%;border-radius:10px;display:block"></a>
+       <p class="small muted" style="margin:6px 0 0;text-align:center">Touchez l'image pour l'agrandir</p>`;
+  return `<div class="card">
+    <h3>🪪 Licences</h3>
+    ${COACH.licences.length ? `<div class="segs" style="flex-wrap:wrap">${COACH.licences.map((x, i) =>
+      `<button class="seg ${v?.i === i ? "on g" : ""}" data-licence="${i}">${esc(x.nom)}</button>`).join("")}</div>`
+      : `<p class="small muted" style="margin:0">Aucune licence pour l'instant. Envoie les photos ou PDF à Claude.</p>`}
+    ${vue ? `<div style="margin-top:12px">${vue}</div>` : ""}
+  </div>`;
+}
+
 function renderCoach() {
   const el = $("#view-coach");
   if (!el) return;
@@ -217,6 +257,8 @@ function renderCoach() {
   };
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
+    <button class="btn ${COACH.licOuvert ? "primary" : ""}" id="coach-licences" style="width:100%;margin-bottom:12px">🪪 Licences ${COACH.licOuvert ? "▴" : "▾"}</button>
+    ${blocLicences()}
     <h3 class="seances-titre">Séances du jeudi</h3>
     ${liste.length ? liste.map(blocSeance).join("") : `<div class="empty">Aucune séance pour l'instant.</div>`}
     ${notesStaff()}
@@ -232,9 +274,14 @@ document.addEventListener("click", async (e) => {
     e.target.disabled = true; e.target.textContent = "…";
     return coachOuvrir(mdp, $("#coach-memo").checked);
   }
+  if (e.target.id === "coach-licences") { COACH.licOuvert = !COACH.licOuvert; return renderCoach(); }
+  const lb = e.target.closest("[data-licence]");
+  if (lb) return licenceOuvrir(+lb.dataset.licence);
   if (e.target.id === "coach-lock") {
     e.preventDefault();
+    if (COACH.licVue?.url) URL.revokeObjectURL(COACH.licVue.url);
     COACH.seances = null; COACH.erreur = null; COACH.mdp = ""; coachStore.set("coach-mdp", "");
+    COACH.licences = []; COACH.licCle = ""; COACH.licOuvert = false; COACH.licVue = null;
     return renderCoach();
   }
   const sb = e.target.closest("[data-coach-seance]");
