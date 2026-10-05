@@ -1,6 +1,6 @@
 // Hors-ligne : l'appli s'ouvre même sans réseau (dernières données connues).
-const CACHE = "u18m2-v71";
-const SHELL = ["./", "index.html", "style.css?v=71", "app.js?v=71", "covoit.js?v=71", "entrainement.js?v=71", "coach.js?v=71", "annonces.js?v=71", "maillots.js?v=71", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
+const CACHE = "u18m2-v72";
+const SHELL = ["./", "index.html", "style.css?v=72", "app.js?v=72", "covoit.js?v=72", "entrainement.js?v=72", "coach.js?v=72", "annonces.js?v=72", "maillots.js?v=72", "manifest.webmanifest", "icons/icon-192.png", "icons/icon-512.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting()));

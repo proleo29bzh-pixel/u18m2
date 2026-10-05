@@ -182,6 +182,47 @@ function blocExercice(titre, duree, but, schema, consignes, points, num) {
   </div>`;
 }
 
+// ------------------------------------------------------------ étirements de fin (communs à toutes les séances)
+
+/** Bonhomme en traits : chaque partie = liste de points [x, y] reliés ; tête = [x, y]. Cadre 160 × 120, sol à y = 110. */
+function bonhomme({ tete, traits, mur, sol = true }) {
+  const ligne = (pts) => `<polyline points="${pts.map((p) => p.join(",")).join(" ")}" fill="none" stroke="${COUL.navy}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+  return `<svg viewBox="0 0 160 120" class="etir-svg" role="img">
+    ${sol ? `<line x1="6" y1="111" x2="154" y2="111" stroke="${COUL.gris}" stroke-width="2" opacity=".5"/>` : ""}
+    ${mur ? `<line x1="${mur}" y1="10" x2="${mur}" y2="111" stroke="${COUL.gris}" stroke-width="4" opacity=".6"/>` : ""}
+    ${traits.map(ligne).join("")}
+    <circle cx="${tete[0]}" cy="${tete[1]}" r="8" fill="${COUL.orange}" stroke="${COUL.navy}" stroke-width="2.5"/>
+  </svg>`;
+}
+
+const ETIREMENTS = [
+  { nom: "Quadriceps", txt: "Debout, attrape ton pied et ramène le talon vers la fesse. Genoux serrés, bassin droit.", duree: "30 s par jambe",
+    fig: { tete: [70, 20], traits: [[[70, 29], [70, 64]], [[70, 64], [71, 87], [71, 109]], [[70, 64], [72, 90], [52, 72]], [[70, 38], [54, 70]], [[70, 38], [90, 50]]] } },
+  { nom: "Mollets", txt: "Mains au mur, jambe arrière tendue, talon bien au sol. Pousse doucement le mur.", duree: "30 s par jambe",
+    fig: { mur: 140, tete: [118, 30], traits: [[[90, 70], [112, 38]], [[112, 40], [138, 42]], [[90, 70], [108, 86], [112, 109]], [[90, 70], [52, 109]]] } },
+  { nom: "Ischios", txt: "Assis, une jambe tendue devant. Avance le buste, dos droit, vers ton pied.", duree: "30 s par jambe",
+    fig: { tete: [92, 64], traits: [[[50, 106], [84, 74]], [[50, 106], [134, 106], [136, 96]], [[50, 106], [62, 88], [76, 106]], [[80, 78], [122, 98]]] } },
+  { nom: "Adducteurs (papillon)", txt: "Assis, plantes de pieds collées. Pousse doucement les genoux vers le sol avec les coudes.", duree: "30 s",
+    fig: { tete: [80, 50], traits: [[[80, 58], [80, 98]], [[80, 98], [44, 90], [78, 106]], [[80, 98], [116, 90], [82, 106]], [[80, 66], [56, 92]], [[80, 66], [104, 92]]] } },
+  { nom: "Fessiers", txt: "Allongé sur le dos, ramène un genou vers la poitrine avec les deux mains. L'autre jambe reste tendue.", duree: "30 s par jambe",
+    fig: { tete: [22, 98], traits: [[[30, 100], [88, 102]], [[88, 102], [146, 104]], [[88, 102], [70, 68], [96, 74]], [[40, 100], [68, 72]]] } },
+  { nom: "Psoas (fente)", txt: "Fente avant, genou arrière au sol. Avance le bassin, buste droit.", duree: "30 s par jambe",
+    fig: { tete: [80, 26], traits: [[[80, 35], [80, 72]], [[80, 72], [108, 74], [108, 109]], [[80, 72], [60, 109], [30, 109]], [[80, 44], [104, 70]]] } },
+];
+
+/** Bouton repliable entre les séances et les notes : les mêmes étirements à chaque fin d'entraînement. */
+function blocEtirements() {
+  return `<details class="card etirements"><summary>🧘 Étirements de fin</summary>
+    <p class="small muted" style="margin:10px 0 12px">10 minutes au calme, à la fin de chaque entraînement. On respire, on tient la position sans à-coups, on ne force jamais jusqu'à la douleur.</p>
+    <div class="etir-grille">${ETIREMENTS.map((e, i) => `<div class="etir">
+      ${bonhomme(e.fig)}
+      <div class="etir-nom">${i + 1}. ${esc(e.nom)}</div>
+      <div class="small">${esc(e.txt)}</div>
+      <div class="etir-duree">⏱ ${esc(e.duree)}</div>
+    </div>`).join("")}</div>
+  </details>`;
+}
+
 /** Notes privées du staff (chiffrées avec les séances : invisibles pour les parents et les joueurs). */
 function notesStaff() {
   if (!COACH.notes?.length) return "";
@@ -275,7 +316,6 @@ function renderCoach() {
       ${(s.ateliers || []).map((a, k) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)
         + (a.animation ? blocAnimation(a.animation, `s${i}a${k}`) : "")).join("")}
       ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
-      ${s.etirements ? `<div class="card exo"><div class="exo-titre">🧘 Étirements de fin</div><p style="margin:8px 0 0">${esc(s.etirements)}</p></div>` : ""}
       ${s.animation ? blocAnimation(s.animation, "s" + i) : ""}
     </details>`;
   };
@@ -285,6 +325,7 @@ function renderCoach() {
     ${blocLicences()}
     <h3 class="seances-titre">Séances du jeudi</h3>
     ${liste.length ? liste.map(blocSeance).join("") : `<div class="empty">Aucune séance pour l'instant.</div>`}
+    ${blocEtirements()}
     ${notesStaff()}
     <p class="foot"><a href="#" id="coach-lock">🔒 Verrouiller</a></p>`;
   for (const id in ANIMS) animPoser(id);   // la page est redessinée : on remet chaque animation où elle en était

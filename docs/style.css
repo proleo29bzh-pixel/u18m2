@@ -477,3 +477,12 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .anim .anim-texte { min-height: 4.2em; margin-top: 2px; line-height: 1.4; }
 .anim .anim-ctrl { display: flex; gap: 8px; margin-top: 8px; }
 .anim .anim-ctrl .btn { flex: 1; }
+
+/* étirements de fin (espace coach) */
+.etirements { margin-top: 16px; }
+.etirements summary { cursor: pointer; font-weight: 800; }
+.etir-grille { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+.etir { border: 1px solid var(--line, rgba(127,127,127,.25)); border-radius: 12px; padding: 8px 10px 10px; }
+.etir-svg { width: 100%; height: auto; background: #f6ead6; border-radius: 8px; display: block; margin-bottom: 6px; }
+.etir-nom { font-weight: 800; margin-bottom: 2px; }
+.etir-duree { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--muted); }
