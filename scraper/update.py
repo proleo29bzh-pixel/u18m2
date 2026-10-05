@@ -231,6 +231,11 @@ def construire():
                 rencontre["score"] = m["score"]
             if m.get("convoc") and cjr_a_jour:
                 rencontre["convoc"] = m["convoc"]
+                # la convocation du club fait foi pour la salle (ex. match déplacé de Plouarzel à Bel-Air)
+                salle_cv = cle(m["convoc"].get("salle") or "")
+                autre = next((v for v in salles.values() if v.get("cjr") and cle(v["cjr"]) in salle_cv), None)
+                if autre and autre is not s:
+                    rencontre["salle"] = {k: v for k, v in autre.items() if k != "cjr"}
         manuel = infos.get("scores_manuels", {}).get(r["id"])
         if isinstance(manuel, list) and len(manuel) == 2:
             rencontre["score"] = manuel

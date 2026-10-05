@@ -77,10 +77,10 @@ const enMinutes = (h) => { const [a, b] = h.split(":").map(Number); return a * 6
 const enHeure = (m) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
 const dureeTxt = (m) => (m >= 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, "0")}` : `${m} min`);
 
-/** Mardi de la semaine du match : à partir de là, les infos du rassemblement s'affichent. */
-function mardiDuMatch(r) {
-  const d = new Date(r.date + "T00:00");
-  d.setDate(d.getDate() - ((d.getDay() + 6) % 7) + 1);
+/** Lundi 8h de la semaine du match : à partir de là, les infos du rassemblement s'affichent. */
+function lundiDuMatch(r) {
+  const d = new Date(r.date + "T08:00");
+  d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
   return d;
 }
 
@@ -98,7 +98,7 @@ function rassemblement(r) {
     calcule = true;
   }
   return {
-    visible: today() >= mardiDuMatch(r),
+    visible: new Date() >= lundiDuMatch(r),
     heure, calcule, trajet, avance,
     lieu: c.rdv_lieu || (home ? "Directement à la salle du match" : def.exterieur_lieu?.nom) || null,
     // pour l'itinéraire vers Bel-Air : l'adresse (les coordonnées ne servent qu'à estimer le temps de route)
@@ -198,7 +198,7 @@ function detailHtml(r) {
     html += `
     <div class="card pli">
       <h3>Rassemblement</h3>
-      <p class="muted" style="margin:0">Les infos du rassemblement (adversaire, lieu, heure de RDV) seront affichées à partir du <b>mardi ${esc(new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long" }).format(mardiDuMatch(r)))}</b>.</p>
+      <p class="muted" style="margin:0">Les infos du rassemblement (adversaire, lieu, heure de RDV) seront affichées à partir du <b>lundi ${esc(new Intl.DateTimeFormat("fr-FR", { day: "numeric", month: "long" }).format(lundiDuMatch(r)))} à 8h</b>.</p>
     </div>`;
   }
   if (!isPlayed(r) && ouvert === "rdv" && rv.visible) {

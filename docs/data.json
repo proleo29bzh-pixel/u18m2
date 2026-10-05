@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-05T10:32:49+00:00",
+ "maj": "2026-10-05T13:33:59+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -260,10 +260,10 @@
     "logo": "logos/logo-match-de-championnat.png"
    },
    "salle": {
-    "nom": "Complexe polyvalent",
-    "adresse": "Streat Lannoc, 29810 Plouarzel",
-    "lat": 48.43235,
-    "lon": -4.73447
+    "nom": "Complexe sportif Bel-Air",
+    "adresse": "29290 Saint-Renan",
+    "lat": 48.433,
+    "lon": -4.622
    },
    "nous": true,
    "score": null,
