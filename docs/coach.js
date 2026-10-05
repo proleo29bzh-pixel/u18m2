@@ -275,6 +275,7 @@ function renderCoach() {
       ${(s.ateliers || []).map((a) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)).join("")}
       ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
       ${s.etirements ? `<div class="card exo"><div class="exo-titre">🧘 Étirements de fin</div><p style="margin:8px 0 0">${esc(s.etirements)}</p></div>` : ""}
+      ${s.animation ? blocAnimation(s.animation, "s" + i) : ""}
     </details>`;
   };
 
@@ -285,11 +286,95 @@ function renderCoach() {
     ${liste.length ? liste.map(blocSeance).join("") : `<div class="empty">Aucune séance pour l'instant.</div>`}
     ${notesStaff()}
     <p class="foot"><a href="#" id="coach-lock">🔒 Verrouiller</a></p>`;
+  for (const id in ANIMS) animPoser(id);   // la page est redessinée : on remet chaque animation où elle en était
+}
+
+// ------------------------------------------------------------ récap animé (demi-terrain, panier en haut)
+/* séance.animation = { titre, packline, mouvement (s), etapes: [{ texte, ballon: "1", pause (s),
+   pos: { "1": [x, y], …, "X1": [x, y], … } }] } — positions en mètres, comme les schémas.
+   Les joueurs glissent d'une étape à la suivante ; le ballon voyage du porteur au suivant (passe). */
+
+const ANIMS = {};
+const animP = (x, y) => [10 + x * 22, 10 + y * 22];   // même échelle que schemaSVG en demi-terrain
+const lisse = (u) => (u < 0.5 ? 2 * u * u : 1 - (-2 * u + 2) ** 2 / 2);
+
+function blocAnimation(an, id) {
+  if (!ANIMS[id]) ANIMS[id] = { an, t: 0, play: false };
+  ANIMS[id].an = an;
+  const R = 12;
+  const joueurs = Object.keys(an.etapes[0].pos).map((k) => {
+    const def = k.startsWith("X");
+    return `<g class="anim-j" data-j="${esc(k)}"><circle r="${R}" fill="${def ? COUL.rouge : COUL.navy}" stroke="#fff" stroke-width="2"/>
+      <text y="4.5" text-anchor="middle" class="sc-lab">${esc(k)}</text></g>`;
+  }).join("");
+  const calque = `<g>${joueurs}<circle class="anim-ballon" r="6.5" fill="${COUL.orange}" stroke="#7c2d12" stroke-width="1.5"/></g>`;
+  const svg = schemaSVG({ terrain: "demi", packline: an.packline, elements: [] }).replace(/<\/svg>\s*$/, calque + "</svg>");
+  return `<div class="card exo anim" data-anim="${id}">
+    <div class="exo-titre">🎬 ${esc(an.titre || "Récap animé")}</div>
+    ${svg}
+    <div class="anim-etape small muted"></div>
+    <div class="anim-texte"></div>
+    <div class="anim-ctrl">
+      <button class="btn primary" data-anim-play="${id}">▶️ Lecture</button>
+      <button class="btn" data-anim-reset="${id}">⏮ Début</button>
+    </div>
+  </div>`;
+}
+
+/** Découpe le temps : pause sur l'étape k, puis glissement vers k+1. */
+function animEtat(an, t) {
+  const mv = an.mouvement || 1.4;
+  let debut = 0;
+  for (let k = 0; k < an.etapes.length; k++) {
+    const pause = an.etapes[k].pause || 2.6;
+    if (t < debut + pause || k === an.etapes.length - 1) return { k, u: 0, fin: k === an.etapes.length - 1 && t >= debut + pause };
+    debut += pause;
+    if (t < debut + mv) return { k, u: lisse((t - debut) / mv) };
+    debut += mv;
+  }
+}
+
+function animPoser(id) {
+  const st = ANIMS[id], el = document.querySelector(`[data-anim="${id}"]`);
+  if (!st || !el) return false;
+  const { an } = st, { k, u, fin } = animEtat(an, st.t);
+  const a = an.etapes[k], b = an.etapes[Math.min(k + 1, an.etapes.length - 1)];
+  const pos = (j, e) => e.pos[j] || a.pos[j];
+  const ici = (j) => { const p = pos(j, a), q = pos(j, b); return animP(p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u); };
+  el.querySelectorAll(".anim-j").forEach((g) => { const [x, y] = ici(g.dataset.j); g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`); });
+  // ballon : collé au porteur, ou en vol pendant une passe
+  const [x1, y1] = ici(a.ballon), [x2, y2] = ici(b.ballon || a.ballon);
+  const bal = el.querySelector(".anim-ballon");
+  bal.setAttribute("cx", (x1 + (x2 - x1) * u + 10).toFixed(1));
+  bal.setAttribute("cy", (y1 + (y2 - y1) * u + 10).toFixed(1));
+  const etape = u > 0 ? k + 1 : k;
+  el.querySelector(".anim-texte").textContent = an.etapes[etape].texte || "";
+  el.querySelector(".anim-etape").textContent = `Étape ${etape + 1} / ${an.etapes.length}`;
+  el.querySelector("[data-anim-play]").textContent = st.play ? "⏸ Pause" : fin ? "🔁 Revoir" : "▶️ Lecture";
+  return !fin;
+}
+
+function animBoucle(id) {
+  const st = ANIMS[id];
+  if (!st?.play) return;
+  st.t = (performance.now() - st.t0) / 1000;
+  const continuer = animPoser(id);
+  if (!continuer) { st.play = false; animPoser(id); return; }
+  requestAnimationFrame(() => animBoucle(id));
 }
 
 // ------------------------------------------------------------ événements
 
 document.addEventListener("click", async (e) => {
+  const ap = e.target.closest("[data-anim-play]"), ar = e.target.closest("[data-anim-reset]");
+  if (ap || ar) {
+    const id = (ap || ar).dataset.animPlay || (ap || ar).dataset.animReset, st = ANIMS[id];
+    if (ar) { st.play = false; st.t = 0; return animPoser(id); }
+    if (st.play) { st.play = false; return animPoser(id); }
+    if (animEtat(st.an, st.t).fin) st.t = 0;          // « Revoir » : on repart du début
+    st.play = true; st.t0 = performance.now() - st.t * 1000;
+    return animBoucle(id);
+  }
   if (e.target.id === "coach-ok") {
     const mdp = $("#coach-mdp").value;
     if (!mdp) return;

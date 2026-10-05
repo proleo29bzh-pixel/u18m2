@@ -471,3 +471,9 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .lic-fiche summary b { font-variant-numeric: tabular-nums; letter-spacing: .03em; white-space: nowrap; }
 .lic-detail { display: grid; gap: 4px; margin-top: 8px; font-size: .92em; }
 .lic-detail .k { display: inline-block; min-width: 92px; color: var(--muted); font-weight: 700; font-size: .9em; }
+
+/* récap animé (espace coach) */
+.anim .anim-etape { margin-top: 8px; font-weight: 700; }
+.anim .anim-texte { min-height: 4.2em; margin-top: 2px; line-height: 1.4; }
+.anim .anim-ctrl { display: flex; gap: 8px; margin-top: 8px; }
+.anim .anim-ctrl .btn { flex: 1; }
