@@ -88,11 +88,18 @@ function schemaSVG(sc) {
     o += `<text x="${f(W - M - 6)}" y="${f(Ht - M - 6)}" text-anchor="end" class="sc-txt">${esc(sc.taille)}</text>`;
   }
 
+  // --- pack line : ligne imaginaire à ~5 m du panier (demi-terrain, panier en haut)
+  if (sc.packline && t === "demi") {
+    const r = sc.packline === true ? 5 : sc.packline;
+    const [g0x, g0y] = P(7.5 - r, 0), [gx, gy] = P(7.5 - r, 1.575), [dx, dy] = P(7.5 + r, 1.575), [d0x, d0y] = P(7.5 + r, 0);
+    o += `<path d="M${f(g0x)} ${f(g0y)} L${f(gx)} ${f(gy)} A${f(r * S)} ${f(r * S)} 0 0 0 ${f(dx)} ${f(dy)} L${f(d0x)} ${f(d0y)}" fill="rgba(255,122,26,.13)" stroke="${COUL.orange}" stroke-width="3" stroke-dasharray="9 6"/>`;
+  }
+
   // --- flèches
   const couleurFleche = { course: COUL.navy, passe: COUL.navy, dribble: COUL.navy, tir: COUL.rouge, rotation: COUL.gris, ensuite: COUL.gris };
   const fleche = (e) => {
     const type = e.style === "ensuite" ? "ensuite" : e.type;
-    const c = couleurFleche[type] || COUL.navy;
+    const c = e.def ? COUL.rouge : couleurFleche[type] || COUL.navy;   // def : déplacement d'un défenseur
     const [x1, y1] = P(...e.de), [x2, y2] = P(...e.a);
     const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy) || 1;
     const nx = -dy / len, ny = dx / len;                     // normale
@@ -160,6 +167,7 @@ const LEGENDE = `<div class="legende">
   <span><i class="lg att"></i>attaquant</span><span><i class="lg def"></i>défenseur</span><span><i class="lg coach"></i>coach</span>
   <span><i class="lg plot"></i>plot</span><span><i class="lg ballon"></i>ballon</span>
   <span><i class="lg trait"></i>course</span><span><i class="lg tirets"></i>passe</span><span><i class="lg onde">∿</i>dribble</span><span><i class="lg points"></i>tir</span>
+  <span><i class="lg trait" style="border-color:#e30613"></i>course défenseur</span><span><i class="lg tirets" style="border-color:#ff7a1a;border-top-width:3px"></i>pack line</span>
 </div>`;
 
 // ------------------------------------------------------------ rendu de la page
