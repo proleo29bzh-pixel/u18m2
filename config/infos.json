@@ -61,7 +61,9 @@
   },
 
   "_aide_annonces": "Annonces affichées dans l'appli (bouton sur l'accueil). Visibles par toute personne qui a le lien : pas d'info sensible. date = AAAA-MM-JJTHH:MM",
-  "annonces": [],
+  "annonces": [
+    {"date": "2026-10-05T17:30", "auteur": "Coach Léo", "titre": "🟨 Arbitrage U15M1 · samedi 10 octobre", "texte": "Avant notre match, deux joueurs de l'équipe arbitreront le match des U15M1 samedi à 15h30.\n\n🏁 Bastien\n🏁 Deuxième arbitre : à confirmer\n\nMerci à eux de représenter l'équipe 💪"}
+  ],
 
   "etat_esprit": [
     "Être à l'heure : en tenue sur le terrain à 19h pile, pas à 19h05.",

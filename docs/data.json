@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-05T14:11:40+00:00",
+ "maj": "2026-10-05T14:44:31+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -144,7 +144,14 @@
   "100 % d'engagement sur chaque exercice, jusqu'au dernier : on s'entraîne comme on joue.",
   "Respect des coéquipiers, du coach et du matériel. On aide à sortir et ranger."
  ],
- "annonces": [],
+ "annonces": [
+  {
+   "date": "2026-10-05T17:30",
+   "auteur": "Coach Léo",
+   "titre": "🟨 Arbitrage U15M1 · samedi 10 octobre",
+   "texte": "Avant notre match, deux joueurs de l'équipe arbitreront le match des U15M1 samedi à 15h30.\n\n🏁 Bastien\n🏁 Deuxième arbitre : à confirmer\n\nMerci à eux de représenter l'équipe 💪"
+  }
+ ],
  "maillots_rotation": true,
  "numeros_maillot": {},
  "surnoms": {
