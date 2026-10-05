@@ -68,7 +68,7 @@ function blocPresence(e) {
   const sans = joueurs.filter((j) => !rep[j]);
   const moi = joueurDuTel();
   const btn = (val, label, cls) => `<button class="seg ${rep[moi] === val ? "on " + cls : ""}" data-entr="${esc(id)}" data-joueur="${esc(moi)}" data-val="${val}">${label}</button>`;
-  const groupe = (titre, noms, cls) => `<div class="cvl"><div class="k">${titre} (${noms.length})</div>${noms.length ? noms.map((j) => `<span class="cchip ${cls}">${esc(j)}</span>`).join("") : '<span class="small muted">—</span>'}</div>`;
+  const groupe = (titre, noms, cls) => `<div class="cvl"><div class="k">${titre} (${noms.length})</div>${noms.length ? noms.map((j) => `<span class="cchip ${cls}">${esc(surnom(j))}</span>`).join("") : '<span class="small muted">—</span>'}</div>`;
   return `<div class="presence">
     ${moi ? `<div class="k">${esc(moi)} sera là ?</div><div class="segs">${btn("oui", "✅ Présent", "g")}${btn("non", "❌ Absent", "r")}</div>`
       : ENTR.coach ? `<div class="small muted">Choisissez un joueur en haut pour répondre à sa place.</div>`
@@ -107,18 +107,18 @@ function blocIdentiteEntr() {
       <h3>🔑 Mode coach</h3>
       <p class="small muted" style="margin-top:0">Vous voyez toutes les réponses et pouvez répondre à la place d'un joueur (pour tester ou corriger).</p>
       <select id="entr-pour" class="cvselect"><option value="">Répondre pour…</option>
-        ${(DATA.joueurs || []).map((j) => `<option ${j === ENTR.pour ? "selected" : ""}>${esc(j)}</option>`).join("")}</select>
+        ${(DATA.joueurs || []).map((j) => `<option value="${esc(j)}" ${j === ENTR.pour ? "selected" : ""}>${esc(surnom(j))}</option>`).join("")}</select>
       <p class="small" style="margin:10px 0 0"><a href="#" id="entr-sortir">Quitter le mode coach</a></p>
     </div>`;
   }
   if (cvRole() === "joueur" && joueurDuTel()) {
-    return `<p class="small muted" style="margin:0 4px 6px">Connecté en tant que <b>${esc(joueurDuTel())}</b> · <a href="#" id="entr-changer">Pas toi ? Changer</a></p>`;
+    return `<p class="small muted" style="margin:0 4px 6px">Connecté en tant que <b>${esc(surnom(joueurDuTel()))}</b> · <a href="#" id="entr-changer">Pas toi ? Changer</a></p>`;
   }
   if (cvRole() === "joueur" && !joueurDuTel()) {
     return `<div class="card">
       <h3>Qui es-tu ?</h3>
       <select id="entr-moi" class="cvselect"><option value="">Choisis ton prénom…</option>
-        ${(DATA.joueurs || []).map((j) => `<option>${esc(j)}</option>`).join("")}</select>
+        ${(DATA.joueurs || []).map((j) => `<option value="${esc(j)}">${esc(surnom(j))}</option>`).join("")}</select>
     </div>`;
   }
   return "";

@@ -1,6 +1,8 @@
 "use strict";
 
 const $ = (s, el = document) => el.querySelector(s);
+/** Nom affiché d'un joueur (infos.json → surnoms) ; l'identifiant enregistré dans le Sheet ne change pas. */
+const surnom = (j) => (DATA?.surnoms || {})[j] || j;
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const icon = {
   clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',

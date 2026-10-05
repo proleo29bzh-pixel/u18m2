@@ -12,6 +12,9 @@
   "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
 
   "_aide_familles": "Une ligne par famille : nom de famille + prénom du joueur (nom vide = affiché « Parents de <joueur> »). Chaque famille a une ligne Maman et une ligne Papa dans l’appli, sauf si \"parents\": [\"Maman\"] (un seul parent).",
+  "_aide_surnoms": "Nom affiché dans l'appli à la place du prénom enregistré (les réponses déjà données restent liées au prénom).",
+  "surnoms": {"Tom (Petit)": "Petit Tom", "Tom (Grand)": "Grand Tom"},
+
   "familles": [
     {"nom": "Guillou", "enfant": "Bastien"},
     {"nom": "Lucas", "enfant": "Gabin"},

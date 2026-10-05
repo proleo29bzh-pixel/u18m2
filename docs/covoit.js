@@ -59,10 +59,10 @@ function nomDe(id) {
   if (estParent(id)) {
     const [, enfant, role] = id.split(":");
     const f = familleDe(enfant);
-    return f?.nom ? `${role} ${f.nom}` : `${role} de ${enfant}`;
+    return f?.nom ? `${role} ${f.nom}` : `${role} de ${surnom(enfant)}`;
   }
   if (id.startsWith("Famille:")) return familleDe(id.slice(8))?.libelle || id.slice(8);
-  return estStaff(id) ? id.slice(6) : id;
+  return estStaff(id) ? id.slice(6) : surnom(id);
 }
 
 // ------------------------------------------------------------ données (Google Sheet ou démo locale)
@@ -289,8 +289,8 @@ function pageFamille(m, a, f, trajets) {
   const recap = f.roles.map((role) => `<div><b>${role}</b> : ${esc(etatParent(a, parentId(f, role)))}</div>`).join("");
   return `
   <div class="recap">${recap}</div>
-  ${f.souple ? `<div class="note" style="margin-bottom:10px">🟨 Pas de souci pour répondre tard, même la veille : on sait que ${esc(f.enfant)} peut être convoqué pour arbitrer au dernier moment. Si vous pouvez conduire, vous complétez les voitures sans changer ce qui est déjà prévu pour les autres familles. Merci 🙏</div>` : ""}
-  <p class="small muted">${f.nom ? esc(f.enfant) + " · " : ""}${pl(t.faits + t.prevus, "trajet")} cette saison sur un objectif de ${OBJ()}${t.faits >= OBJ() ? " ✅ Merci !" : "."} Si vous pouvez conduire sans venir voir le match, l'appli vous désigne seulement si besoin, à tour de rôle entre les familles.</p>
+  ${f.souple ? `<div class="note" style="margin-bottom:10px">🟨 Pas de souci pour répondre tard, même la veille : on sait que ${esc(surnom(f.enfant))} peut être convoqué pour arbitrer au dernier moment. Si vous pouvez conduire, vous complétez les voitures sans changer ce qui est déjà prévu pour les autres familles. Merci 🙏</div>` : ""}
+  <p class="small muted">${f.nom ? esc(surnom(f.enfant)) + " · " : ""}${pl(t.faits + t.prevus, "trajet")} cette saison sur un objectif de ${OBJ()}${t.faits >= OBJ() ? " ✅ Merci !" : "."} Si vous pouvez conduire sans venir voir le match, l'appli vous désigne seulement si besoin, à tour de rôle entre les familles.</p>
   ${f.roles.map((role) => {
     const id = parentId(f, role);
     const r = a.rep[id] || {};
@@ -312,7 +312,7 @@ function pageJoueur(m, a, j) {
   const r = a.rep[j] || {};
   const etat = r.present === "oui" ? "✅ Présent" : r.present === "non" ? "❌ Absent" : "Pas encore répondu (compté présent)";
   return `
-  <div class="recap ${r.present === "oui" ? "ok" : r.present === "non" ? "ko" : ""}"><div><b>${esc(j)}</b> : ${etat}</div></div>
+  <div class="recap ${r.present === "oui" ? "ok" : r.present === "non" ? "ko" : ""}"><div><b>${esc(surnom(j))}</b> : ${etat}</div></div>
   <div class="card">${question("Tu seras là ?", [
     cvBtn(m, a, j, { present: "oui" }, "✅ Présent", "g"),
     cvBtn(m, a, j, { present: "non" }, "❌ Absent", "r"),
@@ -377,9 +377,9 @@ function pageBilan(m, a, trajets) {
 
   <div class="card">
     <h3>Joueurs</h3>
-    <div class="cvl" style="padding-top:0"><div class="k">Présents (${presentsDits.length})</div>${presentsDits.map((j) => chip(j, "ok")).join("") || '<span class="small muted">—</span>'}</div>
-    ${absents.length ? `<div class="cvl"><div class="k">Absents (${absents.length})</div>${absents.map((j) => chip(j, "abs")).join("")}</div>` : ""}
-    ${sansRepJ.length ? `<div class="cvl"><div class="k">Pas encore répondu (${sansRepJ.length}) — comptés présents</div>${sansRepJ.map((j) => chip(j, "wait")).join("")}</div>` : ""}
+    <div class="cvl" style="padding-top:0"><div class="k">Présents (${presentsDits.length})</div>${presentsDits.map((j) => chip(surnom(j), "ok")).join("") || '<span class="small muted">—</span>'}</div>
+    ${absents.length ? `<div class="cvl"><div class="k">Absents (${absents.length})</div>${absents.map((j) => chip(surnom(j), "abs")).join("")}</div>` : ""}
+    ${sansRepJ.length ? `<div class="cvl"><div class="k">Pas encore répondu (${sansRepJ.length}) — comptés présents</div>${sansRepJ.map((j) => chip(surnom(j), "wait")).join("")}</div>` : ""}
   </div>
 
   <div class="card">
@@ -407,7 +407,7 @@ function pageBilan(m, a, trajets) {
 
 /** Choix possibles dans le menu « Qui êtes-vous ? » selon le code. */
 function cvChoix() {
-  const joueurs = `<optgroup label="Joueurs">${cvJoueurs().map((j) => `<option value="${esc(j)}">${esc(j)}</option>`).join("")}</optgroup>`;
+  const joueurs = `<optgroup label="Joueurs">${cvJoueurs().map((j) => `<option value="${esc(j)}">${esc(surnom(j))}</option>`).join("")}</optgroup>`;
   const familles = `<optgroup label="Familles">${cvFamilles().map((f) => `<option value="${esc(f.id)}">${esc(f.libelle)}</option>`).join("")}</optgroup>`;
   const staff = `<optgroup label="Staff">${cvStaff().map((s) => `<option value="${esc(s.id)}">${esc(s.nom)} (${esc(s.role)})</option>`).join("")}</optgroup>`;
   if (!cvApi()) return familles + staff + joueurs;        // démo : tout
@@ -463,9 +463,9 @@ function apercuPublic() {
   </div>
   <div class="card">
     <h3>🏀 Joueurs</h3>
-    <div class="cvl" style="padding-top:0"><div class="k">✅ Présents (${oui.length})</div>${oui.map((j) => chip(j, "ok")).join("") || '<span class="small muted">—</span>'}</div>
-    ${non.length ? `<div class="cvl"><div class="k">❌ Absents (${non.length})</div>${non.map((j) => chip(j, "abs")).join("")}</div>` : ""}
-    ${sans.length ? `<div class="cvl"><div class="k">⏳ Pas encore répondu (${sans.length})</div>${sans.map((j) => chip(j, "wait")).join("")}</div>` : ""}
+    <div class="cvl" style="padding-top:0"><div class="k">✅ Présents (${oui.length})</div>${oui.map((j) => chip(surnom(j), "ok")).join("") || '<span class="small muted">—</span>'}</div>
+    ${non.length ? `<div class="cvl"><div class="k">❌ Absents (${non.length})</div>${non.map((j) => chip(surnom(j), "abs")).join("")}</div>` : ""}
+    ${sans.length ? `<div class="cvl"><div class="k">⏳ Pas encore répondu (${sans.length})</div>${sans.map((j) => chip(surnom(j), "wait")).join("")}</div>` : ""}
   </div>
   <p class="small muted" style="margin:6px 4px 0">👀 Aperçu en lecture seule. Pour répondre, entrez votre code ci-dessus.</p>`;
 }
