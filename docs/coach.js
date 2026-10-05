@@ -32,6 +32,7 @@ async function coachOuvrir(mdp, memoriser) {
     COACH.notes = contenu.notes_staff || [];
     COACH.licences = contenu.licences || [];
     COACH.licCle = contenu.licences_cle || "";
+    COACH.licTexte = contenu.licences_texte || [];
     COACH.erreur = null;
     COACH.mdp = mdp;
     if (memoriser) coachStore.set("coach-mdp", mdp);
@@ -215,11 +216,24 @@ function blocLicences() {
     : l.type === "application/pdf" ? `<a class="btn primary" href="${v.url}" target="_blank" rel="noopener">📄 Ouvrir la licence de ${esc(l.nom)}</a>`
     : `<a href="${v.url}" target="_blank" rel="noopener"><img src="${v.url}" alt="Licence de ${esc(l.nom)}" style="width:100%;border-radius:10px;display:block"></a>
        <p class="small muted" style="margin:6px 0 0;text-align:center">Touchez l'image pour l'agrandir</p>`;
+  const fiches = COACH.licTexte || [];
+  const date = (d) => d ? d.split("-").reverse().join("/") : "";
+  // fiches texte (dictées par le coach) : joueurs par ordre alphabétique, staff en dernier
+  const blocFiches = fiches.length ? `<div class="lic-liste">${fiches.slice().sort((a, b) => !!a.staff - !!b.staff || a.nom.localeCompare(b.nom)).map((f) => `
+    <details class="lic-fiche"><summary><span>${f.staff ? "🎽" : "🏀"} ${esc(f.nom)}${f.surnom ? ` <span class="muted small">(${esc(f.surnom)})</span>` : ""}</span><b>${esc(f.numero)}</b></summary>
+      <div class="lic-detail">
+        ${f.type ? `<div><span class="k">Licence</span>${esc(f.type)}</div>` : ""}
+        ${f.fonction ? `<div><span class="k">Fonction</span>${esc(f.fonction)}</div>` : ""}
+        ${f.naissance ? `<div><span class="k">Né le</span>${date(f.naissance)}</div>` : ""}
+        ${f.assurance ? `<div><span class="k">Assurance</span>Formule ${esc(f.assurance)}</div>` : ""}
+        ${f.qualification ? `<div><span class="k">Qualifié le</span>${date(f.qualification)}</div>` : ""}
+      </div></details>`).join("")}</div>` : "";
   return `<div class="card">
-    <h3>🪪 Licences</h3>
-    ${COACH.licences.length ? `<div class="segs" style="flex-wrap:wrap">${COACH.licences.map((x, i) =>
-      `<button class="seg ${v?.i === i ? "on g" : ""}" data-licence="${i}">${esc(x.nom)}</button>`).join("")}</div>`
-      : `<p class="small muted" style="margin:0">Aucune licence pour l'instant. Envoie les photos ou PDF à Claude.</p>`}
+    <h3>🪪 Licences${fiches.length ? ` <span class="muted small">(${fiches.length})</span>` : ""}</h3>
+    ${blocFiches}
+    ${COACH.licences.length ? `<div class="segs" style="flex-wrap:wrap;margin-top:${fiches.length ? 12 : 0}px">${COACH.licences.map((x, i) =>
+      `<button class="seg ${v?.i === i ? "on g" : ""}" data-licence="${i}">📎 ${esc(x.nom)}</button>`).join("")}</div>` : ""}
+    ${!fiches.length && !COACH.licences.length ? `<p class="small muted" style="margin:0">Aucune licence pour l'instant.</p>` : ""}
     ${vue ? `<div style="margin-top:12px">${vue}</div>` : ""}
   </div>`;
 }
@@ -281,7 +295,7 @@ document.addEventListener("click", async (e) => {
     e.preventDefault();
     if (COACH.licVue?.url) URL.revokeObjectURL(COACH.licVue.url);
     COACH.seances = null; COACH.erreur = null; COACH.mdp = ""; coachStore.set("coach-mdp", "");
-    COACH.licences = []; COACH.licCle = ""; COACH.licOuvert = false; COACH.licVue = null;
+    COACH.licences = []; COACH.licCle = ""; COACH.licTexte = []; COACH.licOuvert = false; COACH.licVue = null;
     return renderCoach();
   }
   const sb = e.target.closest("[data-coach-seance]");
