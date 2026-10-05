@@ -13,7 +13,9 @@ const STATUTS = {
 };
 
 function etatMaillots() {
-  const r = (typeof CV !== "undefined" && CV.reponses || []).find((x) => x.match === "maillots" && x.famille === "etat");
+  // avec code : les réponses complètes ; sans code : l'aperçu public (lecture seule) suffit pour savoir où est le sac
+  const src = typeof CV === "undefined" ? [] : cvCode() ? CV.reponses || [] : CV.apercu || [];
+  const r = src.find((x) => x.match === "maillots" && x.famille === "etat");
   return r && r.present ? { statut: r.present, chez: r.conduit, maj: r.maj } : null;
 }
 const nomChez = (id) => id?.startsWith("Famille:") ? (familleDe(id.slice(8))?.libelle || id.slice(8)) : "le coach";
@@ -28,7 +30,7 @@ function prochaineFamilleMaillots() {
 
 function tuileMaillots() {
   if (!cvApi()) return "";
-  const e = cvCode() && CV.charge ? etatMaillots() : null;
+  const e = CV.charge ? etatMaillots() : null;
   const court = { lavage: "Chez ", jeudi: "Jeudi · ", bureau: "Au bureau", coach: "Chez le coach" };
   let info = "Où sont-ils ?";
   if (e && court[e.statut] != null) {
@@ -41,7 +43,7 @@ function tuileMaillots() {
 /** Bouton sur la page d'accueil. */
 function maillotsAccueil() {
   if (!cvApi()) return "";
-  const e = cvCode() && CV.charge ? etatMaillots() : null;
+  const e = CV.charge ? etatMaillots() : null;
   const st = e && STATUTS[e.statut];
   return `<button class="ann-bouton" data-show="maillots">
     <div class="ann-bouton-titre">🧺 Maillots<span class="ann-fleche">›</span></div>
@@ -55,7 +57,9 @@ function renderMaillots() {
   let html = `<h2 class="section">Maillots</h2>`;
   if (!cvApi()) { el.innerHTML = html + `<div class="empty">Indisponible pour l'instant.</div>`; return; }
   if (!cvCode()) {
-    el.innerHTML = html + `<div class="card"><p class="small muted" style="margin-top:0">Entrez votre code pour voir et indiquer où sont les maillots.</p>
+    const e = CV.charge ? etatMaillots() : null, st = e && STATUTS[e.statut];
+    el.innerHTML = html + (st ? `<div class="card"><div class="mail-etat">${st.ico} ${esc(st.txt(nomChez(e.chez)))}</div></div>` : "")
+      + `<div class="card"><p class="small muted" style="margin-top:0">Entrez votre code pour indiquer où sont les maillots.</p>
       <div class="cvcode"><input id="mail-code" type="text" autocomplete="off" placeholder="Code"><button class="btn primary" data-code-de="mail-code">OK</button></div>
       ${CV.erreur ? `<div class="note">⚠️ ${esc(CV.erreur)}</div>` : ""}</div>`;
     return;
