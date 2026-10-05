@@ -185,11 +185,12 @@ function blocExercice(titre, duree, but, schema, consignes, points, num) {
 // ------------------------------------------------------------ étirements de fin (communs à toutes les séances)
 
 /** Bonhomme en traits : chaque partie = liste de points [x, y] reliés ; tête = [x, y]. Cadre 160 × 120, sol à y = 110. */
-function bonhomme({ tete, traits, mur, sol = true }) {
+function bonhomme({ tete, traits, mur, decor = [], sol = true }) {
   const ligne = (pts) => `<polyline points="${pts.map((p) => p.join(",")).join(" ")}" fill="none" stroke="${COUL.navy}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
   return `<svg viewBox="0 0 160 120" class="etir-svg" role="img">
     ${sol ? `<line x1="6" y1="111" x2="154" y2="111" stroke="${COUL.gris}" stroke-width="2" opacity=".5"/>` : ""}
     ${mur ? `<line x1="${mur}" y1="10" x2="${mur}" y2="111" stroke="${COUL.gris}" stroke-width="4" opacity=".6"/>` : ""}
+    ${decor.map((pts) => `<polyline points="${pts.map((q) => q.join(",")).join(" ")}" fill="none" stroke="${COUL.gris}" stroke-width="3" opacity=".7"/>`).join("")}
     ${traits.map(ligne).join("")}
     <circle cx="${tete[0]}" cy="${tete[1]}" r="8" fill="${COUL.orange}" stroke="${COUL.navy}" stroke-width="2.5"/>
   </svg>`;
@@ -209,6 +210,21 @@ const ETIREMENTS = [
   { nom: "Psoas (fente)", txt: "Fente avant, genou arrière au sol. Avance le bassin, buste droit.", duree: "30 s par jambe",
     fig: { tete: [80, 26], traits: [[[80, 35], [80, 72]], [[80, 72], [108, 74], [108, 109]], [[80, 72], [60, 109], [30, 109]], [[80, 44], [104, 70]]] } },
 ];
+
+/** Bloc détente (pliométrie) en début de séance : peu de sauts, de qualité, jambes fraîches. */
+function blocDetente(b) {
+  return `<div class="card exo">
+    <div class="exo-titre">🦘 ${esc(b.titre || "Détente")}${b.duree ? ` <span class="muted small">· ${esc(b.duree)}</span>` : ""}</div>
+    ${b.but ? `<p style="margin:8px 0 10px">${esc(b.but)}</p>` : ""}
+    <div class="etir-grille">${(b.exos || []).map((e, i) => `<div class="etir">
+      ${e.fig ? bonhomme(e.fig) : ""}
+      <div class="etir-nom">${i + 1}. ${esc(e.nom)}</div>
+      <div class="small">${esc(e.txt)}</div>
+      <div class="etir-duree">🔁 ${esc(e.series)}</div>
+    </div>`).join("")}</div>
+    ${b.regles?.length ? `<div class="exo-points" style="margin-top:10px">${b.regles.map((r) => `<span class="cchip">✔ ${esc(r)}</span>`).join("")}</div>` : ""}
+  </div>`;
+}
 
 /** Bouton repliable entre les séances et les notes : les mêmes étirements à chaque fin d'entraînement. */
 function blocEtirements() {
@@ -313,6 +329,7 @@ function renderCoach() {
       ${s.organisation?.length || s.plan ? `<div class="card exo"><div class="exo-titre">Organisation</div>
         ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
         ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
+      ${s.detente ? blocDetente(s.detente) : ""}
       ${(s.ateliers || []).map((a, k) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)
         + (a.animation ? blocAnimation(a.animation, `s${i}a${k}`) : "")).join("")}
       ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
