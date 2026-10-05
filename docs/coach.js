@@ -272,7 +272,8 @@ function renderCoach() {
       ${s.organisation?.length || s.plan ? `<div class="card exo"><div class="exo-titre">Organisation</div>
         ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
         ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
-      ${(s.ateliers || []).map((a) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)).join("")}
+      ${(s.ateliers || []).map((a, k) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)
+        + (a.animation ? blocAnimation(a.animation, `s${i}a${k}`) : "")).join("")}
       ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
       ${s.etirements ? `<div class="card exo"><div class="exo-titre">🧘 Étirements de fin</div><p style="margin:8px 0 0">${esc(s.etirements)}</p></div>` : ""}
       ${s.animation ? blocAnimation(s.animation, "s" + i) : ""}
@@ -292,6 +293,7 @@ function renderCoach() {
 // ------------------------------------------------------------ récap animé (demi-terrain, panier en haut)
 /* séance.animation = { titre, packline, mouvement (s), etapes: [{ texte, ballon: "1", pause (s),
    pos: { "1": [x, y], …, "X1": [x, y], … } }] } — positions en mètres, comme les schémas.
+   ballon : un joueur (attaquant ou défenseur qui prend le rebond) ou "panier" pour un tir.
    Les joueurs glissent d'une étape à la suivante ; le ballon voyage du porteur au suivant (passe). */
 
 const ANIMS = {};
@@ -303,7 +305,7 @@ function blocAnimation(an, id) {
   ANIMS[id].an = an;
   const R = 12;
   const joueurs = Object.keys(an.etapes[0].pos).map((k) => {
-    const def = k.startsWith("X");
+    const def = k.startsWith("X") || k === "D";   // défenseurs : X1, X2… ou D
     return `<g class="anim-j" data-j="${esc(k)}"><circle r="${R}" fill="${def ? COUL.rouge : COUL.navy}" stroke="#fff" stroke-width="2"/>
       <text y="4.5" text-anchor="middle" class="sc-lab">${esc(k)}</text></g>`;
   }).join("");
@@ -343,10 +345,11 @@ function animPoser(id) {
   const ici = (j) => { const p = pos(j, a), q = pos(j, b); return animP(p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u); };
   el.querySelectorAll(".anim-j").forEach((g) => { const [x, y] = ici(g.dataset.j); g.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`); });
   // ballon : collé au porteur, ou en vol pendant une passe
-  const [x1, y1] = ici(a.ballon), [x2, y2] = ici(b.ballon || a.ballon);
+  const bp = (j) => { if (j === "panier") return animP(7.5, 1.575); const [x, y] = ici(j); return [x + 10, y + 10]; };
+  const [x1, y1] = bp(a.ballon), [x2, y2] = bp(b.ballon || a.ballon);
   const bal = el.querySelector(".anim-ballon");
-  bal.setAttribute("cx", (x1 + (x2 - x1) * u + 10).toFixed(1));
-  bal.setAttribute("cy", (y1 + (y2 - y1) * u + 10).toFixed(1));
+  bal.setAttribute("cx", (x1 + (x2 - x1) * u).toFixed(1));
+  bal.setAttribute("cy", (y1 + (y2 - y1) * u).toFixed(1));
   const etape = u > 0 ? k + 1 : k;
   el.querySelector(".anim-texte").textContent = an.etapes[etape].texte || "";
   el.querySelector(".anim-etape").textContent = `Étape ${etape + 1} / ${an.etapes.length}`;
