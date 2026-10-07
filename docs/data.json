@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-07T18:36:33+00:00",
+ "maj": "2026-10-07T19:30:51+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -546,7 +546,5 @@
    "score": null
   }
  ],
- "erreurs": [
-  "page équipe CJR : The read operation timed out"
- ]
+ "erreurs": []
 }
