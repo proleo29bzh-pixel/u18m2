@@ -214,9 +214,9 @@ const ETIREMENTS = [
 /** Bloc détente (pliométrie) en début de séance : peu de sauts, de qualité, jambes fraîches. */
 function blocDetente(b) {
   return `<div class="card exo">
-    <div class="exo-titre">🦘 ${esc(b.titre || "Détente")}${b.duree ? ` <span class="muted small">· ${esc(b.duree)}</span>` : ""}</div>
+    <div class="exo-titre">${b.icone || "🦘"} ${esc(b.titre || "Détente")}${b.duree ? ` <span class="muted small">· ${esc(b.duree)}</span>` : ""}</div>
     ${b.but ? `<p style="margin:8px 0 10px">${esc(b.but)}</p>` : ""}
-    <div class="etir-grille">${(b.exos || []).map((e, i) => `<div class="etir">
+    <div class="etir-grille">${(b.exos || []).map((e, i) => `${e.partie ? `<div class="etir-partie">${esc(e.partie)}</div>` : ""}<div class="etir">
       ${e.fig ? bonhomme(e.fig) : ""}
       <div class="etir-nom">${i + 1}. ${esc(e.nom)}</div>
       <div class="small">${esc(e.txt)}</div>
@@ -329,6 +329,7 @@ function renderCoach() {
       ${s.organisation?.length || s.plan ? `<div class="card exo"><div class="exo-titre">Organisation</div>
         ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
         ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
+      ${s.echauffement ? blocDetente(s.echauffement) : ""}
       ${s.detente ? blocDetente(s.detente) : ""}
       ${(s.ateliers || []).map((a, k) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)
         + (a.animation ? blocAnimation(a.animation, `s${i}a${k}`) : "")).join("")}

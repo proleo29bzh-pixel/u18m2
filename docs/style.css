@@ -486,3 +486,4 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .etir-svg { width: 100%; height: auto; background: #f6ead6; border-radius: 8px; display: block; margin-bottom: 6px; }
 .etir-nom { font-weight: 800; margin-bottom: 2px; }
 .etir-duree { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--muted); }
+.etir-partie { grid-column: 1 / -1; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-top: 6px; }
