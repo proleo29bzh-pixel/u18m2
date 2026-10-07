@@ -78,7 +78,7 @@
   "rassemblement_defaut": {
     "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
     "exterieur": "Départ groupé en covoiturage depuis le parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan).",
-    "exterieur_lieu": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan", "lat": 48.433, "lon": -4.622},
+    "exterieur_lieu": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan", "lat": 48.42886, "lon": -4.63188},
     "avance_min": 45,
     "a_prevoir": ["Maillot, short, chaussettes", "Une bonne gourde", "Des chaussures propres", "Ta bonne humeur 😄"]
   },

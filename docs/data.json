@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-07T14:58:21+00:00",
+ "maj": "2026-10-07T15:03:19+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -30,8 +30,8 @@
   "exterieur_lieu": {
    "nom": "Salle Omnisports de Bel Air",
    "adresse": "9 Rue Racine, 29290 Saint-Renan",
-   "lat": 48.433,
-   "lon": -4.622
+   "lat": 48.42886,
+   "lon": -4.63188
   },
   "avance_min": 45,
   "a_prevoir": [
@@ -273,8 +273,8 @@
    "salle": {
     "nom": "Salle Omnisports de Bel Air",
     "adresse": "9 Rue Racine, 29290 Saint-Renan",
-    "lat": 48.433,
-    "lon": -4.622
+    "lat": 48.42886,
+    "lon": -4.63188
    },
    "nous": true,
    "score": null,

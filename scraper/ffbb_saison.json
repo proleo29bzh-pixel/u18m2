@@ -11,7 +11,7 @@
   "salles": {
     "carhaix": {"nom": "Salle Omnisports", "adresse": "Avenue de Waldkappel, 29270 Carhaix-Plouguer", "lat": 48.27884, "lon": -3.54778},
     "quimper": {"nom": "Halle des sports Le Coz", "adresse": "Avenue Yves Thépot, 29000 Quimper", "lat": 47.98811, "lon": -4.09131},
-    "belair": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan", "lat": 48.433, "lon": -4.622, "cjr": "BEL-AIR"},
+    "belair": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan", "lat": 48.42886, "lon": -4.63188, "cjr": "BEL-AIR"},
     "plouarzel": {"nom": "Complexe polyvalent", "adresse": "Streat Lannoc, 29810 Plouarzel", "lat": 48.43235, "lon": -4.73447},
     "guilers": {"nom": "Gymnase Kerdrel", "adresse": "Rue Charles de Gaulle, 29820 Guilers", "lat": 48.42469, "lon": -4.5584},
     "plouzane": {"nom": "Gymnase de Kerallan", "adresse": "Place Jules Ferry, 29280 Plouzané", "lat": 48.37314, "lon": -4.59085}
