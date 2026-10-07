@@ -341,8 +341,37 @@ def ics(data):
     return "\r\n".join(lignes) + "\r\n"
 
 
+def garder_infos_cjr(data, ancien):
+    """Site CJR en panne (erreurs) : on reprend la dernière version connue de ce qui vient du CJR
+    (heure, convocation, salle de la convocation, score, logos, plateaux) au lieu de l'effacer."""
+    if not data["erreurs"] or not ancien:
+        return
+    avant = {r["id"]: r for r in ancien.get("rencontres", [])}
+    for r in data["rencontres"]:
+        o = avant.get(r["id"])
+        if not o:
+            continue
+        for k in ("heure", "cjr", "score"):
+            if not r.get(k) and o.get(k):
+                r[k] = o[k]
+        if not r.get("convoc") and o.get("convoc"):
+            r["convoc"], r["salle"] = o["convoc"], o.get("salle", r["salle"])
+        for cote in ("dom", "ext"):
+            if not r[cote].get("logo") and o.get(cote, {}).get("logo"):
+                r[cote]["logo"] = o[cote]["logo"]
+    if any(e.startswith("page équipe CJR") for e in data["erreurs"]):   # plateaux, amicaux : seulement connus du CJR
+        ids = {r["id"] for r in data["rencontres"]}
+        data["rencontres"] += [o for i, o in avant.items() if i not in ids]
+        data["rencontres"].sort(key=lambda r: (r["date"], r.get("heure") or "99"))
+
+
 if __name__ == "__main__":
     data = construire()
+    try:
+        ancien = json.loads((ROOT / "docs/data.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        ancien = None
+    garder_infos_cjr(data, ancien)
     (ROOT / "docs/data.json").write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
     (ROOT / "docs/calendrier.ics").write_text(ics(data), encoding="utf-8", newline="")
     nb = sum(r["nous"] for r in data["rencontres"])
