@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-07T14:55:19+00:00",
+ "maj": "2026-10-07T14:58:21+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -26,10 +26,10 @@
  ],
  "rassemblement": {
   "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
-  "exterieur": "Départ groupé en covoiturage depuis le parking du Complexe sportif Bel-Air (Saint-Renan).",
+  "exterieur": "Départ groupé en covoiturage depuis le parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan).",
   "exterieur_lieu": {
-   "nom": "Complexe sportif Bel-Air",
-   "adresse": "Bel-Air, 29290 Saint-Renan",
+   "nom": "Salle Omnisports de Bel Air",
+   "adresse": "9 Rue Racine, 29290 Saint-Renan",
    "lat": 48.433,
    "lon": -4.622
   },
@@ -112,8 +112,8 @@
    "fin": "20:30",
    "coach": "Léo",
    "lieu": {
-    "nom": "Complexe sportif Bel-Air",
-    "adresse": "Bel-Air, 29290 Saint-Renan"
+    "nom": "Salle Omnisports de Bel Air",
+    "adresse": "9 Rue Racine, 29290 Saint-Renan"
    }
   },
   {
@@ -271,8 +271,8 @@
     "logo": "logos/logo-match-de-championnat.png"
    },
    "salle": {
-    "nom": "Complexe sportif Bel-Air",
-    "adresse": "Bel-Air, 29290 Saint-Renan",
+    "nom": "Salle Omnisports de Bel Air",
+    "adresse": "9 Rue Racine, 29290 Saint-Renan",
     "lat": 48.433,
     "lon": -4.622
    },

@@ -46,7 +46,7 @@
   "_aide_entrainements": "jour_num : 1 = lundi ... 4 = jeudi, 5 = vendredi. Source : planning des entraînements CTC 2026-2027 (U18 M2-3).",
   "entrainements": [
     {"jour": "Jeudi", "jour_num": 4, "debut": "19:00", "fin": "20:30", "coach": "Léo",
-     "lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Bel-Air, 29290 Saint-Renan"}},
+     "lieu": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan"}},
     {"jour": "Vendredi", "jour_num": 5, "debut": "19:00", "fin": "20:30", "coach": "Maxime",
      "lieu": {"nom": "Salle polyvalente du Bourg", "adresse": "Salle polyvalente du Bourg, 29810 Plouarzel"}}
   ],
@@ -77,8 +77,8 @@
 
   "rassemblement_defaut": {
     "domicile": "Rendez-vous directement à la salle, en tenue, 45 min avant le match.",
-    "exterieur": "Départ groupé en covoiturage depuis le parking du Complexe sportif Bel-Air (Saint-Renan).",
-    "exterieur_lieu": {"nom": "Complexe sportif Bel-Air", "adresse": "Bel-Air, 29290 Saint-Renan", "lat": 48.433, "lon": -4.622},
+    "exterieur": "Départ groupé en covoiturage depuis le parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan).",
+    "exterieur_lieu": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan", "lat": 48.433, "lon": -4.622},
     "avance_min": 45,
     "a_prevoir": ["Maillot, short, chaussettes", "Une bonne gourde", "Des chaussures propres", "Ta bonne humeur 😄"]
   },
