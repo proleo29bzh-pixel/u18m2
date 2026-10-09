@@ -168,6 +168,39 @@ function cvMatchs() {
   const dom = DATA.covoiturage?.matchs_domicile;
   return DATA.rencontres.filter((r) => r.nous && (dom || !isHome(r)));
 }
+/** Tous nos matchs (domicile compris) : les joueurs y disent s'ils sont présents ; covoiturage seulement à l'extérieur. */
+const cvMatchsPresence = () => DATA.rencontres.filter((r) => r.nous);
+const sansCovoit = (m) => !cvMatchs().some((x) => x.id === m.id);
+
+/** Match à domicile : juste les présences (pas de voitures ni de trajets). */
+function etatDomicile(m) {
+  const rep = Object.fromEntries(CV.reponses.filter((x) => x.match === m.id).map((x) => [x.famille, x]));
+  const auj = new Date(); auj.setHours(0, 0, 0, 0);
+  return { rep, passe: new Date(m.date + "T00:00") < auj, designes: [], reserve: [] };
+}
+
+function pageBilanDomicile(m, a) {
+  const R = (id) => a.rep[id] || {};
+  const presents = cvJoueurs().filter((j) => R(j).present !== "non");
+  const dits = cvJoueurs().filter((j) => R(j).present === "oui");
+  const absents = cvJoueurs().filter((j) => R(j).present === "non");
+  const sansRep = cvJoueurs().filter((j) => !R(j).present);
+  return `
+  <div class="cvbilan ${absents.length ? "" : "ok"}">
+    <div>🏠 Match à domicile : pas de covoiturage, RDV directement à la salle.</div>
+    <div><b>${pl(presents.length, "joueur")}</b> pour l'instant</div>
+  </div>
+  <div class="card">
+    <h3>Joueurs</h3>
+    <div class="cvl" style="padding-top:0"><div class="k">Présents (${dits.length})</div>${dits.map((j) => chip(surnom(j), "ok")).join("") || '<span class="small muted">—</span>'}</div>
+    ${absents.length ? `<div class="cvl"><div class="k">Absents (${absents.length})</div>${absents.map((j) => chip(surnom(j), "abs")).join("")}</div>` : ""}
+    ${sansRep.length ? `<div class="cvl"><div class="k">Pas encore répondu (${sansRep.length}) — comptés présents</div>${sansRep.map((j) => chip(surnom(j), "wait")).join("")}</div>` : ""}
+  </div>
+  <div class="card">
+    <h3>Staff</h3>
+    ${cvStaff().map((st) => { const r = R(st.id); return `<div class="row"><div class="ico">${icon.whistle}</div><div><div class="v">${esc(st.nom)}</div><div class="small muted">${r.present === "oui" ? "Présent(e)" : r.present === "non" ? "Absent(e)" : st.presentDefaut ? "Présent (par défaut)" : "Pas encore répondu"}</div></div></div>`; }).join("")}
+  </div>`;
+}
 
 function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return h; }
 
@@ -332,8 +365,8 @@ function pageStaff(m, a, s) {
       cvBtn(m, a, s.id, { present: "oui" }, "✅ Présent(e)", "g"),
       cvBtn(m, a, s.id, { present: "non", conduit: "" }, "❌ Absent(e)", "r"),
     ])}
-    ${!s.voiture ? `<p class="small muted" style="margin:8px 0 0">Vous êtes comptée comme passagère.</p>` : ""}
-    ${r.present !== "non" && s.voiture ? question("Vous prenez votre voiture ?", [
+    ${!s.voiture && !sansCovoit(m) ? `<p class="small muted" style="margin:8px 0 0">Vous êtes comptée comme passagère.</p>` : ""}
+    ${r.present !== "non" && s.voiture && !sansCovoit(m) ? question("Vous prenez votre voiture ?", [
       cvBtn(m, a, s.id, { conduit: "oui" }, "🚗 Oui", "g"),
       cvBtn(m, a, s.id, { conduit: "non" }, "Passager", "r"),
     ], r.conduit === "oui" ? cvStepper(m, a, s.id, "Places passagers") : "") : ""}
@@ -493,16 +526,17 @@ function renderCovoit() {
   </div>`;
 
   const auj = new Date(); auj.setHours(0, 0, 0, 0);
-  const avenir = cvMatchs().filter((m) => new Date(m.date + "T00:00") >= auj);
-  if (!avenir.length) { el.innerHTML = html + `<div class="empty">Pas de déplacement à venir.</div>`; return selectMoi(moi); }
+  const avenir = cvMatchsPresence().filter((m) => new Date(m.date + "T00:00") >= auj);
+  if (!avenir.length) { el.innerHTML = html + `<div class="empty">Pas de match à venir.</div>`; return selectMoi(moi); }
   if (!avenir.some((m) => m.id === CV.match)) CV.match = avenir[0].id;
   const m = avenir.find((x) => x.id === CV.match);
   const { parMatch, trajets } = cvRepartition();
-  const a = parMatch[m.id];
+  const domicile = sansCovoit(m);
+  const a = domicile ? etatDomicile(m) : parMatch[m.id];
   const page = store.get("covoit-page") === "bilan" || !moi ? "bilan" : "moi";
 
   html += `<div class="mchips">${avenir.map((x) => `<button class="mchip ${x.id === m.id ? "on" : ""}" data-cvmatch="${esc(x.id)}">
-      <b>${fmt(x, { day: "numeric", month: "short" }).replace(".", "")}</b><span>${esc(opponent(x).nom)}</span></button>`).join("")}</div>
+      <b>${sansCovoit(x) ? "🏠 " : ""}${fmt(x, { day: "numeric", month: "short" }).replace(".", "")}</b><span>${esc(opponent(x).nom)}</span></button>`).join("")}</div>
     <div class="card mhead">
       <div class="opp">${isHome(m) ? "vs" : "@"} ${esc(opponent(m).nom)}</div>
       <div class="small muted">${esc(dayLong(m))}${m.heure ? " · " + m.heure.replace(":", "h") : ""} · ${esc(salleMatch(m).adresse || salleMatch(m).nom || "")}</div>
@@ -513,7 +547,8 @@ function renderCovoit() {
     </div>
     ${moi ? "" : `<p class="small muted" style="margin:6px 4px 0">Choisissez qui vous êtes en haut pour répondre.</p>`}`;
 
-  if (page === "bilan") html += pageBilan(m, a, trajets);
+  if (page === "bilan") html += domicile ? pageBilanDomicile(m, a) : pageBilan(m, a, trajets);
+  else if (moi.startsWith("Famille:") && domicile) html += `<div class="card"><p style="margin:0">🏠 Match à domicile : pas de covoiturage, rendez-vous directement à la salle. C'est ${esc(surnom(familleDe(moi.slice(8))?.enfant || ""))} qui indique s'il est présent, avec le code joueur.</p></div>`;
   else if (moi.startsWith("Famille:")) html += pageFamille(m, a, familleDe(moi.slice(8)), trajets);
   else if (estStaff(moi)) html += pageStaff(m, a, cvStaff().find((s) => s.id === moi));
   else html += pageJoueur(m, a, moi);
