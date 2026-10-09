@@ -96,7 +96,7 @@ async function cvCharger() {
 function cvDeconnecter() {
   CV.code = "";
   if (typeof ENTR !== "undefined") { ENTR.coach = false; ENTR.pour = ""; }
-  store.set("covoit-code", ""); store.set("covoit-role", ""); store.set("covoit-moi", "");
+  store.set("covoit-code", ""); store.set("covoit-role", ""); store.set("covoit-moi", ""); store.set("covoit-moi-dom", "");
   CV.reponses = [];
 }
 
@@ -439,17 +439,20 @@ function pageBilan(m, a, trajets) {
 // ------------------------------------------------------------ rendu principal
 
 /** Choix possibles dans le menu « Qui êtes-vous ? » selon le code. */
-function cvChoix() {
+function cvChoix(domicile = false) {
   const joueurs = `<optgroup label="Joueurs">${cvJoueurs().map((j) => `<option value="${esc(j)}">${esc(surnom(j))}</option>`).join("")}</optgroup>`;
   const familles = `<optgroup label="Familles">${cvFamilles().map((f) => `<option value="${esc(f.id)}">${esc(f.libelle)}</option>`).join("")}</optgroup>`;
   const staff = `<optgroup label="Staff">${cvStaff().map((s) => `<option value="${esc(s.id)}">${esc(s.nom)} (${esc(s.role)})</option>`).join("")}</optgroup>`;
+  // match à domicile : pas de covoiturage, donc pas de familles — les joueurs (et le staff) disent s'ils sont là
+  if (domicile) return cvRole() === "joueur" && cvApi() ? joueurs : joueurs + staff;
   if (!cvApi()) return familles + staff + joueurs;        // démo : tout
   return cvRole() === "joueur" ? joueurs : familles + staff;
 }
 
-function moiValide(moi) {
+function moiValide(moi, domicile = false) {
   if (!moi) return false;
   const demo = !cvApi();
+  if (domicile) return estStaff(moi) ? (demo || cvRole() === "parent") && cvStaff().some((s) => s.id === moi) : cvJoueurs().includes(moi);
   if (moi.startsWith("Famille:")) return (demo || cvRole() === "parent") && !!familleDe(moi.slice(8));
   if (estStaff(moi)) return (demo || cvRole() === "parent") && cvStaff().some((s) => s.id === moi);
   return (demo || cvRole() === "joueur") && cvJoueurs().includes(moi);
@@ -519,19 +522,22 @@ function renderCovoit() {
   if (besoinCode) { el.innerHTML = html + apercuPublic(); return; }
   if (!CV.charge) { el.innerHTML = html + `<div class="empty">Chargement…</div>`; return; }
 
-  const moi = moiValide(cvMoi()) ? cvMoi() : "";
-  html += `<div class="card qui">
-    <h3>Qui êtes-vous ?</h3>
-    <select id="cv-moi" class="cvselect"><option value="">${cvRole() === "joueur" && cvApi() ? "Choisis ton prénom…" : "Choisir…"}</option>${cvChoix()}</select>
-  </div>`;
-
   const auj = new Date(); auj.setHours(0, 0, 0, 0);
   const avenir = cvMatchsPresence().filter((m) => new Date(m.date + "T00:00") >= auj);
-  if (!avenir.length) { el.innerHTML = html + `<div class="empty">Pas de match à venir.</div>`; return selectMoi(moi); }
+  if (!avenir.length) { el.innerHTML = html + `<div class="empty">Pas de match à venir.</div>`; return; }
   if (!avenir.some((m) => m.id === CV.match)) CV.match = avenir[0].id;
   const m = avenir.find((x) => x.id === CV.match);
   const { parMatch, trajets } = cvRepartition();
   const domicile = sansCovoit(m);
+
+  // à domicile, un parent répond pour son enfant (ou le staff pour lui) : identité gardée à part pour ne pas perdre la famille
+  const cle = domicile && cvRole() !== "joueur" ? "covoit-moi-dom" : "covoit-moi";
+  const brut = store.get(cle) || (cle === "covoit-moi-dom" && estStaff(cvMoi()) ? cvMoi() : "");
+  const moi = moiValide(brut, domicile) ? brut : "";
+  html += `<div class="card qui">
+    <h3>${domicile ? "Qui joue ?" : "Qui êtes-vous ?"}</h3>
+    <select id="cv-moi" class="cvselect" data-cle="${cle}"><option value="">${domicile || (cvRole() === "joueur" && cvApi()) ? "Choisis le prénom…" : "Choisir…"}</option>${cvChoix(domicile)}</select>
+  </div>`;
   const a = domicile ? etatDomicile(m) : parMatch[m.id];
   const page = store.get("covoit-page") === "bilan" || !moi ? "bilan" : "moi";
 
@@ -583,7 +589,7 @@ if (estStaff(cvMoi())) store.set("covoit-code", "");
 
 document.addEventListener("change", (e) => {
   if (e.target.id === "cv-moi") {
-    store.set("covoit-moi", e.target.value);
+    store.set(e.target.dataset.cle || "covoit-moi", e.target.value);
     store.set("covoit-page", e.target.value ? "moi" : "bilan");
     cvMemoriserCode();
     renderCovoit();
