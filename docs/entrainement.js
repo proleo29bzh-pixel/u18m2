@@ -59,20 +59,22 @@ function joueurDuTel() {
 
 function blocPresence(e) {
   if (typeof cvApi !== "function" || !cvApi()) return "";
-  if (!cvCode()) return "";        // le champ du code est affiché en haut de la page
   if (!CV.charge) return "";
+  // sans code : listes en lecture seule (aperçu public) ; le code ne sert qu'à répondre
+  const lecture = !cvCode();
+  const source = lecture ? CV.apercu || [] : CV.reponses;
   const id = idSeance(e);
-  const rep = Object.fromEntries(CV.reponses.filter((x) => x.match === id).map((x) => [x.famille, x.present]));
+  const rep = Object.fromEntries(source.filter((x) => x.match === id).map((x) => [x.famille, x.present]));
   const joueurs = DATA.joueurs || [];
   const oui = joueurs.filter((j) => rep[j] === "oui"), non = joueurs.filter((j) => rep[j] === "non");
   const sans = joueurs.filter((j) => !rep[j]);
-  const moi = joueurDuTel();
+  const moi = lecture ? "" : joueurDuTel();
   const btn = (val, label, cls) => `<button class="seg ${rep[moi] === val ? "on " + cls : ""}" data-entr="${esc(id)}" data-joueur="${esc(moi)}" data-val="${val}">${label}</button>`;
   const groupe = (titre, noms, cls) => `<div class="cvl"><div class="k">${titre} (${noms.length})</div>${noms.length ? noms.map((j) => `<span class="cchip ${cls}">${esc(surnom(j))}</span>`).join("") : '<span class="small muted">—</span>'}</div>`;
   return `<div class="presence">
     ${moi ? `<div class="k">${esc(moi)} sera là ?</div><div class="segs">${btn("oui", "✅ Présent", "g")}${btn("non", "❌ Absent", "r")}</div>`
       : ENTR.coach ? `<div class="small muted">Choisissez un joueur en haut pour répondre à sa place.</div>`
-      : `<div class="small muted">Ce sont les joueurs qui répondent, avec leur code joueur.</div>`}
+      : lecture ? "" : `<div class="small muted">Ce sont les joueurs qui répondent, avec leur code joueur.</div>`}
     ${groupe("✅ Présents", oui, "ok")}
     ${groupe("❌ Absents", non, "abs")}
     ${groupe("⏳ Pas encore répondu", sans, "wait")}
