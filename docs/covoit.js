@@ -209,9 +209,11 @@ function compteGateaux() {
 function blocGateaux(m, passe) {
   const liste = gateauxDu(m), manque = Math.max(0, GATEAUX(m) - liste.length);
   const t = compteGateaux();
-  const tour = cvFamilles().filter((f) => !liste.includes(f.id))
-    .sort((x, y) => t[x.id].faits + t[x.id].prevus - (t[y.id].faits + t[y.id].prevus) || t[x.id].dernier - t[y.id].dernier || hash(m.id + x.id) - hash(m.id + y.id))
-    .slice(0, Math.max(manque, 0));
+  // « À qui le tour ? » : toutes les familles qui en ont fait le moins (aucun, au début), sans celles déjà inscrites
+  const nb = (f) => t[f.id].faits + t[f.id].prevus;
+  const libres = cvFamilles().filter((f) => !liste.includes(f.id));
+  const mini = Math.min(...libres.map(nb));
+  const tour = libres.filter((f) => nb(f) === mini);
   const manuel = Array.isArray((DATA.covoiturage?.gateaux_faits || {})[m.id]);
   const parent = cvCode() && cvRole() !== "joueur";
   const maFam = store.get("gateau-famille") || (cvMoi().startsWith("Famille:") ? cvMoi() : "");
@@ -223,7 +225,7 @@ function blocGateaux(m, passe) {
       <div>${liste.length ? liste.map((id) => "🍰 " + esc(nomDe(id))).join(" · ") : "Personne pour l'instant"}</div>
       <div>${passe ? `${gat(liste.length)}` : manque ? `Il manque ${gat(manque)}` : "C'est bon ✅"}</div>
     </div>
-    ${!passe && manque && tour.length ? `<div class="cvl"><div class="k">À qui le tour ? (les familles qui en ont fait le moins)</div>${tour.map((f) => chip(f.libelle, "wait")).join("")}</div>` : ""}
+    ${!passe && manque && tour.length ? `<div class="cvl"><div class="k">À qui le tour ? ${mini === 0 ? "Les familles qui n'en ont pas encore fait" : "Les familles qui en ont fait le moins"} : on en attend ${gat(manque)}</div>${tour.map((f) => chip(f.libelle, "wait")).join("")}</div>` : ""}
     ${!passe && !manuel && parent ? `<div style="margin-top:10px">
       <select id="gateau-famille" class="cvselect"><option value="">Votre famille…</option>${cvFamilles().map((f) => `<option value="${esc(f.id)}" ${f.id === maFam ? "selected" : ""}>${esc(f.libelle)}</option>`).join("")}</select>
       ${maFam ? `<button class="btn ${nous ? "" : "primary"}" style="width:100%;margin-top:8px" data-gateau="${esc(m.id)}" data-fam="${esc(maFam)}" data-val="${nous ? "" : "oui"}">${nous ? "Annuler notre gâteau" : "🍰 On fait un gâteau"}</button>` : ""}
