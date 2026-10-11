@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-11T14:03:11+00:00",
+ "maj": "2026-10-11T14:49:39+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -177,7 +177,15 @@
     "Famille:Evan"
    ]
   },
-  "matchs_domicile": false
+  "matchs_domicile": false,
+  "gateaux_par_match": 2,
+  "gateaux_faits": {
+   "200000014843624": [
+    "Famille:Malo",
+    "Famille:Evan",
+    "Famille:Nils"
+   ]
+  }
  },
  "rencontres": [
   {

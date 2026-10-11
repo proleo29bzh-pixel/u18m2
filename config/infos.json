@@ -40,7 +40,10 @@
       "cjr-2966": ["Famille:Thomas", "Famille:Tom (Grand)", "Coach Léo"],
       "cjr-3018": ["Famille:Nathan", "Famille:Malo", "Famille:Nils", "Famille:Evan"]
     },
-    "matchs_domicile": false
+    "matchs_domicile": false,
+    "_aide_gateaux": "Matchs à domicile : gâteaux pour la buvette. gateaux_par_match = objectif par match. gateaux_faits = gâteaux faits avant l'appli (id du match : [Famille:<enfant>])",
+    "gateaux_par_match": 2,
+    "gateaux_faits": {"200000014843624": ["Famille:Malo", "Famille:Evan", "Famille:Nils"]}
   },
 
   "_aide_entrainements": "jour_num : 1 = lundi ... 4 = jeudi, 5 = vendredi. Source : planning des entraînements CTC 2026-2027 (U18 M2-3).",

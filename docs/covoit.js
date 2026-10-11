@@ -122,9 +122,12 @@ function libellesReponse(r) {
   if (estParent(r.famille)) qui_txt = `${nomDe(r.famille)} (${r.famille.split(":")[1]})`;
   else if (estStaff(r.famille)) qui_txt = `${nomDe(r.famille)} (staff)`;
   else if (r.famille === "etat") qui_txt = "—";
+  else if (String(r.famille).startsWith("Gateau:")) qui_txt = `${nomDe("Famille:" + r.famille.slice(7))} (gâteau)`;
 
   let clair;
-  if (r.match === "maillots" && typeof STATUTS !== "undefined" && STATUTS[r.present]) {
+  if (String(r.famille).startsWith("Gateau:")) {
+    clair = r.present === "oui" ? "Fait un gâteau pour la buvette" : "";
+  } else if (r.match === "maillots" && typeof STATUTS !== "undefined" && STATUTS[r.present]) {
     clair = STATUTS[r.present].txt(nomChez(r.conduit));
   } else if (estParent(r.famille)) {
     clair = [
@@ -179,6 +182,64 @@ function etatDomicile(m) {
   return { rep, passe: new Date(m.date + "T00:00") < auj, designes: [], reserve: [] };
 }
 
+// ------------------------------------------------------------ gâteaux pour la buvette (matchs à domicile)
+/* Sheet : match = id du match, famille = "Gateau:<enfant>", present = "oui".
+   Gâteaux faits avant l'appli : infos.json → covoiturage.gateaux_faits[id du match] = ["Famille:<enfant>", …]. */
+const gat = (n) => `${n} gâteau${n > 1 ? "x" : ""}`;
+const GATEAUX = () => DATA.covoiturage?.gateaux_par_match || 2;
+const sourceRep = () => (cvCode() ? CV.reponses : CV.apercu || []);
+function gateauxDu(m) {
+  const manuels = (DATA.covoiturage?.gateaux_faits || {})[m.id];
+  if (Array.isArray(manuels)) return manuels;
+  return sourceRep().filter((x) => x.match === m.id && String(x.famille).startsWith("Gateau:") && x.present === "oui")
+    .map((x) => "Famille:" + x.famille.slice(7));
+}
+/** Gâteaux par famille sur la saison : faits (matchs passés) et prévus. */
+function compteGateaux() {
+  const auj = new Date(); auj.setHours(0, 0, 0, 0);
+  const t = Object.fromEntries(cvFamilles().map((f) => [f.id, { faits: 0, prevus: 0, dernier: -1 }]));
+  cvMatchsPresence().filter(sansCovoit).forEach((m, i) => {
+    const passe = new Date(m.date + "T00:00") < auj;
+    for (const id of gateauxDu(m)) if (t[id]) { t[id][passe ? "faits" : "prevus"]++; t[id].dernier = i; }
+  });
+  return t;
+}
+
+function blocGateaux(m, passe) {
+  const liste = gateauxDu(m), manque = Math.max(0, GATEAUX() - liste.length);
+  const t = compteGateaux();
+  const tour = cvFamilles().filter((f) => !liste.includes(f.id))
+    .sort((x, y) => t[x.id].faits + t[x.id].prevus - (t[y.id].faits + t[y.id].prevus) || t[x.id].dernier - t[y.id].dernier || hash(m.id + x.id) - hash(m.id + y.id))
+    .slice(0, Math.max(manque, 0));
+  const manuel = Array.isArray((DATA.covoiturage?.gateaux_faits || {})[m.id]);
+  const parent = cvCode() && cvRole() !== "joueur";
+  const maFam = store.get("gateau-famille") || (cvMoi().startsWith("Famille:") ? cvMoi() : "");
+  const nous = liste.includes(maFam);
+  return `<div class="card">
+    <h3>🍰 Gâteaux pour la buvette</h3>
+    <p class="small muted" style="margin-top:0">À la fin du match, pour nos joueurs et l'équipe adverse. Objectif : <b>${gat(GATEAUX())} par match</b> (plus, c'est encore mieux), et pas toujours les mêmes familles.</p>
+    <div class="cvbilan ${manque ? "ko" : "ok"}" style="margin:0 0 10px">
+      <div>${liste.length ? liste.map((id) => "🍰 " + esc(nomDe(id))).join(" · ") : "Personne pour l'instant"}</div>
+      <div>${passe ? `${gat(liste.length)}` : manque ? `Il manque ${gat(manque)}` : "C'est bon ✅"}</div>
+    </div>
+    ${!passe && manque && tour.length ? `<div class="cvl"><div class="k">À qui le tour ? (les familles qui en ont fait le moins)</div>${tour.map((f) => chip(f.libelle, "wait")).join("")}</div>` : ""}
+    ${!passe && !manuel && parent ? `<div style="margin-top:10px">
+      <select id="gateau-famille" class="cvselect"><option value="">Votre famille…</option>${cvFamilles().map((f) => `<option value="${esc(f.id)}" ${f.id === maFam ? "selected" : ""}>${esc(f.libelle)}</option>`).join("")}</select>
+      ${maFam ? `<button class="btn ${nous ? "" : "primary"}" style="width:100%;margin-top:8px" data-gateau="${esc(m.id)}" data-fam="${esc(maFam)}" data-val="${nous ? "" : "oui"}">${nous ? "Annuler notre gâteau" : "🍰 On fait un gâteau"}</button>` : ""}
+    </div>` : !passe && !parent ? `<p class="small muted" style="margin:8px 0 0">Les parents s'inscrivent avec le code parents.</p>` : ""}
+  </div>`;
+}
+
+function tableauGateaux() {
+  const t = compteGateaux();
+  return `<h2 class="section">Gâteaux par famille</h2>
+  <div class="card" style="padding:6px 10px"><table class="standings">
+    <thead><tr><th class="t">Famille</th><th>Faits</th><th>Prévus</th></tr></thead>
+    <tbody>${Object.entries(t).sort(([x, a], [y, b]) => b.faits + b.prevus - (a.faits + a.prevus) || nomDe(x).localeCompare(nomDe(y)))
+      .map(([id, c]) => `<tr class="${c.faits ? "obj-ok" : c.prevus ? "obj-encours" : ""}"><td class="t">${esc(nomDe(id))}</td><td>${c.faits}</td><td>${c.prevus}</td></tr>`).join("")}</tbody>
+  </table></div>`;
+}
+
 function pageBilanDomicile(m, a) {
   const R = (id) => a.rep[id] || {};
   const presents = cvJoueurs().filter((j) => R(j).present !== "non");
@@ -190,6 +251,7 @@ function pageBilanDomicile(m, a) {
     <div>🏠 Match à domicile : pas de covoiturage, RDV directement à la salle.</div>
     <div><b>${pl(presents.length, "joueur")}</b> pour l'instant</div>
   </div>
+  ${blocGateaux(m, a.passe)}
   <div class="card">
     <h3>Joueurs</h3>
     <div class="cvl" style="padding-top:0"><div class="k">Présents (${dits.length})</div>${dits.map((j) => chip(surnom(j), "ok")).join("") || '<span class="small muted">—</span>'}</div>
@@ -199,7 +261,8 @@ function pageBilanDomicile(m, a) {
   <div class="card">
     <h3>Staff</h3>
     ${cvStaff().map((st) => { const r = R(st.id); return `<div class="row"><div class="ico">${icon.whistle}</div><div><div class="v">${esc(st.nom)}</div><div class="small muted">${r.present === "oui" ? "Présent(e)" : r.present === "non" ? "Absent(e)" : st.presentDefaut ? "Présent (par défaut)" : "Pas encore répondu"}</div></div></div>`; }).join("")}
-  </div>`;
+  </div>
+  ${tableauGateaux()}`;
 }
 
 function hash(s) { let h = 0; for (const c of s) h = (h * 31 + c.charCodeAt(0)) | 0; return h; }
@@ -587,7 +650,14 @@ function covoitResume(m) {
 // Staff : à l'ouverture de l'appli, le code n'est pas repris.
 if (estStaff(cvMoi())) store.set("covoit-code", "");
 
+document.addEventListener("click", (e) => {
+  const g = e.target.closest("[data-gateau]");
+  if (!g) return;
+  cvEnregistrer(g.dataset.gateau, "Gateau:" + g.dataset.fam.slice(8), { present: g.dataset.val });
+});
+
 document.addEventListener("change", (e) => {
+  if (e.target.id === "gateau-famille") { store.set("gateau-famille", e.target.value); return renderCovoit(); }
   if (e.target.id === "cv-moi") {
     store.set(e.target.dataset.cle || "covoit-moi", e.target.value);
     store.set("covoit-page", e.target.value ? "moi" : "bilan");
