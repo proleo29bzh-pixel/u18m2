@@ -186,7 +186,8 @@ function etatDomicile(m) {
 /* Sheet : match = id du match, famille = "Gateau:<enfant>", present = "oui".
    Gâteaux faits avant l'appli : infos.json → covoiturage.gateaux_faits[id du match] = ["Famille:<enfant>", …]. */
 const gat = (n) => `${n} gâteau${n > 1 ? "x" : ""}`;
-const GATEAUX = () => DATA.covoiturage?.gateaux_par_match || 2;
+/** Objectif de gâteaux d'un match (infos.json → gateaux_objectifs[id], sinon gateaux_par_match). */
+const GATEAUX = (m) => (m && DATA.covoiturage?.gateaux_objectifs?.[m.id]) || DATA.covoiturage?.gateaux_par_match || 2;
 const sourceRep = () => (cvCode() ? CV.reponses : CV.apercu || []);
 function gateauxDu(m) {
   const manuels = (DATA.covoiturage?.gateaux_faits || {})[m.id];
@@ -206,7 +207,7 @@ function compteGateaux() {
 }
 
 function blocGateaux(m, passe) {
-  const liste = gateauxDu(m), manque = Math.max(0, GATEAUX() - liste.length);
+  const liste = gateauxDu(m), manque = Math.max(0, GATEAUX(m) - liste.length);
   const t = compteGateaux();
   const tour = cvFamilles().filter((f) => !liste.includes(f.id))
     .sort((x, y) => t[x.id].faits + t[x.id].prevus - (t[y.id].faits + t[y.id].prevus) || t[x.id].dernier - t[y.id].dernier || hash(m.id + x.id) - hash(m.id + y.id))
@@ -217,7 +218,7 @@ function blocGateaux(m, passe) {
   const nous = liste.includes(maFam);
   return `<div class="card">
     <h3>🍰 Gâteaux pour la buvette</h3>
-    <p class="small muted" style="margin-top:0">À la fin du match, pour nos joueurs et l'équipe adverse. Objectif : <b>${gat(GATEAUX())} par match</b> (plus, c'est encore mieux), et pas toujours les mêmes familles.</p>
+    <p class="small muted" style="margin-top:0">À la fin du match, pour nos joueurs et l'équipe adverse. Objectif : <b>${gat(GATEAUX(m))} pour ce match</b> (plus, c'est encore mieux), et pas toujours les mêmes familles.</p>
     <div class="cvbilan ${manque ? "ko" : "ok"}" style="margin:0 0 10px">
       <div>${liste.length ? liste.map((id) => "🍰 " + esc(nomDe(id))).join(" · ") : "Personne pour l'instant"}</div>
       <div>${passe ? `${gat(liste.length)}` : manque ? `Il manque ${gat(manque)}` : "C'est bon ✅"}</div>

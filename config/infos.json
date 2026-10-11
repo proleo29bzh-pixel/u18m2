@@ -43,6 +43,7 @@
     "matchs_domicile": false,
     "_aide_gateaux": "Matchs à domicile : gâteaux pour la buvette. gateaux_par_match = objectif par match. gateaux_faits = gâteaux faits avant l'appli (id du match : [Famille:<enfant>])",
     "gateaux_par_match": 2,
+    "gateaux_objectifs": {"200000014843685": 3, "200000014843745": 4},
     "gateaux_faits": {"200000014843624": ["Famille:Malo", "Famille:Evan", "Famille:Nils"]}
   },
 
