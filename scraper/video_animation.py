@@ -126,7 +126,7 @@ def image(an, fond, t, titre, sous_titre):
     f = police(30)
     for j in a["pos"]:
         x, y = ici(j)
-        c = ROUGE if j.startswith("X") or j == "D" else NAVY
+        c = (21, 128, 61) if j == "C" else ROUGE if j.startswith("X") or j == "D" else NAVY
         d.ellipse([x - R, y - R, x + R, y + R], fill=c, outline=LIGNE, width=4)
         d.text((x, y + 1), j, font=f, fill=LIGNE, anchor="mm")
 

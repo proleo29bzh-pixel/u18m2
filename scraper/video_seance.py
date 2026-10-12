@@ -44,9 +44,11 @@ def bonhomme(fig, larg):
             x, y = s(p)
             r = 2.5 * k
             d.ellipse([x - r, y - r, x + r, y + r], fill=NAVY)
-    x, y = s(fig["tete"])
-    r = 8 * k
-    d.ellipse([x - r, y - r, x + r, y + r], fill=ORANGE, outline=NAVY, width=int(2.5 * k))
+    for t in (fig["tete"], fig.get("tete2")):
+        if t:
+            x, y = s(t)
+            r = 8 * k
+            d.ellipse([x - r, y - r, x + r, y + r], fill=ORANGE, outline=NAVY, width=int(2.5 * k))
     return im
 
 
@@ -139,7 +141,7 @@ class Carte:
         y = entete(d, rubrique, titre) + 30
         if tuiles:                                       # bonshommes avec leur nom
             n = len(tuiles)
-            col = 3 if n > 4 else 2
+            col = 3 if n > 3 else 2
             tl = (W - 120 - (col - 1) * 30) // col
             for i, (fig, nom, info) in enumerate(tuiles):
                 cx, cy = 60 + (i % col) * (tl + 30), y + (i // col) * (int(tl * 0.75) + 130)
@@ -188,7 +190,7 @@ class Terrain:
         R, f = 0.55 * K, P(30)
         for j in a["pos"]:
             x, y = ici(j)
-            c = va.ROUGE if j.startswith("X") or j == "D" else NAVY
+            c = (21, 128, 61) if j == "C" else va.ROUGE if j.startswith("X") or j == "D" else NAVY
             d.ellipse([x - R, y - R, x + R, y + R], fill=c, outline=(255, 255, 255), width=4)
             d.text((x, y + 1), j, font=f, fill=(255, 255, 255), anchor="mm")
 
@@ -241,6 +243,13 @@ def segments(s):
             parole = "\n".join(f"{e['nom']} : {e['txt'].split('. ')[0].rstrip('.')}." for e in p["exos"])
             seg.append(Carte(f"Échauffement · {ech.get('duree', '')}", p["titre"].split("—")[0].strip(), parole,
                              tuiles=[(e["fig"], e["nom"], e.get("series")) for e in p["exos"]]))
+
+    for cle in ("detente", "circuit"):                   # blocs illustrés (détente, circuit physique)
+        b = s.get(cle)
+        if b:
+            parole = (b.get("but", "") + "\n" + "\n".join(f"{e['nom']} : {e['series']}" for e in b["exos"])).strip()
+            seg.append(Carte(f"{b.get('titre', '')} · {b.get('duree', '')}", b.get("titre", ""), parole,
+                             tuiles=[(e["fig"], e["nom"], e.get("series")) for e in b["exos"]]))
 
     if s.get("animation"):
         premier = dict(s["animation"])

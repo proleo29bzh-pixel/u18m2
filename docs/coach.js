@@ -185,14 +185,14 @@ function blocExercice(titre, duree, but, schema, consignes, points, num) {
 // ------------------------------------------------------------ étirements de fin (communs à toutes les séances)
 
 /** Bonhomme en traits : chaque partie = liste de points [x, y] reliés ; tête = [x, y]. Cadre 160 × 120, sol à y = 110. */
-function bonhomme({ tete, traits, mur, decor = [], sol = true }) {
+function bonhomme({ tete, tete2, traits, mur, decor = [], sol = true }) {
   const ligne = (pts) => `<polyline points="${pts.map((p) => p.join(",")).join(" ")}" fill="none" stroke="${COUL.navy}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
   return `<svg viewBox="0 0 160 120" class="etir-svg" role="img">
     ${sol ? `<line x1="6" y1="111" x2="154" y2="111" stroke="${COUL.gris}" stroke-width="2" opacity=".5"/>` : ""}
     ${mur ? `<line x1="${mur}" y1="10" x2="${mur}" y2="111" stroke="${COUL.gris}" stroke-width="4" opacity=".6"/>` : ""}
     ${decor.map((pts) => `<polyline points="${pts.map((q) => q.join(",")).join(" ")}" fill="none" stroke="${COUL.gris}" stroke-width="3" opacity=".7"/>`).join("")}
     ${traits.map(ligne).join("")}
-    <circle cx="${tete[0]}" cy="${tete[1]}" r="8" fill="${COUL.orange}" stroke="${COUL.navy}" stroke-width="2.5"/>
+    ${[tete, tete2].filter(Boolean).map((t) => `<circle cx="${t[0]}" cy="${t[1]}" r="8" fill="${COUL.orange}" stroke="${COUL.navy}" stroke-width="2.5"/>`).join("")}
   </svg>`;
 }
 
@@ -331,6 +331,7 @@ function renderCoach() {
         ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
       ${s.echauffement ? blocDetente(s.echauffement) : ""}
       ${s.detente ? blocDetente(s.detente) : ""}
+      ${s.circuit ? blocDetente(s.circuit) : ""}
       ${(s.ateliers || []).map((a, k) => blocExercice(a.titre, a.duree, a.but, a.schema, a.consignes, a.points_cles, a.num)
         + (a.animation ? blocAnimation(a.animation, `s${i}a${k}`) : "")).join("")}
       ${s.bonus ? blocExercice(s.bonus.titre, s.bonus.duree, s.bonus.but, s.bonus.schema, s.bonus.consignes, s.bonus.points_cles, "+") : ""}
@@ -364,8 +365,8 @@ function blocAnimation(an, id) {
   ANIMS[id].an = an;
   const R = 12;
   const joueurs = Object.keys(an.etapes[0].pos).map((k) => {
-    const def = k.startsWith("X") || k === "D";   // défenseurs : X1, X2… ou D
-    return `<g class="anim-j" data-j="${esc(k)}"><circle r="${R}" fill="${def ? COUL.rouge : COUL.navy}" stroke="#fff" stroke-width="2"/>
+    const def = k.startsWith("X") || k === "D";   // défenseurs : X1, X2… ou D ; C = coach
+    return `<g class="anim-j" data-j="${esc(k)}"><circle r="${R}" fill="${k === "C" ? COUL.vert : def ? COUL.rouge : COUL.navy}" stroke="#fff" stroke-width="2"/>
       <text y="4.5" text-anchor="middle" class="sc-lab">${esc(k)}</text></g>`;
   }).join("");
   const calque = `<g>${joueurs}<circle class="anim-ballon" r="6.5" fill="${COUL.orange}" stroke="#7c2d12" stroke-width="1.5"/></g>`;
