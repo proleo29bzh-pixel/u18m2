@@ -216,6 +216,7 @@ function blocDetente(b) {
   return `<div class="card exo">
     <div class="exo-titre">${b.icone || "🦘"} ${esc(b.titre || "Détente")}${b.duree ? ` <span class="muted small">· ${esc(b.duree)}</span>` : ""}</div>
     ${b.but ? `<p style="margin:8px 0 10px">${esc(b.but)}</p>` : ""}
+    ${(b.cas || []).map((c) => `<div class="note" style="margin:0 0 8px"><b>${esc(c.qui)}</b> : ${esc(c.txt)}</div>`).join("")}
     <div class="etir-grille">${(b.exos || []).map((e, i) => `${e.partie ? `<div class="etir-partie">${esc(e.partie)}</div>` : ""}<div class="etir">
       ${e.fig ? bonhomme(e.fig) : ""}
       <div class="etir-nom">${i + 1}. ${esc(e.nom)}</div>
@@ -329,6 +330,7 @@ function renderCoach() {
       ${s.organisation?.length || s.plan ? `<div class="card exo"><div class="exo-titre">Organisation</div>
         ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
         ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
+      ${s.adaptations ? blocDetente(s.adaptations) : ""}
       ${s.echauffement ? blocDetente(s.echauffement) : ""}
       ${s.detente ? blocDetente(s.detente) : ""}
       ${s.circuit ? blocDetente(s.circuit) : ""}
@@ -370,7 +372,7 @@ function blocAnimation(an, id) {
       <text y="4.5" text-anchor="middle" class="sc-lab">${esc(k)}</text></g>`;
   }).join("");
   const calque = `<g>${joueurs}<circle class="anim-ballon" r="6.5" fill="${COUL.orange}" stroke="#7c2d12" stroke-width="1.5"/></g>`;
-  const svg = schemaSVG({ terrain: "demi", packline: an.packline, elements: [] }).replace(/<\/svg>\s*$/, calque + "</svg>");
+  const svg = schemaSVG({ terrain: "demi", packline: an.packline, elements: (an.plots || []).map(([x, y]) => ({ t: "plot", x, y })) }).replace(/<\/svg>\s*$/, calque + "</svg>");
   return `<div class="card exo anim" data-anim="${id}">
     <div class="exo-titre">🎬 ${esc(an.titre || "Récap animé")}</div>
     ${svg}

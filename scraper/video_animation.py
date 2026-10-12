@@ -40,7 +40,7 @@ def arc_points(cx, cy, r, a0, a1, n=120):
     return [P(cx + r * math.cos(math.radians(a0 + (a1 - a0) * i / n)), cy + r * math.sin(math.radians(a0 + (a1 - a0) * i / n))) for i in range(n + 1)]
 
 
-def terrain(packline):
+def terrain(packline, plots=()):
     img = Image.new("RGB", (W, H), FOND)
     d = ImageDraw.Draw(img, "RGBA")
     d.rounded_rectangle([P(0, 0), P(15, 14)], 10, fill=BOIS, outline=LIGNE, width=5)
@@ -62,6 +62,9 @@ def terrain(packline):
                 d.line([contour[i], contour[i + 1]], fill=ORANGE, width=6)
         d.line([P(7.5 - r, 0), P(7.5 - r, 1.575)], fill=ORANGE, width=6)
         d.line([P(7.5 + r, 0), P(7.5 + r, 1.575)], fill=ORANGE, width=6)
+    for x, y in plots:                                  # plots (triangles orange)
+        px, py = P(x, y)
+        d.polygon([(px, py - 18), (px + 16, py + 12), (px - 16, py + 12)], fill=ORANGE, outline=(124, 45, 18))
     return img
 
 
@@ -171,7 +174,7 @@ def main():
     sortie = ROOT / "coach-prive/videos" / f"{jour}-{re.sub(r'[^a-z0-9]+', '-', (cle or 'recap'))}.mp4"
     sortie.parent.mkdir(exist_ok=True)
 
-    fond = terrain(an.get("packline"))
+    fond = terrain(an.get("packline"), an.get("plots", ()))
     total = duree(an) + 0.6
     cmd = [imageio_ffmpeg.get_ffmpeg_exe(), "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24",
            "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "23",

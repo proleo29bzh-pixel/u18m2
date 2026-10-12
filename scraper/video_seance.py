@@ -135,7 +135,7 @@ class Carte:
 
     def __init__(self, rubrique, titre, parole, tuiles=None, liste=None):
         self.parole = txt(parole)
-        self.duree = max(5.0, min(11.0, 3.0 + len(self.parole) / 17))
+        self.duree = max(5.0, min(24.0 if len(self.parole) > 330 else 11.0, 3.0 + len(self.parole) / 17))
         self.fond = Image.new("RGB", (W, H), FOND)
         d = ImageDraw.Draw(self.fond)
         y = entete(d, rubrique, titre) + 30
@@ -149,6 +149,7 @@ class Carte:
                 d.text((cx, cy + tl * 0.75 + 10), txt(nom), font=P(32 if col == 2 else 27), fill=TEXTE)
                 if info:
                     d.text((cx, cy + tl * 0.75 + 54), txt(info), font=P(28, False), fill=GRIS)
+            y += ((n + col - 1) // col) * (int(tl * 0.75) + 130)
         if liste:
             f = P(36, False)
             for l in liste:
@@ -156,11 +157,13 @@ class Carte:
                     d.text((100 if i else 60, y), ("• " if i == 0 else "") + ligne, font=f, fill=TEXTE if i == 0 else GRIS)
                     y += 48
                 y += 14
+        # beaucoup à lire : la bulle commence plus haut (juste sous le contenu)
+        self.y_bulle = 1180 if len(self.parole) < 330 else max(y + 20, 700)
 
     def image(self, t):
         im = self.fond.copy()
         d = ImageDraw.Draw(im)
-        bulle(d, self.parole, 290, 1180, 750, 520, (250, 1530))
+        bulle(d, self.parole, 290, self.y_bulle, 750, 1890 - self.y_bulle, (250, 1530))
         coach(d, 30, 1480, t)
         return im
 
@@ -171,7 +174,7 @@ class Terrain:
     def __init__(self, rubrique, titre, an):
         self.an, self.rubrique, self.titre = an, rubrique, titre
         self.duree = va.duree(an) + 1.0
-        self.fond = va.terrain(an.get("packline"))
+        self.fond = va.terrain(an.get("packline"), an.get("plots", ()))
         d = ImageDraw.Draw(self.fond)
         d.rectangle([0, 0, W, va.OY - 10], fill=FOND)
         entete(d, rubrique, titre)
@@ -244,10 +247,11 @@ def segments(s):
             seg.append(Carte(f"Échauffement · {ech.get('duree', '')}", p["titre"].split("—")[0].strip(), parole,
                              tuiles=[(e["fig"], e["nom"], e.get("series")) for e in p["exos"]]))
 
-    for cle in ("detente", "circuit"):                   # blocs illustrés (détente, circuit physique)
+    for cle in ("adaptations", "detente", "circuit"):                   # blocs illustrés (détente, circuit physique)
         b = s.get(cle)
         if b:
-            parole = (b.get("but", "") + "\n" + "\n".join(f"{e['nom']} : {e['series']}" for e in b["exos"])).strip()
+            lignes = [f"{c['qui']} : {c['txt']}" for c in b.get("cas", [])] or [f"{e['nom']} : {e['series']}" for e in b["exos"]]
+            parole = (b.get("but", "") + "\n" + "\n".join(lignes)).strip()
             seg.append(Carte(f"{b.get('titre', '')} · {b.get('duree', '')}", b.get("titre", ""), parole,
                              tuiles=[(e["fig"], e["nom"], e.get("series")) for e in b["exos"]]))
 
