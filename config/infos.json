@@ -1,33 +1,92 @@
 {
   "_aide": "Fichier à modifier par le coach. Les champs 'matchs' sont indexés par date (AAAA-MM-JJ). Ce que tu mets ici REMPLACE ce qui vient du CJR.",
-
   "equipe": "U18M2",
   "club": "CTC St Renan-Plouarzel",
   "coachs": [
-    {"nom": "Léo", "role": "Coach principal", "tel": "", "present_defaut": true, "famille": "Gabin"},
-    {"nom": "Angélique", "role": "Coach adjointe", "tel": "", "famille": "Bastien"},
-    {"nom": "Eline", "role": "Coach adjointe", "tel": "", "famille": "Evan"}
+    {
+      "nom": "Léo",
+      "role": "Coach principal",
+      "tel": "",
+      "present_defaut": true,
+      "famille": "Gabin"
+    },
+    {
+      "nom": "Angélique",
+      "role": "Coach adjointe",
+      "tel": "",
+      "famille": "Bastien"
+    },
+    {
+      "nom": "Eline",
+      "role": "Coach adjointe",
+      "tel": "",
+      "famille": "Evan"
+    }
   ],
-
-  "joueurs": ["Gabin", "Tom (Grand)", "Tom (Petit)", "Thomas", "Nils", "Evan", "Malo", "Bastien", "Nathan", "Raphaël"],
-
+  "joueurs": [
+    "Gabin",
+    "Tom (Grand)",
+    "Tom (Petit)",
+    "Thomas",
+    "Nils",
+    "Evan",
+    "Malo",
+    "Bastien",
+    "Nathan",
+    "Raphaël"
+  ],
   "_aide_familles": "Une ligne par famille : nom de famille + prénom du joueur (nom vide = affiché « Parents de <joueur> »). Chaque famille a une ligne Maman et une ligne Papa dans l’appli, sauf si \"parents\": [\"Maman\"] (un seul parent).",
   "_aide_surnoms": "Nom affiché dans l'appli à la place du prénom enregistré (les réponses déjà données restent liées au prénom).",
-  "surnoms": {"Tom (Petit)": "Petit Tom", "Tom (Grand)": "Grand Tom"},
-
+  "surnoms": {
+    "Tom (Petit)": "Petit Tom",
+    "Tom (Grand)": "Grand Tom"
+  },
   "familles": [
-    {"nom": "Guillou", "enfant": "Bastien"},
-    {"nom": "Lucas", "enfant": "Gabin"},
-    {"nom": "Eono", "enfant": "Tom (Grand)"},
-    {"nom": "Saliou", "enfant": "Tom (Petit)", "parents": ["Maman"]},
-    {"nom": "Vilgicquel", "enfant": "Thomas", "souple": "Thomas est arbitre officiel : ses convocations tombent 72 h avant, parfois la veille. La famille répond au dernier moment, quand elle sait."},
-    {"nom": "Foll-Machut", "enfant": "Nils"},
-    {"nom": "Tatard", "enfant": "Evan"},
-    {"nom": "Jestin", "enfant": "Malo"},
-    {"nom": "Morvan", "enfant": "Nathan"},
-    {"nom": "Lebiez", "enfant": "Raphaël"}
+    {
+      "nom": "Guillou",
+      "enfant": "Bastien"
+    },
+    {
+      "nom": "Lucas",
+      "enfant": "Gabin"
+    },
+    {
+      "nom": "Eono",
+      "enfant": "Tom (Grand)"
+    },
+    {
+      "nom": "Saliou",
+      "enfant": "Tom (Petit)",
+      "parents": [
+        "Maman"
+      ]
+    },
+    {
+      "nom": "Vilgicquel",
+      "enfant": "Thomas",
+      "souple": "Thomas est arbitre officiel : ses convocations tombent 72 h avant, parfois la veille. La famille répond au dernier moment, quand elle sait."
+    },
+    {
+      "nom": "Foll-Machut",
+      "enfant": "Nils"
+    },
+    {
+      "nom": "Tatard",
+      "enfant": "Evan"
+    },
+    {
+      "nom": "Jestin",
+      "enfant": "Malo"
+    },
+    {
+      "nom": "Morvan",
+      "enfant": "Nathan"
+    },
+    {
+      "nom": "Lebiez",
+      "enfant": "Raphaël"
+    }
   ],
-
   "covoiturage": {
     "_aide": "api = URL du script Google (voir apps-script/LISEZMOI.md). Vide = mode démo (réponses gardées sur le téléphone seulement).",
     "api": "https://script.google.com/macros/s/AKfycbzMkxXviUewJF0b0bw4DIDnMbCp_T4BEOyDL5OKLdKFOQo78IX1hCDWaP4AHxi8vNlYqA/exec",
@@ -37,24 +96,58 @@
     "objectif_periode": "de la saison",
     "_aide_trajets_faits": "Déplacements déjà faits (avant l'appli ou corrigés à la main), par id de match : \"Famille:<prénom du joueur>\" ou \"Coach <prénom>\".",
     "trajets_faits": {
-      "cjr-2966": ["Famille:Thomas", "Famille:Tom (Grand)", "Coach Léo"],
-      "cjr-3018": ["Famille:Nathan", "Famille:Malo", "Famille:Nils", "Famille:Evan"]
+      "cjr-2966": [
+        "Famille:Thomas",
+        "Famille:Tom (Grand)",
+        "Coach Léo"
+      ],
+      "cjr-3018": [
+        "Famille:Nathan",
+        "Famille:Malo",
+        "Famille:Nils",
+        "Famille:Evan"
+      ]
     },
     "matchs_domicile": false,
     "_aide_gateaux": "Matchs à domicile : gâteaux pour la buvette. gateaux_par_match = objectif par match. gateaux_faits = gâteaux faits avant l'appli (id du match : [Famille:<enfant>])",
     "gateaux_par_match": 2,
-    "gateaux_objectifs": {"200000014843685": 3, "200000014843745": 4},
-    "gateaux_faits": {"200000014843624": ["Famille:Malo", "Famille:Evan", "Famille:Nils"]}
+    "gateaux_objectifs": {
+      "200000014843685": 3,
+      "200000014843745": 4
+    },
+    "gateaux_faits": {
+      "200000014843624": [
+        "Famille:Malo",
+        "Famille:Evan",
+        "Famille:Nils"
+      ]
+    }
   },
-
   "_aide_entrainements": "jour_num : 1 = lundi ... 4 = jeudi, 5 = vendredi. Source : planning des entraînements CTC 2026-2027 (U18 M2-3).",
   "entrainements": [
-    {"jour": "Jeudi", "jour_num": 4, "debut": "19:00", "fin": "20:30", "coach": "Léo",
-     "lieu": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan"}},
-    {"jour": "Vendredi", "jour_num": 5, "debut": "19:00", "fin": "20:30", "coach": "Maxime",
-     "lieu": {"nom": "Salle polyvalente du Bourg", "adresse": "Salle polyvalente du Bourg, 29810 Plouarzel"}}
+    {
+      "jour": "Jeudi",
+      "jour_num": 4,
+      "debut": "19:00",
+      "fin": "20:30",
+      "coach": "Léo",
+      "lieu": {
+        "nom": "Salle Omnisports de Bel Air",
+        "adresse": "9 Rue Racine, 29290 Saint-Renan"
+      }
+    },
+    {
+      "jour": "Vendredi",
+      "jour_num": 5,
+      "debut": "19:00",
+      "fin": "20:30",
+      "coach": "Maxime",
+      "lieu": {
+        "nom": "Salle polyvalente du Bourg",
+        "adresse": "Salle polyvalente du Bourg, 29810 Plouarzel"
+      }
+    }
   ],
-
   "_aide_seance": "Séance du jeudi (coach Léo) : à mettre à jour chaque semaine. date = jeudi concerné (AAAA-MM-JJ). Laisser theme vide = « programme à venir ».",
   "seance_jeudi": {
     "date": "",
@@ -63,12 +156,15 @@
     "pourquoi": "",
     "deroule": []
   },
-
   "_aide_annonces": "Annonces affichées dans l'appli (bouton sur l'accueil). Visibles par toute personne qui a le lien : pas d'info sensible. date = AAAA-MM-JJTHH:MM",
   "annonces": [
-    {"date": "2026-10-05T17:30", "auteur": "Coach Léo", "titre": "🟨 Arbitrage U15M1 · samedi 10 octobre", "texte": "Avant notre match, deux joueurs de l'équipe arbitreront le match des U15M1 samedi à 15h30.\n\n🏁 Bastien\n🏁 Grand Tom\n\nMerci à eux de représenter l'équipe 💪"}
+    {
+      "date": "2026-10-20T12:00",
+      "auteur": "Coach Léo",
+      "titre": "🏀 Entraînements pendant les vacances",
+      "texte": "Tous à la Salle Omnisports de Bel Air (9 rue Racine, Saint-Renan) :\n\n1re semaine\n• Mercredi 21 octobre : 17h30 – 19h\n• Jeudi 22 octobre : 19h – 20h30\n\n2e semaine\n• Lundi 26 octobre : 19h – 20h30\n• Mercredi 28 octobre : 17h30 – 19h\n• Jeudi 29 octobre : 19h – 20h30\n\nPas d'entraînement le vendredi pendant les vacances. Pensez à indiquer vos présences dans l'onglet Entraînement 💪"
+    }
   ],
-
   "etat_esprit": [
     "Être à l'heure : en tenue sur le terrain à 19h pile, pas à 19h05.",
     "Prévenir le coach à l'avance en cas d'absence ou de retard.",
@@ -78,19 +174,26 @@
     "100 % d'engagement sur chaque exercice, jusqu'au dernier : on s'entraîne comme on joue.",
     "Respect des coéquipiers, du coach et du matériel. On aide à sortir et ranger."
   ],
-
   "rassemblement_defaut": {
     "domicile": "Rendez-vous directement à la salle, 45 min avant le match : on se change aux vestiaires.",
     "exterieur": "Départ groupé en covoiturage depuis le parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan).",
-    "exterieur_lieu": {"nom": "Salle Omnisports de Bel Air", "adresse": "9 Rue Racine, 29290 Saint-Renan", "lat": 48.42886, "lon": -4.63188},
+    "exterieur_lieu": {
+      "nom": "Salle Omnisports de Bel Air",
+      "adresse": "9 Rue Racine, 29290 Saint-Renan",
+      "lat": 48.42886,
+      "lon": -4.63188
+    },
     "avance_min": 45,
-    "a_prevoir": ["Maillot, short, chaussettes", "Une bonne gourde", "Des chaussures propres", "Ta bonne humeur 😄"]
+    "a_prevoir": [
+      "Maillot, short, chaussettes",
+      "Une bonne gourde",
+      "Des chaussures propres",
+      "Ta bonne humeur 😄"
+    ]
   },
-
   "_aide_maillots": "Une famille lave les maillots à chaque match de championnat, dans l'ordre des numéros de maillot. Le tour n'est affiché que si les numéros sont renseignés. Pour forcer une famille sur un match : matchs[date].maillots = \"Famille X\".",
   "maillots_rotation": true,
   "numeros_maillot": {},
-
   "_aide_matchs": "Par date de match (AAAA-MM-JJ) : rdv_lieu, rdv_heure, note (avant le match) ; mot_coach, joueur_du_match (après le match) ; maillots (forcer la famille).",
   "matchs": {
     "2026-10-03": {
@@ -99,13 +202,17 @@
       "note": ""
     }
   },
-
   "scores_manuels": {
     "_aide": "Pour les matchs des autres équipes de la poule (le CJR ne les connaît pas). Format : \"id FFBB\": [score domicile, score extérieur]",
-    "200000014843594": [61, 58],
-    "200000014843624": [41, 58]
+    "200000014843594": [
+      61,
+      58
+    ],
+    "200000014843624": [
+      41,
+      58
+    ]
   },
-
   "liens": {
     "ffbb": "https://competitions.ffbb.com/ligues/bre/comites/0029/competitions/dmu18?phase=200000002901259&poule=200000003062600",
     "cjr_convocations": "https://cjr-basketball.com/convocations",
