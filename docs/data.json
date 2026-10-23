@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-20T15:43:25+00:00",
+ "maj": "2026-10-23T22:41:46+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -401,7 +401,16 @@
    },
    "nous": true,
    "score": null,
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3086/20261114-carhaix-basket?mode=full"
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3086/20261114-carhaix-basket?mode=full",
+   "convoc": {
+    "domicile": true,
+    "rdv": null,
+    "heure": null,
+    "salle": "SALLE POLYVALENTE DU BOURG, PLOUARZEL",
+    "table": null,
+    "arbitres": null,
+    "resp_salle": null
+   }
   },
   {
    "id": "200000014843684",
