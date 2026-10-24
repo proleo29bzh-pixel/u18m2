@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-24T03:44:16+00:00",
+ "maj": "2026-10-24T04:42:23+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -567,9 +567,5 @@
    "score": null
   }
  ],
- "erreurs": [
-  "page équipe CJR : HTTP Error 503: Service Unavailable",
-  "convocations 2026-11-02 : HTTP Error 503: Service Unavailable",
-  "convocations 2026-11-09 : HTTP Error 503: Service Unavailable"
- ]
+ "erreurs": []
 }
