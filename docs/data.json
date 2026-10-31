@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-30T15:56:33+00:00",
+ "maj": "2026-10-31T00:47:58+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -461,7 +461,13 @@
    },
    "nous": true,
    "score": null,
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3087/20261121-ie-ctc-kornog-basket-bleuets-de-guilers-2?mode=full"
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3087/20261121-ie-ctc-kornog-basket-bleuets-de-guilers-2?mode=full",
+   "convoc": {
+    "domicile": false,
+    "rdv": null,
+    "heure": null,
+    "salle": "GYMNASE KERDREL"
+   }
   },
   {
    "id": "200000014843715",
