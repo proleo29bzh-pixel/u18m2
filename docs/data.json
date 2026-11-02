@@ -1,5 +1,5 @@
 {
- "maj": "2026-10-31T00:47:58+00:00",
+ "maj": "2026-11-02T18:22:44+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -325,7 +325,7 @@
    "journee": 3,
    "type": "Championnat",
    "date": "2026-11-07",
-   "heure": null,
+   "heure": "14:30",
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
@@ -348,7 +348,7 @@
    "convoc": {
     "domicile": false,
     "rdv": null,
-    "heure": null,
+    "heure": "14:30",
     "salle": "HALLE DES SPORTS LE COZ (A)"
    }
   },
