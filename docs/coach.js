@@ -331,6 +331,7 @@ function renderCoach() {
         ${s.plan ? schemaSVG(s.plan) : ""}${s.plan?.legende ? `<p class="small muted" style="margin:4px 0 0;text-align:center">${esc(s.plan.legende)}</p>` : ""}
         ${s.organisation?.length ? `<ul class="puces">${s.organisation.map((c) => `<li>${esc(c)}</li>`).join("")}</ul>` : ""}</div>` : ""}
       ${s.adaptations ? blocDetente(s.adaptations) : ""}
+      ${s.routine ? blocDetente(s.routine) : ""}
       ${s.echauffement ? blocDetente(s.echauffement) : ""}
       ${s.detente ? blocDetente(s.detente) : ""}
       ${s.circuit ? blocDetente(s.circuit) : ""}
