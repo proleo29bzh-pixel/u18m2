@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-02T18:22:44+00:00",
+ "maj": "2026-11-05T13:14:00+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -146,10 +146,10 @@
  ],
  "annonces": [
   {
-   "date": "2026-10-20T12:00",
+   "date": "2026-11-05T12:00",
    "auteur": "Coach Léo",
-   "titre": "🏀 Entraînements pendant les vacances",
-   "texte": "Tous à la Salle Omnisports de Bel Air (9 rue Racine, Saint-Renan) :\n\n1re semaine\n• Mercredi 21 octobre : 17h30 – 19h\n• Jeudi 22 octobre : 19h – 20h30\n\n2e semaine\n• Lundi 26 octobre : 19h – 20h30\n• Mercredi 28 octobre : 17h30 – 19h\n• Jeudi 29 octobre : 19h – 20h30\n\nPas d'entraînement le vendredi pendant les vacances. Pensez à indiquer vos présences dans l'onglet Entraînement 💪"
+   "titre": "🏀 Reprise : match à Quimper samedi",
+   "texte": "Samedi 7 novembre : AS Ergué-Armel 3 contre nous, coup d'envoi 14h30 à la Halle des sports Le Coz (avenue Yves Thépot, Quimper).\n\nDépart en covoiturage à 12h35 du parking de Bel Air.\n3 voitures : Maman SALIOU, Céline (maman de Raphaël) et Léo.\n\nPensez à indiquer vos présences aux matchs et aux entraînements dans l'appli 💪"
   }
  ],
  "maillots_rotation": true,
@@ -350,6 +350,11 @@
     "rdv": null,
     "heure": "14:30",
     "salle": "HALLE DES SPORTS LE COZ (A)"
+   },
+   "coach": {
+    "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
+    "rdv_heure": "12:35",
+    "note": "Départ en covoiturage à 12h35 (1h10 à 1h15 de route). 3 voitures : Maman SALIOU, Céline (maman de Raphaël) et Léo."
    }
   },
   {
