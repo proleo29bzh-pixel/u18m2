@@ -39,6 +39,32 @@ def chiffrer(texte: str, mdp: str) -> dict:
     return {"v": 1, "iter": ITERATIONS, "sel": b64(sel), "iv": b64(iv), "data": b64(data)}
 
 
+VIDEOS = ROOT / "coach-prive/videos-appli"
+CIBLE_VIDEOS = ROOT / "docs/videos"
+
+
+def chiffrer_videos(contenu: dict) -> int:
+    """Vidéos de l'espace coach (coach-prive/videos-appli/<titre>.mp4), chiffrées avec la même clé que les licences."""
+    fichiers = sorted(VIDEOS.glob("*.mp4")) if VIDEOS.exists() else []
+    CIBLE_VIDEOS.mkdir(exist_ok=True)
+    if not fichiers or not CLE_LICENCES.exists():
+        contenu.pop("videos", None)
+        return 0
+    cle = base64.b64decode(CLE_LICENCES.read_text(encoding="ascii").strip())
+    liste, gardes = [], set()
+    for f in fichiers:
+        nom_publie = hashlib.sha256(cle + f.name.encode("utf-8")).hexdigest()[:20] + ".bin"
+        iv = os.urandom(12)
+        (CIBLE_VIDEOS / nom_publie).write_bytes(iv + AESGCM(cle).encrypt(iv, f.read_bytes(), None))
+        liste.append({"nom": f.stem, "f": "videos/" + nom_publie, "type": "video/mp4"})
+        gardes.add(nom_publie)
+    for vieux in CIBLE_VIDEOS.glob("*.bin"):
+        if vieux.name not in gardes:
+            vieux.unlink()
+    contenu["videos"] = liste
+    return len(liste)
+
+
 def chiffrer_licences(contenu: dict) -> int:
     """Chiffre chaque fichier de coach-prive/licences ; le nom publié ne révèle pas le prénom."""
     fichiers = sorted(f for f in LICENCES.glob("*") if f.suffix.lower() in TYPES) if LICENCES.exists() else []
@@ -72,5 +98,6 @@ if __name__ == "__main__":
     if len(mdp) < 6:
         raise SystemExit("Mot de passe trop court (6 caractères minimum).")
     nb_lic = chiffrer_licences(contenu)
+    chiffrer_videos(contenu)
     CIBLE.write_text(json.dumps(chiffrer(json.dumps(contenu, ensure_ascii=False), mdp)), encoding="utf-8")
     print(f"{len(contenu.get('seances', []))} séance(s), {nb_lic} licence(s) chiffrée(s) -> {CIBLE.relative_to(ROOT)}")

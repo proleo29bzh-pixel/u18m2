@@ -33,6 +33,7 @@ async function coachOuvrir(mdp, memoriser) {
     COACH.licences = contenu.licences || [];
     COACH.licCle = contenu.licences_cle || "";
     COACH.licTexte = contenu.licences_texte || [];
+    COACH.videos = contenu.videos || [];
     COACH.erreur = null;
     COACH.mdp = mdp;
     if (memoriser) coachStore.set("coach-mdp", mdp);
@@ -273,6 +274,39 @@ async function licenceOuvrir(i) {
   renderCoach();
 }
 
+// ------------------------------------------------------------ vidéos (chiffrées comme les licences)
+
+async function videoOuvrir(i) {
+  const v = COACH.videos[i];
+  if (COACH.vidVue?.url) URL.revokeObjectURL(COACH.vidVue.url);
+  COACH.vidVue = { i, url: "", erreur: "" };
+  renderCoach();
+  try {
+    const res = await fetch(v.f, { cache: "no-store" });
+    if (!res.ok) throw new Error();
+    const brut = new Uint8Array(await res.arrayBuffer());
+    const cle = await crypto.subtle.importKey("raw", b64(COACH.licCle), "AES-GCM", false, ["decrypt"]);
+    const clair = await crypto.subtle.decrypt({ name: "AES-GCM", iv: brut.slice(0, 12) }, cle, brut.slice(12));
+    COACH.vidVue = { i, url: URL.createObjectURL(new Blob([clair], { type: "video/mp4" })), erreur: "" };
+  } catch {
+    COACH.vidVue = { i, url: "", erreur: "Impossible d'ouvrir cette vidéo (réseau ?)." };
+  }
+  renderCoach();
+}
+
+function blocVideos() {
+  if (!COACH.vidOuvert) return "";
+  const v = COACH.vidVue;
+  return `<div class="card">
+    <h3>🎬 Vidéos</h3>
+    <div class="segs" style="flex-wrap:wrap">${COACH.videos.map((x, i) =>
+      `<button class="seg ${v?.i === i ? "on g" : ""}" data-video="${i}">${esc(x.nom)}</button>`).join("")}</div>
+    ${v ? `<div style="margin-top:12px">${v.erreur ? `<div class="note">⚠️ ${esc(v.erreur)}</div>`
+      : !v.url ? `<p class="small muted">Chargement de la vidéo…</p>`
+      : `<video src="${v.url}" controls playsinline autoplay style="width:100%;max-height:70vh;border-radius:10px;background:#000"></video>`}</div>` : ""}
+  </div>`;
+}
+
 function blocLicences() {
   if (!COACH.licOuvert) return "";
   const v = COACH.licVue;
@@ -344,6 +378,7 @@ function renderCoach() {
 
   el.innerHTML = `<h2 class="section">Espace coach</h2>
     <button class="btn ${COACH.licOuvert ? "primary" : ""}" id="coach-licences" style="width:100%;margin-bottom:12px">🪪 Licences ${COACH.licOuvert ? "▴" : "▾"}</button>
+    ${COACH.videos?.length ? `<button class="btn ${COACH.vidOuvert ? "primary" : ""}" id="coach-videos" style="width:100%;margin-bottom:12px">🎬 Vidéos ${COACH.vidOuvert ? "▴" : "▾"}</button>${blocVideos()}` : ""}
     ${blocLicences()}
     <h3 class="seances-titre">Séances du jeudi</h3>
     ${liste.length ? liste.map(blocSeance).join("") : `<div class="empty">Aucune séance pour l'instant.</div>`}
@@ -448,6 +483,9 @@ document.addEventListener("click", async (e) => {
     return coachOuvrir(mdp, $("#coach-memo").checked);
   }
   if (e.target.id === "coach-licences") { COACH.licOuvert = !COACH.licOuvert; return renderCoach(); }
+  if (e.target.id === "coach-videos") { COACH.vidOuvert = !COACH.vidOuvert; return renderCoach(); }
+  const vb = e.target.closest("[data-video]");
+  if (vb) return videoOuvrir(+vb.dataset.video);
   const lb = e.target.closest("[data-licence]");
   if (lb) return licenceOuvrir(+lb.dataset.licence);
   if (e.target.id === "coach-lock") {
@@ -455,6 +493,8 @@ document.addEventListener("click", async (e) => {
     if (COACH.licVue?.url) URL.revokeObjectURL(COACH.licVue.url);
     COACH.seances = null; COACH.erreur = null; COACH.mdp = ""; coachStore.set("coach-mdp", "");
     COACH.licences = []; COACH.licCle = ""; COACH.licTexte = []; COACH.licOuvert = false; COACH.licVue = null;
+    if (COACH.vidVue?.url) URL.revokeObjectURL(COACH.vidVue.url);
+    COACH.videos = []; COACH.vidOuvert = false; COACH.vidVue = null;
     return renderCoach();
   }
   const sb = e.target.closest("[data-coach-seance]");
