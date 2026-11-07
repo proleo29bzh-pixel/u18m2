@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-07T07:11:38+00:00",
+ "maj": "2026-11-07T14:04:27+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -344,17 +344,17 @@
    },
    "nous": true,
    "score": null,
+   "coach": {
+    "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
+    "rdv_heure": "12:35",
+    "note": "Départ en covoiturage à 12h35 (1h10 à 1h15 de route). 3 voitures : Maman SALIOU, Céline (maman de Raphaël) et Léo."
+   },
    "cjr": "https://cjr-basketball.com/matchs/apercu/3085/20261107-amicale-sportive-ergue-armel-3?mode=full",
    "convoc": {
     "domicile": false,
     "rdv": null,
     "heure": "14:30",
     "salle": "HALLE DES SPORTS LE COZ (A)"
-   },
-   "coach": {
-    "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
-    "rdv_heure": "12:35",
-    "note": "Départ en covoiturage à 12h35 (1h10 à 1h15 de route). 3 voitures : Maman SALIOU, Céline (maman de Raphaël) et Léo."
    }
   },
   {
@@ -584,5 +584,9 @@
    "score": null
   }
  ],
- "erreurs": []
+ "erreurs": [
+  "page équipe CJR : The read operation timed out",
+  "convocations 2026-11-02 : The read operation timed out",
+  "convocations 2026-11-09 : The read operation timed out"
+ ]
 }
