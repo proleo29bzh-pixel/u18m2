@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-08T17:04:08+00:00",
+ "maj": "2026-11-14T03:15:33+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -559,7 +559,16 @@
    },
    "nous": true,
    "score": null,
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3088/20261205-amicale-sportive-ergue-armel-3?mode=full"
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3088/20261205-amicale-sportive-ergue-armel-3?mode=full",
+   "convoc": {
+    "domicile": true,
+    "rdv": null,
+    "heure": null,
+    "salle": "SALLE POLYVALENTE DU BOURG, PLOUARZEL",
+    "table": null,
+    "arbitres": null,
+    "resp_salle": null
+   }
   },
   {
    "id": "200000014843744",
