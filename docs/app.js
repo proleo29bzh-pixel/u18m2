@@ -412,9 +412,9 @@ function renderClassement() {
       const dates = [...new Set(champ.filter((x) => x.journee === j).map((x) => fmt(x, { day: "numeric", month: "long" })))];
       html += `<div class="month" style="margin:12px 0 0">Journée ${j} · ${dates.join(" / ")}</div>`;
     }
-    html += `<div class="o"><div class="a" style="${r.dom.nous ? "color:var(--red)" : ""}">${esc(r.dom.nom)}</div>
-      <div class="sc ${isPlayed(r) ? "" : "tbd muted"}">${isPlayed(r) ? `${r.score[0]} - ${r.score[1]}` : r.reporte_de ? "reporté" : r.heure ? r.heure.replace(":", "h") : "—"}</div>
-      <div class="b" style="${r.ext.nous ? "color:var(--red)" : ""}">${esc(r.ext.nom)}</div></div>`;
+    html += `<div class="o"><div class="a" style="${r.dom.nous ? "color:var(--orange);font-weight:800" : ""}">${esc(r.dom.nom)}</div>
+      <div class="sc ${isPlayed(r) ? "" : "tbd muted"}">${isPlayed(r) ? `<span class="${r.score[0] > r.score[1] ? "gagne" : "perd"}">${r.score[0]}</span> - <span class="${r.score[1] > r.score[0] ? "gagne" : "perd"}">${r.score[1]}</span>` : r.reporte_de ? "reporté" : r.heure ? r.heure.replace(":", "h") : "—"}</div>
+      <div class="b" style="${r.ext.nous ? "color:var(--orange);font-weight:800" : ""}">${esc(r.ext.nom)}</div></div>`;
   }
   html += `</div>`;
   $("#view-classement").innerHTML = html;
