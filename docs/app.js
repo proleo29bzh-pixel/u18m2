@@ -306,7 +306,7 @@ function matchRow(r, isNext = false) {
     ? `<div class="small muted">Terminé</div>`
     : `<div class="h">${r.heure ? r.heure.replace(":", "h") : "--h--"}</div>`;
   return `
-  <button class="match ${past ? "past" : ""} ${isNext ? "next" : ""}" data-id="${esc(r.id)}">
+  <button class="match ${past ? "past" : ""} ${isNext ? "next" : ""} ${o ? "res-" + o.code : ""}" data-id="${esc(r.id)}">
     <div class="datebox">
       <div class="j">${fmt(r, { weekday: "short" }).replace(".", "")}</div>
       <div class="n">${fmt(r, { day: "numeric" })}</div>

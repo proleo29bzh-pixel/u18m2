@@ -78,7 +78,7 @@
       '<div class="noel-voeux"><svg width="0" height="0" style="position:absolute"><defs>' +
       '<radialGradient id="nv-o" cx=".35" cy=".3"><stop offset="0" stop-color="#ffb066"/><stop offset=".6" stop-color="#e8701e"/><stop offset="1" stop-color="#9a3f0a"/></radialGradient>' +
       '<radialGradient id="nv-g" cx=".35" cy=".3"><stop offset="0" stop-color="#fff1c4"/><stop offset=".55" stop-color="#d9b46a"/><stop offset="1" stop-color="#7d5a1f"/></radialGradient>' +
-      '<radialGradient id="nv-r" cx=".35" cy=".3"><stop offset="0" stop-color="#ff6b70"/><stop offset=".6" stop-color="#c3141f"/><stop offset="1" stop-color="#5e060c"/></radialGradient>' +
+      '<radialGradient id="nv-r" cx=".35" cy=".3"><stop offset="0" stop-color="#8fc4ff"/><stop offset=".6" stop-color="#2f6fd6"/><stop offset="1" stop-color="#0d2a66"/></radialGradient>' +
       '</defs></svg>' +
       boule("g", 15, 26, ballon) + boule("d2", 8, 12, rouge) + boule("d", 11, 34, doree) +
       '<div class="nv-eyebrow">CTC St Renan-Plouarzel</div>' +
