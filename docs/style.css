@@ -487,3 +487,33 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .etir-nom { font-weight: 800; margin-bottom: 2px; }
 .etir-duree { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--muted); }
 .etir-partie { grid-column: 1 / -1; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-top: 6px; }
+
+/* --- thème Noël (noel.js ajoute body.noel) --- */
+body.noel main { position: relative; z-index: 1; }
+.neige { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+body.noel .brand { position: relative; }
+.bonnet { position: absolute; left: -9px; top: -15px; width: 34px; height: 29px; transform: rotate(-18deg); z-index: 2; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
+.guirlande { position: absolute; left: 0; right: 0; top: 100%; height: 22px; pointer-events: none; }
+.guirlande svg { position: absolute; left: 0; top: -1px; }
+.guirlande i {
+  position: absolute; width: 8px; height: 11px; border-radius: 50% 50% 45% 45%;
+  background: var(--c); box-shadow: 0 0 7px 1px var(--c);
+  animation: scintille 1.65s ease-in-out infinite alternate;
+}
+.guirlande i::before { content: ""; position: absolute; left: 2px; top: -3px; width: 4px; height: 4px; border-radius: 1px; background: #3b4a3f; }
+@keyframes scintille { from { opacity: .4; box-shadow: 0 0 2px var(--c); } to { opacity: 1; } }
+body.noel #view-accueil::before {
+  content: "🎄 Joyeuses fêtes, les U18 !"; display: block; text-align: center; margin: 14px 0 12px;
+  font-family: Anton, Impact, sans-serif; font-size: 19px; letter-spacing: .03em; text-transform: uppercase; color: var(--red);
+}
+body.noel .hero {
+  background:
+    radial-gradient(circle, rgba(255,255,255,.22) 0 1.4px, transparent 2px) 0 0 / 34px 34px,
+    radial-gradient(circle, rgba(255,255,255,.13) 0 1px, transparent 1.5px) 17px 11px / 23px 23px,
+    linear-gradient(145deg, var(--navy) 0%, var(--navy-2) 60%, #1b3f8f 100%);
+}
+body.noel .hero::after {
+  border: 0; border-radius: 0; right: -38px; bottom: -46px; width: 200px; height: 200px; opacity: .13;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cg stroke='%23fff' stroke-width='5' stroke-linecap='round' fill='none'%3E%3Cg id='b'%3E%3Cpath d='M0 0V-46M0-30L-11-41M0-30L11-41M0-15L-9-24M0-15L9-24'/%3E%3C/g%3E%3Cuse href='%23b' transform='rotate(60)'/%3E%3Cuse href='%23b' transform='rotate(120)'/%3E%3Cuse href='%23b' transform='rotate(180)'/%3E%3Cuse href='%23b' transform='rotate(240)'/%3E%3Cuse href='%23b' transform='rotate(300)'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+}
+@media (prefers-reduced-motion: reduce) { .guirlande i { animation: none; } }
