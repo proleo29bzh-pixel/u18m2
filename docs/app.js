@@ -368,7 +368,22 @@ function standings() {
     if (sa > sb) { a.v++; b.d++; a.pts += 2; b.pts += 1; }
     else if (sb > sa) { b.v++; a.d++; b.pts += 2; a.pts += 1; }
   }
-  return Object.values(tab).sort((x, y) => y.pts - x.pts || (y.pp - y.pc) - (x.pp - x.pc) || y.pp - x.pp || x.nom.localeCompare(y.nom));
+  // Égalité de points : on départage d'abord par les matchs entre les équipes à égalité (règle FFBB),
+  // puis par la différence de points générale.
+  const parPts = {};
+  for (const t of Object.values(tab)) (parPts[t.pts] ??= []).push(t);
+  for (const groupe of Object.values(parPts)) {
+    const noms = new Set(groupe.map((t) => t.nom));
+    for (const t of groupe) { t.pPart = 0; t.dPart = 0; }
+    for (const r of champ) {
+      if (!isPlayed(r) || !noms.has(r.dom.nom) || !noms.has(r.ext.nom) || groupe.length < 2) continue;
+      const [sa, sb] = r.score, a = tab[r.dom.nom], b = tab[r.ext.nom];
+      a.dPart += sa - sb; b.dPart += sb - sa;
+      if (sa > sb) { a.pPart += 2; b.pPart += 1; } else if (sb > sa) { b.pPart += 2; a.pPart += 1; }
+    }
+  }
+  return Object.values(tab).sort((x, y) => y.pts - x.pts || y.pPart - x.pPart || y.dPart - x.dPart
+    || (y.pp - y.pc) - (x.pp - x.pc) || y.pp - x.pp || x.nom.localeCompare(y.nom));
 }
 
 function renderClassement() {

@@ -169,6 +169,8 @@ h2.section:first-child { margin-top: 4px; }
 .tag.amical { background: var(--chip); color: var(--muted); }
 .result { text-align: right; min-width: 64px; }
 .result .s { font-family: Anton, sans-serif; font-size: 20px; }
+.match.res-V .result .s { color: var(--win); }
+.match.res-D .result .s { color: var(--loss); }
 .result .wl { display: inline-block; font-size: 11px; font-weight: 800; color: #fff; padding: 2px 7px; border-radius: 6px; }
 .wl.V { background: var(--win); } .wl.D { background: var(--loss); } .wl.N { background: var(--muted); }
 .result .h { font-weight: 800; font-size: 14px; }
