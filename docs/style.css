@@ -488,32 +488,58 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .etir-duree { margin-top: 4px; font-size: 12px; font-weight: 700; color: var(--muted); }
 .etir-partie { grid-column: 1 / -1; font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-top: 6px; }
 
-/* --- thème Noël (noel.js ajoute body.noel) --- */
+/* --- thème Noël (noel.js ajoute body.noel) : marine, or et lumières chaudes --- */
+body.noel { --or: #d9b46a; --or-fonce: #9c7a35; }
 body.noel main { position: relative; z-index: 1; }
 .neige { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+body.noel .top {
+  background: radial-gradient(120% 140% at 50% -40%, #1d3a7a 0%, var(--navy) 55%, #08173a 100%);
+  border-bottom: 1px solid rgba(217, 180, 106, .45);
+}
 body.noel .brand { position: relative; }
-.bonnet { position: absolute; left: -9px; top: -15px; width: 34px; height: 29px; transform: rotate(-18deg); z-index: 2; filter: drop-shadow(0 1px 1px rgba(0,0,0,.35)); }
-.guirlande { position: absolute; left: 0; right: 0; top: 100%; height: 22px; pointer-events: none; }
+.bonnet { position: absolute; left: -9px; top: -15px; width: 34px; height: 29px; transform: rotate(-18deg); z-index: 2; filter: drop-shadow(0 2px 2px rgba(0,0,0,.35)); }
+/* guirlande : petites lumières chaudes sur un fil fin */
+.guirlande { position: absolute; left: 0; right: 0; top: 100%; height: 18px; pointer-events: none; }
 .guirlande svg { position: absolute; left: 0; top: -1px; }
 .guirlande i {
-  position: absolute; width: 8px; height: 11px; border-radius: 50% 50% 45% 45%;
-  background: var(--c); box-shadow: 0 0 7px 1px var(--c);
-  animation: scintille 1.65s ease-in-out infinite alternate;
+  position: absolute; width: 5px; height: 5px; border-radius: 50%;
+  background: #fff3cf; box-shadow: 0 0 4px 1px rgba(255, 214, 130, .9), 0 0 10px 3px rgba(255, 190, 90, .35);
+  animation: scintille 2.4s ease-in-out infinite alternate;
 }
-.guirlande i::before { content: ""; position: absolute; left: 2px; top: -3px; width: 4px; height: 4px; border-radius: 1px; background: #3b4a3f; }
-@keyframes scintille { from { opacity: .4; box-shadow: 0 0 2px var(--c); } to { opacity: 1; } }
-body.noel #view-accueil::before {
-  content: "🎄 Joyeuses fêtes, les U18 !"; display: block; text-align: center; margin: 14px 0 12px;
-  font-family: Anton, Impact, sans-serif; font-size: 19px; letter-spacing: .03em; text-transform: uppercase; color: var(--red);
+@keyframes scintille { from { opacity: .35; transform: scale(.8); } to { opacity: 1; transform: scale(1); } }
+/* carte de vœux en haut de « Prochain » */
+.noel-voeux { display: none; }
+body.noel:has(#view-accueil.active) .noel-voeux { display: block; }
+.noel-voeux {
+  position: relative; overflow: hidden; margin: 18px 0 14px; padding: 30px 16px 18px; text-align: center;
+  border-radius: 22px; color: #fff;
+  background:
+    radial-gradient(circle, rgba(255,255,255,.18) 0 1px, transparent 1.6px) 6px 4px / 29px 29px,
+    radial-gradient(90% 120% at 50% 0%, #1f3d80 0%, var(--navy) 60%, #071433 100%);
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(217, 180, 106, .45), inset 0 0 0 5px rgba(11, 31, 77, 1), inset 0 0 0 6px rgba(217, 180, 106, .22);
 }
+.nv-eyebrow { font-size: 10.5px; font-weight: 800; letter-spacing: .22em; text-transform: uppercase; color: var(--or); opacity: .9; }
+.nv-titre {
+  font-family: "Playfair Display", Georgia, serif; font-style: italic; font-weight: 600; font-size: 38px; line-height: 1.1; margin: 6px 0 4px;
+  background: linear-gradient(180deg, #fff1cc 0%, #e8c77f 45%, #b98d3e 100%); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.nv-sous { font-size: 12.5px; font-weight: 700; letter-spacing: .08em; color: rgba(255,255,255,.75); }
+.nv-sous b { color: var(--or); font-weight: 400; margin: 0 6px; }
+.nv-boule { position: absolute; top: 0; pointer-events: none; transform-origin: 50% 0; animation: balance 4.5s ease-in-out infinite alternate; }
+.nv-boule.g { left: 18px; }
+.nv-boule.d { right: 22px; animation-delay: -2s; }
+.nv-boule.d2 { right: 58px; animation-delay: -1s; }
+@keyframes balance { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+/* carte du prochain match : touches d'or */
 body.noel .hero {
   background:
-    radial-gradient(circle, rgba(255,255,255,.22) 0 1.4px, transparent 2px) 0 0 / 34px 34px,
-    radial-gradient(circle, rgba(255,255,255,.13) 0 1px, transparent 1.5px) 17px 11px / 23px 23px,
+    radial-gradient(circle, rgba(255,255,255,.16) 0 1px, transparent 1.6px) 0 0 / 31px 31px,
     linear-gradient(145deg, var(--navy) 0%, var(--navy-2) 60%, #1b3f8f 100%);
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(217, 180, 106, .35);
 }
+body.noel .team.us .team-name { color: var(--or); }
 body.noel .hero::after {
-  border: 0; border-radius: 0; right: -38px; bottom: -46px; width: 200px; height: 200px; opacity: .13;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cg stroke='%23fff' stroke-width='5' stroke-linecap='round' fill='none'%3E%3Cg id='b'%3E%3Cpath d='M0 0V-46M0-30L-11-41M0-30L11-41M0-15L-9-24M0-15L9-24'/%3E%3C/g%3E%3Cuse href='%23b' transform='rotate(60)'/%3E%3Cuse href='%23b' transform='rotate(120)'/%3E%3Cuse href='%23b' transform='rotate(180)'/%3E%3Cuse href='%23b' transform='rotate(240)'/%3E%3Cuse href='%23b' transform='rotate(300)'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
+  border: 0; border-radius: 0; right: -38px; bottom: -46px; width: 200px; height: 200px; opacity: .16;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-50 -50 100 100'%3E%3Cg stroke='%23e8c77f' stroke-width='3.5' stroke-linecap='round' fill='none'%3E%3Cg id='b'%3E%3Cpath d='M0 0V-46M0-30L-11-41M0-30L11-41M0-15L-9-24M0-15L9-24'/%3E%3C/g%3E%3Cuse href='%23b' transform='rotate(60)'/%3E%3Cuse href='%23b' transform='rotate(120)'/%3E%3Cuse href='%23b' transform='rotate(180)'/%3E%3Cuse href='%23b' transform='rotate(240)'/%3E%3Cuse href='%23b' transform='rotate(300)'/%3E%3C/g%3E%3C/svg%3E") center / contain no-repeat;
 }
-@media (prefers-reduced-motion: reduce) { .guirlande i { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .guirlande i, .nv-boule { animation: none; } }
