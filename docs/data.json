@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-15T14:52:08+00:00",
+ "maj": "2026-11-15T18:40:27+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -377,7 +377,10 @@
     "lon": -3.54778
    },
    "nous": false,
-   "score": null
+   "score": [
+    37,
+    86
+   ]
   },
   {
    "id": "200000014843685",
@@ -440,7 +443,10 @@
     "lon": -4.09131
    },
    "nous": false,
-   "score": null
+   "score": [
+    63,
+    65
+   ]
   },
   {
    "id": "200000014843714",
