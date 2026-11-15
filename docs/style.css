@@ -465,8 +465,8 @@ table.standings { width: 100%; border-collapse: collapse; font-size: 14px; }
 .empty { text-align: center; padding: 40px 10px; color: var(--muted); }
 
 @media (min-width: 900px) {
-  .tabs::after { display: none; }
-  .tabs { left: 50%; transform: translateX(-50%); max-width: 720px; bottom: 16px; border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); height: var(--tabs-h); padding: 0; }
+  /* barre pleine largeur collée en bas : le contenu s'arrête au-dessus, rien ne se voit autour */
+  .tabs { padding-left: calc((100% - 720px) / 2); padding-right: calc((100% - 720px) / 2); }
 }
 
 /* petits téléphones : les 5 libellés tiennent sur une ligne */
