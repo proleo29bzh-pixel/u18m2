@@ -8,6 +8,14 @@
     if (q === "0") localStorage.removeItem("noel-test");
     test = localStorage.getItem("noel-test") === "1";
   } catch (e) { test = q === "1"; }
+  // Interrupteur caché (utile dans l'appli installée) : toucher 5 fois le logo en haut à gauche.
+  let taps = [];
+  document.querySelector(".brand-logo")?.addEventListener("click", () => {
+    const t = Date.now(); taps = taps.filter((x) => t - x < 2500).concat(t);
+    if (taps.length < 5) return;
+    try { test ? localStorage.removeItem("noel-test") : localStorage.setItem("noel-test", "1"); } catch (e) {}
+    location.reload();
+  });
   const d = new Date(), periode = d.getMonth() === 11 || (d.getMonth() === 0 && d.getDate() <= 4);
   if (!(test || periode)) return;
   document.body.classList.add("noel");
