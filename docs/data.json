@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-17T13:27:16+00:00",
+ "maj": "2026-11-18T13:58:46+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -247,12 +247,12 @@
    "dom": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
    },
    "ext": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "salle": {
     "nom": "Gymnase de Kerallan",
@@ -280,7 +280,7 @@
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
    },
    "salle": {
     "nom": "Complexe polyvalent",
@@ -304,7 +304,7 @@
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "ext": {
     "nom": "Carhaix Basket 1",
@@ -329,7 +329,7 @@
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "ext": {
     "nom": "CTC St Renan-Plouarzel 2",
@@ -368,7 +368,7 @@
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
    },
    "salle": {
     "nom": "Salle Omnisports",
@@ -429,12 +429,12 @@
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
    },
    "salle": {
     "nom": "Halle des sports Le Coz",
@@ -457,7 +457,7 @@
    "dom": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
    },
    "ext": {
     "nom": "CTC St Renan-Plouarzel 2",
@@ -494,7 +494,7 @@
    "ext": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "salle": {
     "nom": "Salle Omnisports",
@@ -552,7 +552,7 @@
    "ext": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "salle": {
     "nom": "Complexe polyvalent",
@@ -582,7 +582,7 @@
    "dom": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-match-de-championnat.png"
+    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
    },
    "ext": {
     "nom": "Carhaix Basket 1",
