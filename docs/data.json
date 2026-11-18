@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-18T13:58:46+00:00",
+ "maj": "2026-11-18T21:57:01+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -247,7 +247,7 @@
    "dom": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
+    "logo": "logos/logo-ie-ctc-kornog-basket-bleuets-de-guilers.png"
    },
    "ext": {
     "nom": "AS Ergué-Armel 3",
@@ -280,7 +280,7 @@
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
+    "logo": "logos/logo-ie-ctc-kornog-basket-bleuets-de-guilers.png"
    },
    "salle": {
     "nom": "Complexe polyvalent",
@@ -368,7 +368,7 @@
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
+    "logo": "logos/logo-ie-ctc-kornog-basket-bleuets-de-guilers.png"
    },
    "salle": {
     "nom": "Salle Omnisports",
@@ -434,7 +434,7 @@
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
+    "logo": "logos/logo-ie-ctc-kornog-basket-bleuets-de-guilers.png"
    },
    "salle": {
     "nom": "Halle des sports Le Coz",
@@ -457,7 +457,7 @@
    "dom": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
+    "logo": "logos/logo-ie-ctc-kornog-basket-bleuets-de-guilers.png"
    },
    "ext": {
     "nom": "CTC St Renan-Plouarzel 2",
@@ -477,7 +477,7 @@
     "domicile": false,
     "rdv": null,
     "heure": "15:00",
-    "salle": "GYMNASE KERRALLAN"
+    "salle": "GYMNASE DE KERALLAN (B) PLACE JULES FERRY 29280 PLOUZANE"
    }
   },
   {
@@ -543,7 +543,7 @@
    "journee": 6,
    "type": "Championnat",
    "date": "2026-12-05",
-   "heure": null,
+   "heure": "18:00",
    "dom": {
     "nom": "CTC St Renan-Plouarzel 2",
     "nous": true,
@@ -555,19 +555,19 @@
     "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
    },
    "salle": {
-    "nom": "Complexe polyvalent",
-    "adresse": "Streat Lannoc, 29810 Plouarzel",
-    "lat": 48.43235,
-    "lon": -4.73447
+    "nom": "Salle Omnisports de Bel Air",
+    "adresse": "9 Rue Racine, 29290 Saint-Renan",
+    "lat": 48.42886,
+    "lon": -4.63188
    },
    "nous": true,
    "score": null,
    "cjr": "https://cjr-basketball.com/matchs/apercu/3088/20261205-amicale-sportive-ergue-armel-3?mode=full",
    "convoc": {
     "domicile": true,
-    "rdv": null,
-    "heure": null,
-    "salle": "SALLE POLYVALENTE DU BOURG, PLOUARZEL",
+    "rdv": "17:15",
+    "heure": "18:00",
+    "salle": "COMPLEXE SPORTIF BEL-AIR, SAINT RENAN",
     "table": null,
     "arbitres": null,
     "resp_salle": null
@@ -582,7 +582,7 @@
    "dom": {
     "nom": "CTC Kornog 2 (Guilers)",
     "nous": false,
-    "logo": "logos/logo-ctc-kornog-basket-al-plouzane_1.jpg"
+    "logo": "logos/logo-ie-ctc-kornog-basket-bleuets-de-guilers.png"
    },
    "ext": {
     "nom": "Carhaix Basket 1",
