@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-18T21:57:01+00:00",
+ "maj": "2026-11-19T21:34:36+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -252,7 +252,7 @@
    "ext": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
+    "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "salle": {
     "nom": "Gymnase de Kerallan",
@@ -304,7 +304,7 @@
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
+    "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "ext": {
     "nom": "Carhaix Basket 1",
@@ -329,7 +329,7 @@
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
+    "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "ext": {
     "nom": "CTC St Renan-Plouarzel 2",
@@ -429,7 +429,7 @@
    "dom": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
+    "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "ext": {
     "nom": "CTC Kornog 2 (Guilers)",
@@ -494,7 +494,7 @@
    "ext": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
+    "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "salle": {
     "nom": "Salle Omnisports",
@@ -552,13 +552,13 @@
    "ext": {
     "nom": "AS Ergué-Armel 3",
     "nous": false,
-    "logo": "logos/logo-a-s-ergue-armel-basket-ball.jpg"
+    "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "salle": {
-    "nom": "Salle Omnisports de Bel Air",
-    "adresse": "9 Rue Racine, 29290 Saint-Renan",
-    "lat": 48.42886,
-    "lon": -4.63188
+    "nom": "Complexe polyvalent",
+    "adresse": "Streat Lannoc, 29810 Plouarzel",
+    "lat": 48.43235,
+    "lon": -4.73447
    },
    "nous": true,
    "score": null,
@@ -567,7 +567,7 @@
     "domicile": true,
     "rdv": "17:15",
     "heure": "18:00",
-    "salle": "COMPLEXE SPORTIF BEL-AIR, SAINT RENAN",
+    "salle": "SALLE POLYVALENTE DU BOURG, PLOUARZEL",
     "table": null,
     "arbitres": null,
     "resp_salle": null
