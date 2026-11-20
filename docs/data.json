@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-20T10:00:13+00:00",
+ "maj": "2026-11-20T10:02:20+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -149,7 +149,7 @@
    "date": "2026-11-20T12:00",
    "auteur": "Coach Léo",
    "titre": "🏀 Demain : 15h00 à Plouzané contre Kornog",
-   "texte": "Samedi 21 novembre, coup d'envoi à 15h00 au Gymnase de Kerallan, salle B (place Jules Ferry, Plouzané). ⚠️ Ce n'est pas à Guilers !.\n\n🚗 Rendez-vous à 14h00 au parking de Bel Air. 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël). Merci à elles !\n\n👕 Les maillots sont chez Malo.\n\nC'est à 20 minutes : venez nombreux encourager les garçons 💪"
+   "texte": "Samedi 21 novembre, coup d'envoi à 15h00 au Gymnase de Kerallan, salle B (place Jules Ferry, Plouzané). ⚠️ Ce n'est pas à Guilers !.\n\n🚗 Rendez-vous à 13h45 au parking de Bel Air. 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël). Merci à elles !\n\n👕 Les maillots sont chez Malo.\n\nC'est à 20 minutes : venez nombreux encourager les garçons 💪"
   }
  ],
  "maillots_rotation": true,
@@ -483,8 +483,8 @@
    "coach": {
     "heure_match": "15:00",
     "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
-    "rdv_heure": "14:00",
-    "note": "Départ en covoiturage à 14h00 (20 min de route jusqu'à Plouzané). 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël)."
+    "rdv_heure": "13:45",
+    "note": "Départ en covoiturage à 13h45 (20 min de route jusqu'à Plouzané). 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël)."
    }
   },
   {
