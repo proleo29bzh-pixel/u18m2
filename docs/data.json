@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-19T21:34:36+00:00",
+ "maj": "2026-11-20T09:43:56+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -146,10 +146,10 @@
  ],
  "annonces": [
   {
-   "date": "2026-11-15T20:00",
+   "date": "2026-11-20T12:00",
    "auteur": "Coach Léo",
-   "titre": "🏀 Samedi : match à Guilers contre Kornog",
-   "texte": "Samedi 21 novembre, on joue chez Kornog, au gymnase de Kerdrel à Guilers. L'horaire n'est pas encore confirmé : je vous le donne dans la semaine, avec l'heure du rendez-vous.\n\n🚗 3 voitures pour le covoiturage : la maman d'Evan, Céline (maman de Raphaël) et Maman SALIOU. Merci à elles !\n\n👕 Les maillots sont chez Malo.\n\nC'est tout près : venez nombreux encourager les garçons 💪 Et pensez à indiquer vos présences dans l'appli."
+   "titre": "🏀 Demain : 15h00 à Guilers contre Kornog",
+   "texte": "Samedi 21 novembre, coup d'envoi à 15h00 au Gymnase Kerdrel (rue Charles de Gaulle, Guilers).\n\n🚗 Rendez-vous à 14h00 au parking de Bel Air. 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël). Merci à elles !\n\n👕 Les maillots sont chez Malo.\n\nC'est à 15 minutes : venez nombreux encourager les garçons 💪"
   }
  ],
  "maillots_rotation": true,
@@ -478,6 +478,12 @@
     "rdv": null,
     "heure": "15:00",
     "salle": "GYMNASE DE KERALLAN (B) PLACE JULES FERRY 29280 PLOUZANE"
+   },
+   "coach": {
+    "heure_match": "15:00",
+    "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
+    "rdv_heure": "14:00",
+    "note": "Départ en covoiturage à 14h00 (15 min de route). 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël)."
    }
   },
   {

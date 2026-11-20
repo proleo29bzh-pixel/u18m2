@@ -264,6 +264,9 @@ def construire():
             note = {k: v for k, v in infos.get("matchs", {}).get(r["date"], {}).items() if v}
             if note:
                 r["coach"] = note
+            # heure connue par le coach (ex. accord avec l'adversaire) quand ni la FFBB ni le CJR ne l'ont encore
+            if note.get("heure_match") and not r["heure"]:
+                r["heure"] = note["heure_match"]
 
     rencontres.sort(key=lambda r: (r["date"], r["heure"] or "99"))
     return {
