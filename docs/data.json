@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-23T00:53:36+00:00",
+ "maj": "2026-11-23T09:06:02+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -348,12 +348,12 @@
     77,
     46
    ],
+   "cjr": "https://cjr-basketball.com/matchs/apercu/3085/20261107-amicale-sportive-ergue-armel-3?mode=full",
    "coach": {
     "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
     "rdv_heure": "12:35",
     "note": "Départ en covoiturage à 12h35 (1h10 à 1h15 de route). 3 voitures : Maman SALIOU, Céline (maman de Raphaël) et Léo."
-   },
-   "cjr": "https://cjr-basketball.com/matchs/apercu/3085/20261107-amicale-sportive-ergue-armel-3?mode=full"
+   }
   },
   {
    "id": "200000014843654",
@@ -467,18 +467,18 @@
     92,
     54
    ],
-   "coach": {
-    "heure_match": "15:00",
-    "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
-    "rdv_heure": "14:00",
-    "note": "Départ en covoiturage à 14h00 (20 min de route jusqu'à Plouzané). 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël)."
-   },
    "cjr": "https://cjr-basketball.com/matchs/apercu/3087/20261121-ie-ctc-kornog-basket-bleuets-de-guilers-2?mode=full",
    "convoc": {
     "domicile": false,
     "rdv": null,
     "heure": "15:00",
     "salle": "GYMNASE DE KERALLAN (B) PLACE JULES FERRY 29280 PLOUZANE"
+   },
+   "coach": {
+    "heure_match": "15:00",
+    "rdv_lieu": "Parking de la salle omnisports de Bel Air (9 rue Racine, Saint-Renan)",
+    "rdv_heure": "14:00",
+    "note": "Départ en covoiturage à 14h00 (20 min de route jusqu'à Plouzané). 3 voitures : Maman SALIOU, la maman d'Evan et Céline (maman de Raphaël)."
    }
   },
   {
@@ -556,10 +556,10 @@
     "logo": "logos/logo-amicale-sportive-ergue-armel.png"
    },
    "salle": {
-    "nom": "Complexe polyvalent",
-    "adresse": "Streat Lannoc, 29810 Plouarzel",
-    "lat": 48.43235,
-    "lon": -4.73447
+    "nom": "Salle Omnisports de Bel Air",
+    "adresse": "9 Rue Racine, 29290 Saint-Renan",
+    "lat": 48.42886,
+    "lon": -4.63188
    },
    "nous": true,
    "score": null,
@@ -568,8 +568,8 @@
     "domicile": true,
     "rdv": "17:15",
     "heure": "18:00",
-    "salle": "SALLE POLYVALENTE DU BOURG, PLOUARZEL",
-    "table": null,
+    "salle": "COMPLEXE SPORTIF BEL-AIR, SAINT RENAN",
+    "table": "MANON & THAIS",
     "arbitres": null,
     "resp_salle": null
    }
@@ -600,10 +600,5 @@
    "score": null
   }
  ],
- "erreurs": [
-  "page équipe CJR : HTTP Error 503: Service Unavailable",
-  "convocations 2026-11-16 : HTTP Error 503: Service Unavailable",
-  "convocations 2026-11-23 : HTTP Error 503: Service Unavailable",
-  "convocations 2026-11-30 : HTTP Error 503: Service Unavailable"
- ]
+ "erreurs": []
 }
