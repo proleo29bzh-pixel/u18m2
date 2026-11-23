@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-23T09:06:02+00:00",
+ "maj": "2026-11-23T21:25:30+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -570,8 +570,8 @@
     "heure": "18:00",
     "salle": "COMPLEXE SPORTIF BEL-AIR, SAINT RENAN",
     "table": "MANON & THAIS",
-    "arbitres": null,
-    "resp_salle": null
+    "arbitres": "Alois D. MERLIN SG2",
+    "resp_salle": "Erwan F."
    }
   },
   {
