@@ -1,5 +1,5 @@
 {
- "maj": "2026-11-24T17:45:13+00:00",
+ "maj": "2026-11-28T11:45:18+00:00",
  "competition": "Départementale Masculine U18 - Poule D2C",
  "equipe": "U18M2",
  "club": "CTC St Renan-Plouarzel",
@@ -600,5 +600,7 @@
    "score": null
   }
  ],
- "erreurs": []
+ "erreurs": [
+  "convocations 2026-11-23 : HTTP Error 503: Service Unavailable"
+ ]
 }
